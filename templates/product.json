@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "breadcrumbs": {
@@ -6,7 +15,10 @@
         "@media (min-width: 1280px) {.breadcrumbs {padding-inline: 5rem; }}"
       ],
       "settings": {
-        "text_alignment": "start"
+        "container": "fixed",
+        "text_alignment": "start",
+        "padding_top": 16,
+        "padding_bottom": 20
       }
     },
     "main": {
@@ -86,6 +98,32 @@
             "show_gift_card_recipient": true
           }
         },
+        "wishlist_plus_wishlist_pdp_button_a9PyG7": {
+          "type": "shopify://apps/wishlist-plus/blocks/wishlist-pdp-button/80c3b1fc-3a8f-407e-8367-ffdeebb8b612",
+          "settings": {
+            "swym_atw_button_icon": "heart",
+            "swym_atw_icon_thickness": 1.7,
+            "swym_atw_display_btn_text": true,
+            "swym_button_position": "default",
+            "swym_atw_button_vertical_offset": 0,
+            "swym_atw_full_width": true,
+            "swym_atw_button_alignment": "center",
+            "swym_add_to_wishlist_color": "#000000",
+            "swym_added_to_wishlist_color": "#222222",
+            "swym_button_text_color": "#fff",
+            "swym_atw_border_color": "#000",
+            "swym_atw_border_thickness": 0,
+            "swym_atw_button_border_radius": 0,
+            "swym_enable_hover_customization": false,
+            "swym_hover_add_to_wishlist_color": "#000000",
+            "swym_hover_added_to_wishlist_color": "#222222",
+            "swym_hover_button_text_color": "#fff",
+            "swym_hover_atw_border_color": "#000",
+            "swym_hover_atw_border_thickness": 0,
+            "swym_hover_atw_button_border_radius": 0,
+            "swym_custom_css": ""
+          }
+        },
         "icon_with_text_UAYgQU": {
           "type": "icon-with-text",
           "settings": {
@@ -122,6 +160,7 @@
             "make_collapsible_row": false,
             "icon": "tag",
             "product_list_limit": 6,
+            "layout": "grid",
             "columns": 3,
             "image_ratio": "1/1",
             "enable_quick_add": true
@@ -191,8 +230,9 @@
         "sticky_atc_bar_7HgNgP": {
           "type": "sticky-atc-bar",
           "settings": {
-            "container": "full",
             "visibility": "all",
+            "style": "standard",
+            "container": "full",
             "show_atc_button": true,
             "show_dynamic_checkout_buttons": false,
             "show_quantity": true
@@ -209,6 +249,7 @@
         "description",
         "variant_picker",
         "buy_buttons",
+        "wishlist_plus_wishlist_pdp_button_a9PyG7",
         "icon_with_text_UAYgQU",
         "pickup_availability",
         "promotion_alert_L7ipQp",
@@ -226,10 +267,12 @@
       ],
       "settings": {
         "color_scheme": "scheme-1",
+        "use_color_scheme_in_container": false,
         "enable_sticky_info": true,
         "media_size": "large",
         "gallery_layout": "vertical-carousel",
         "mobile_thumbnails": "show",
+        "show_image_border": false,
         "enable_image_zoom": true,
         "enable_video_looping": true,
         "padding_top": 0,
@@ -242,33 +285,45 @@
         "testimonial_dhi3Xf": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
+            "heading": "Testimonials",
             "text": "<p>“I am extremely happy about both design and comfort. I am a furniture designer myself, and your product makes me happy.”</p>",
             "author": "Stephanie L.",
-            "bio": "Verified Buyer"
+            "bio": "Verified Buyer",
+            "product": ""
           }
         },
         "testimonial_D7Mq7i": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
+            "heading": "Testimonials",
             "text": "<p>The story behind, sustainable production, and the risk-free feeling with the free return policy make this a great choice.</p>",
             "author": "Rachel M.",
-            "bio": "Verified Buyer"
+            "bio": "Verified Buyer",
+            "product": ""
           }
         },
         "testimonial_33tAjm": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
+            "heading": "Testimonials",
             "text": "<p>“High-quality furniture, crafted with passion and care, fantastic in appearance and use, reasonably priced, and excellent custome.”</p>",
             "author": "Emily J.",
-            "bio": "Verified Buyer"
+            "bio": "Verified Buyer",
+            "product": ""
           }
         },
         "testimonial_dDRMwy": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
+            "heading": "Testimonials",
             "text": "<p>The craftsmanship, eco-friendly materials, and excellent customer service truly make this product an outstanding standout.</p>",
             "author": "Sarah T.",
-            "bio": "Verified Buyer"
+            "bio": "Verified Buyer",
+            "product": ""
           }
         }
       },
@@ -292,22 +347,27 @@
         "heading_size": "h2",
         "description": "",
         "text_size": "text-base",
-        "card_color_scheme": "",
-        "card_image_ratio": "adapt",
         "layout": "standard",
+        "card_color_scheme": "",
+        "card_content_color_scheme": "",
+        "card_image_ratio": "adapt",
+        "card_heading_size": "h4",
         "card_text_size": "text-base",
+        "author_info_layout": "vertical",
+        "card_trigger_behavior": "click",
+        "show_image": true,
+        "show_author_image": true,
         "columns_desktop": 3,
         "column_gap": "2xs",
         "row_gap": "inherit",
         "enable_slider": true,
         "columns_mobile": "1",
         "swipe_on_mobile": true,
+        "show_progress_bar": true,
         "padding_top": 60,
         "padding_bottom": 60,
         "show_section_divider": false,
-        "divider_width": "fixed",
-        "show_image": true,
-        "show_author_image": true
+        "divider_width": "fixed"
       }
     },
     "tabs_content_8rnbnj": {
@@ -350,6 +410,7 @@
             "description": "<p>The good design concepts at the heart of Danish design are functionality, beauty and the needs of the many. This is a strong tradition. And when a tradition is strong enough, it leaves room for innovation that allows us to always move forward.</p>",
             "description_size": "text-base",
             "button_label": "Shop More Products",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none"
           }
@@ -373,6 +434,7 @@
         "@media (min-width: 1024px) {.tabs__panel {padding-inline: 5rem; }}"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
         "navigation_style": "headings",
         "navigation_alignment": "start",
@@ -461,6 +523,7 @@
         "column_Lix6qc"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
         "section_header_alignment": "center",
         "section_header_alignment_mobile": "inherit",
@@ -479,6 +542,7 @@
         "button_icon": "none",
         "content_alignment": "left",
         "show_col_count": true,
+        "show_image": true,
         "columns_desktop": 4,
         "column_gap": "medium",
         "row_gap": "inherit",
@@ -601,6 +665,7 @@
         "type_ttCzqK"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
         "section_header_alignment": "center",
         "section_header_alignment_mobile": "inherit",
@@ -650,6 +715,7 @@
           "type": "button",
           "settings": {
             "button_label": "Explore More Details",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none"
           }
@@ -666,6 +732,7 @@
         ".image-with-text__content {max-width: 52rem;}"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
         "image_position": "right",
         "image_width": 50,
@@ -787,6 +854,7 @@
     "related-products": {
       "type": "related-products",
       "settings": {
+        "container": "fixed",
         "color_scheme": "scheme-1",
         "section_header_alignment": "left",
         "section_header_alignment_mobile": "inherit",
@@ -803,9 +871,11 @@
         "column_gap": "medium",
         "row_gap": "inherit",
         "enable_slider": true,
+        "navigation_position": "bottom",
         "pcard_image_ratio": "",
         "columns_mobile": "2",
         "swipe_on_mobile": true,
+        "show_progress_bar": true,
         "padding_top": 60,
         "padding_bottom": 0,
         "show_section_divider": false,
@@ -831,6 +901,7 @@
             "text": "<p>All orders over $500 are delivered to your doorstep at no extra charge.</p>",
             "text_size": "text-base",
             "button_label": "Shipping Details",
+            "button_link": "",
             "button_style": "btn--plain",
             "button_icon": "caret-right"
           }
@@ -851,6 +922,7 @@
             "text": "<p>Enjoy the freedom of stress-free shopping with our hassle-free and return policy.</p>",
             "text_size": "text-base",
             "button_label": "Return Policy",
+            "button_link": "",
             "button_style": "btn--plain",
             "button_icon": "caret-right"
           }
@@ -871,6 +943,7 @@
             "text": "<p>Shop with confidence knowing your payments are secure and your information</p>",
             "text_size": "text-base",
             "button_label": "More About Payment",
+            "button_link": "",
             "button_style": "btn--plain",
             "button_icon": "caret-right"
           }
@@ -885,7 +958,9 @@
         ".multicolumn-card__text p {max-width: 33rem;}"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
+        "header_layout": "vertical",
         "section_header_alignment": "center",
         "section_header_alignment_mobile": "inherit",
         "subheading": "",
@@ -901,6 +976,7 @@
         "button_link": "",
         "button_style": "btn--underline",
         "button_icon": "none",
+        "enable_sticky": false,
         "card_color_scheme": "",
         "content_alignment": "center",
         "image_position": "top",
@@ -924,6 +1000,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "thisisaaccount"
           }
@@ -932,6 +1009,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "furniturelover"
           }
@@ -940,6 +1018,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "thisisaaccount"
           }
@@ -948,6 +1027,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "baddyjam"
           }
@@ -956,6 +1036,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "liamwealthy"
           }
@@ -964,6 +1045,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "baddyjam"
           }
@@ -972,6 +1054,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "liamwealthy"
           }
@@ -1000,7 +1083,9 @@
         "heading_size": "h1",
         "description": "",
         "text_size": "text-base",
+        "show_button_on_top": false,
         "button_label": "@garage_store",
+        "button_link": "",
         "button_style": "btn--underline",
         "button_icon": "none",
         "direction": "left",
