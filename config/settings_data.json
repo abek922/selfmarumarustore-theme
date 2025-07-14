@@ -48,7 +48,7 @@
     "pcard_color_scheme": "scheme-1",
     "pcard_show_vendor": false,
     "pcard_show_type": true,
-    "pcard_show_quickview_button": false,
+    "pcard_show_quickview_button": true,
     "pcard_show_sale_badge": true,
     "pcard_sale_badge_type": "show_text",
     "pcard_enable_color_swatches": true,
