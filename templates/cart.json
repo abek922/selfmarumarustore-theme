@@ -33,12 +33,6 @@
           "type": "cart_shipping_rate",
           "settings": {}
         },
-        "point_display_NEW": {
-          "type": "point_display",
-          "settings": {
-            "point_rate": 1
-          }
-        },
         "subtotal_LeUiVY": {
           "type": "subtotal",
           "settings": {}
@@ -47,30 +41,10 @@
           "type": "buttons",
           "settings": {}
         },
-        "easypoints_product_points_KakhVV": {
-          "type": "shopify://apps/easypoints/blocks/product_points/f0862409-7105-4920-b523-5bd76a964d4a",
+        "point_display_m7kcBG": {
+          "type": "point_display",
           "settings": {
-            "color": "#000000",
-            "font_weight": "normal",
-            "font_size": 16,
-            "label": "獲得ポイント",
-            "display_percentage": true
-          }
-        },
-        "easypoints_redemption_3pyhFk": {
-          "type": "shopify://apps/easypoints/blocks/redemption/f0862409-7105-4920-b523-5bd76a964d4a",
-          "settings": {}
-        },
-        "poing_pong_poingpong_section_cart_KJ7zz4": {
-          "type": "shopify://apps/poing-pong/blocks/poingpong-section-cart/6abfe1ab-fc32-4a60-8c37-35a70fd673b9",
-          "settings": {
-            "title": "お持ちのポイントをクーポンへ交換できます",
-            "comment": "※交換したクーポンは、ご購入手続き時にご利用いただけます。",
-            "label_point": "所持ポイント",
-            "button_label_reload": "最新に更新",
-            "button_label": "ポイントをクーポンへ交換する",
-            "link_poingpong": "",
-            "title_guest": "ログインしてポイントを確認しよう"
+            "point_rate": 0.0
           }
         }
       },
@@ -78,12 +52,9 @@
         "free_shipping_goal_W8bXKE",
         "cart_note_qpALBg",
         "cart_shipping_rate_bnhQBk",
-        "point_display_NEW",
         "subtotal_LeUiVY",
         "buttons_drwbch",
-        "easypoints_product_points_KakhVV",
-        "easypoints_redemption_3pyhFk",
-        "poing_pong_poingpong_section_cart_KJ7zz4"
+        "point_display_m7kcBG"
       ],
       "settings": {
         "container": "fixed",
