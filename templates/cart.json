@@ -37,6 +37,10 @@
           "type": "subtotal",
           "settings": {}
         },
+        "buttons_drwbch": {
+          "type": "buttons",
+          "settings": {}
+        },
         "easypoints_product_points_KakhVV": {
           "type": "shopify://apps/easypoints/blocks/product_points/f0862409-7105-4920-b523-5bd76a964d4a",
           "settings": {
@@ -46,6 +50,10 @@
             "label": "獲得ポイント",
             "display_percentage": true
           }
+        },
+        "easypoints_redemption_3pyhFk": {
+          "type": "shopify://apps/easypoints/blocks/redemption/f0862409-7105-4920-b523-5bd76a964d4a",
+          "settings": {}
         },
         "poing_pong_poingpong_section_cart_KJ7zz4": {
           "type": "shopify://apps/poing-pong/blocks/poingpong-section-cart/6abfe1ab-fc32-4a60-8c37-35a70fd673b9",
@@ -58,10 +66,6 @@
             "link_poingpong": "",
             "title_guest": "ログインしてポイントを確認しよう"
           }
-        },
-        "buttons_drwbch": {
-          "type": "buttons",
-          "settings": {}
         }
       },
       "block_order": [
@@ -69,9 +73,10 @@
         "cart_note_qpALBg",
         "cart_shipping_rate_bnhQBk",
         "subtotal_LeUiVY",
+        "buttons_drwbch",
         "easypoints_product_points_KakhVV",
-        "poing_pong_poingpong_section_cart_KJ7zz4",
-        "buttons_drwbch"
+        "easypoints_redemption_3pyhFk",
+        "poing_pong_poingpong_section_cart_KJ7zz4"
       ],
       "settings": {
         "container": "fixed",
