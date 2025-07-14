@@ -44,7 +44,7 @@
         "point_display_m7kcBG": {
           "type": "point_display",
           "settings": {
-            "point_rate": 0.0
+            "point_rate": 1
           }
         }
       },
