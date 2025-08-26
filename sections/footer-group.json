@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "t:sections.footer.name",
   "type": "footer",
@@ -96,11 +105,14 @@
         "column_69fN8n",
         "column_ngN6XL"
       ],
+      "disabled": true,
       "custom_css": [
         ".rich-text__text {--text-margin-top: 0.4rem;}"
       ],
       "settings": {
+        "container": "fixed",
         "color_scheme": "",
+        "header_layout": "vertical",
         "section_header_alignment": "left",
         "section_header_alignment_mobile": "inherit",
         "subheading": "",
@@ -116,6 +128,7 @@
         "button_link": "",
         "button_style": "btn--underline",
         "button_icon": "none",
+        "enable_sticky": false,
         "card_color_scheme": "",
         "content_alignment": "left",
         "image_position": "left",
@@ -156,6 +169,7 @@
             "block_width": 15,
             "heading": "Company",
             "heading_size": "h6",
+            "menu": "footer",
             "open_default": false,
             "show_divider": false
           }
@@ -166,6 +180,7 @@
             "block_width": 15,
             "heading": "Collection",
             "heading_size": "h6",
+            "menu": "footer",
             "open_default": false,
             "show_divider": false
           }
@@ -176,6 +191,7 @@
             "block_width": 15,
             "heading": "Shop",
             "heading_size": "h6",
+            "menu": "footer",
             "open_default": false,
             "show_divider": false
           }
@@ -189,13 +205,15 @@
       ],
       "custom_css": [],
       "settings": {
+        "container": "fixed",
         "color_scheme": "scheme-1",
         "enable_follow_on_shop": true,
         "show_social": true,
+        "social_button_style": "btn--icon",
         "enable_country_selector": true,
         "enable_language_selector": false,
         "payment_enable": true,
-        "footer_bottom_menu": "footer-bottom",
+        "footer_bottom_menu": "",
         "show_section_divider": true,
         "divider_width": "fixed",
         "padding_top": 40,
@@ -220,13 +238,15 @@
         "products_eYYkE8": {
           "type": "products",
           "settings": {
-            "text": "Products"
+            "text": "Products",
+            "collection": ""
           }
         },
         "link_mJ6QMc": {
           "type": "link",
           "settings": {
             "text": "About",
+            "url": "",
             "icon": "map-pin"
           }
         }
