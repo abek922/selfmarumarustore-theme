@@ -1,121 +1,14 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "collection_list_slider_6qbNfj": {
-      "type": "collection-list-slider",
-      "blocks": {
-        "featured_collection_L9N3Tg": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Sale Items"
-          }
-        },
-        "featured_collection_gxdACj": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Press Tables"
-          }
-        },
-        "featured_collection_jQXtir": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Lighting"
-          }
-        },
-        "featured_collection_4H9LzM": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Spoke Sofa"
-          }
-        },
-        "featured_collection_jMA9xm": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Storage"
-          }
-        },
-        "featured_collection_J6hxH9": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Turn Chairs"
-          }
-        },
-        "featured_collection_HwzPfD": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Longe Chairs"
-          }
-        },
-        "featured_collection_GW3kAL": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Curve Coat"
-          }
-        },
-        "featured_collection_J6V8fx": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Bend Chairs"
-          }
-        },
-        "featured_collection_NkFYeg": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Accessories"
-          }
-        },
-        "featured_collection_eBphH3": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Cross Tables"
-          }
-        },
-        "featured_collection_mFCdUY": {
-          "type": "featured_collection",
-          "settings": {
-            "title": "Bar Chairs"
-          }
-        }
-      },
-      "block_order": [
-        "featured_collection_L9N3Tg",
-        "featured_collection_gxdACj",
-        "featured_collection_jQXtir",
-        "featured_collection_4H9LzM",
-        "featured_collection_jMA9xm",
-        "featured_collection_J6hxH9",
-        "featured_collection_HwzPfD",
-        "featured_collection_GW3kAL",
-        "featured_collection_J6V8fx",
-        "featured_collection_NkFYeg",
-        "featured_collection_eBphH3",
-        "featured_collection_mFCdUY"
-      ],
-      "custom_css": [],
-      "settings": {
-        "container": "fixed",
-        "color_scheme": "",
-        "section_header_alignment": "center",
-        "section_header_alignment_mobile": "inherit",
-        "subheading": "",
-        "heading": "",
-        "highlight_style": "none",
-        "highlight_font_style": "italic",
-        "highlight_style_color": "",
-        "highlight_text_color": "",
-        "heading_size": "h1",
-        "description": "",
-        "text_size": "text-base",
-        "button_label": "",
-        "button_link": "",
-        "button_style": "btn--underline",
-        "button_icon": "none",
-        "rounded_card_image": true,
-        "padding_top": 20,
-        "padding_bottom": 20,
-        "show_section_divider": false,
-        "divider_width": "fixed"
-      }
-    },
     "slideshow_q3U4Jn": {
       "type": "slideshow",
       "blocks": {
@@ -136,6 +29,7 @@
             "description": "",
             "description_size": "text-base",
             "button_label": "Shop collection",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none",
             "enable_preload_image": true
@@ -158,6 +52,7 @@
             "description": "",
             "description_size": "text-base",
             "button_label": "Shop collection",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none",
             "enable_preload_image": false
@@ -180,6 +75,7 @@
             "description": "",
             "description_size": "text-base",
             "button_label": "Shop collection",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none",
             "enable_preload_image": false
@@ -208,9 +104,11 @@
         "collection_ydJPzX": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "New Arrivals",
             "show_banner": true,
             "color_scheme": "scheme-inverse",
+            "card_link": "",
             "image_overlay_opacity": 20,
             "content_position": "split-bottom-button",
             "content_alignment": "left",
@@ -234,9 +132,11 @@
         "collection_E83rKg": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "Hot Items",
             "show_banner": true,
             "color_scheme": "scheme-inverse",
+            "card_link": "",
             "image_overlay_opacity": 20,
             "content_position": "split-bottom-button",
             "content_alignment": "left",
@@ -369,6 +269,7 @@
             "button_label": "Shop",
             "button_style": "btn--primary",
             "button_icon": "none",
+            "product": "",
             "width": "25%",
             "alignment": "center",
             "block_custom_class": ""
@@ -390,6 +291,7 @@
             "button_label": "Shop",
             "button_style": "btn--primary",
             "button_icon": "none",
+            "product": "",
             "width": "25%",
             "alignment": "center",
             "block_custom_class": ""
@@ -411,6 +313,7 @@
             "button_label": "Shop",
             "button_style": "btn--primary",
             "button_icon": "none",
+            "product": "",
             "width": "25%",
             "alignment": "center",
             "block_custom_class": ""
@@ -432,6 +335,7 @@
             "button_label": "Shop",
             "button_style": "btn--primary",
             "button_icon": "none",
+            "product": "",
             "width": "25%",
             "alignment": "center",
             "block_custom_class": ""
@@ -475,72 +379,84 @@
         "featured_collection_KdFqFq": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Sale Items"
           }
         },
         "featured_collection_d8XGnb": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Press Tables"
           }
         },
         "featured_collection_FzRWDn": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Lighting"
           }
         },
         "featured_collection_at4gCr": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Spoke Sofa"
           }
         },
         "featured_collection_F69pQy": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Storage"
           }
         },
         "featured_collection_JV9tDT": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Turn Chairs"
           }
         },
         "featured_collection_WLrpbE": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Longe Chairs"
           }
         },
         "featured_collection_qdrbEr": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Curve Coat"
           }
         },
         "featured_collection_Pa8kFP": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Cross Tables"
           }
         },
         "featured_collection_UTWiiY": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Bend Chairs"
           }
         },
         "featured_collection_rkynNN": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Bar Chairs"
           }
         },
         "featured_collection_8t9tJr": {
           "type": "featured_collection",
           "settings": {
+            "collection": "",
             "title": "Accessories"
           }
         }
@@ -575,6 +491,7 @@
         "description": "",
         "text_size": "text-base",
         "button_label": "Shop All Products",
+        "button_link": "",
         "button_style": "btn--plain",
         "button_icon": "caret-right",
         "card_color_scheme": "",
@@ -602,6 +519,7 @@
         "collection_kXyTe3": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "Heritage Living",
             "text": "<p>With a shape inspired by the bollards used to<br/>secure vessels to a jetty</p>",
             "button_label": "Shop Collection",
@@ -612,6 +530,7 @@
         "collection_qxfNFe": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "The Haven Collection",
             "text": "<p>Anchored in design, inspired by the sturdy bollards<br/>that secure ships to docks.</p>",
             "button_label": "Shop Collection",
@@ -622,6 +541,7 @@
         "collection_j3wCpz": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "Solace Series",
             "text": "<p>Designed with a silhouette inspired by the crossbars <br/>that provide strength and stability.</p>",
             "button_label": "Shop Collection",
@@ -663,6 +583,7 @@
           "type": "product",
           "settings": {
             "color_scheme": "scheme-7",
+            "product": "",
             "text": "<p>“All products are authentic and imported from the country of origin.”</p>",
             "text_size": "h2",
             "author": "Jenny Wilson",
@@ -673,6 +594,7 @@
           "type": "product",
           "settings": {
             "color_scheme": "scheme-4",
+            "product": "",
             "text": "<p>“Each piece is authentic and carefully sourced from its place of origin.”</p>",
             "text_size": "h2",
             "author": "Julie Mathers",
@@ -683,6 +605,7 @@
           "type": "product",
           "settings": {
             "color_scheme": "scheme-6",
+            "product": "",
             "text": "<p>“Crafted with care using local materials, each piece reflects the character of its origin.”</p>",
             "text_size": "h2",
             "author": "John Doe",
@@ -719,6 +642,7 @@
         "lookbook_card_8cicAx": {
           "type": "lookbook_card",
           "settings": {
+            "product_list": [],
             "width": 59,
             "width_mobile": 90,
             "heading": "Shop this look",
@@ -732,6 +656,7 @@
         "lookbook_card_eUB7yN": {
           "type": "lookbook_card",
           "settings": {
+            "product_list": [],
             "width": 29,
             "width_mobile": 65,
             "heading": "Shop this look",
@@ -745,6 +670,7 @@
         "lookbook_card_tHgUQt": {
           "type": "lookbook_card",
           "settings": {
+            "product_list": [],
             "width": 59,
             "width_mobile": 90,
             "heading": "Shop this look",
@@ -758,6 +684,7 @@
         "lookbook_card_8BaXc6": {
           "type": "lookbook_card",
           "settings": {
+            "product_list": [],
             "width": 29,
             "width_mobile": 65,
             "heading": "Shop this look",
@@ -771,6 +698,7 @@
         "lookbook_card_DtRhzC": {
           "type": "lookbook_card",
           "settings": {
+            "product_list": [],
             "width": 59,
             "width_mobile": 90,
             "heading": "Shop this look",
@@ -831,6 +759,7 @@
             "content_alignment": "left",
             "content_spacing": "small",
             "content_gap": "fitted",
+            "card_link": "",
             "subheading": "",
             "subheading_style": "",
             "heading": "Turn Chairs",
@@ -870,6 +799,7 @@
             "content_alignment": "left",
             "content_spacing": "small",
             "content_gap": "fitted",
+            "card_link": "",
             "subheading": "",
             "subheading_style": "",
             "heading": "Cross Chairs",
@@ -936,6 +866,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Living Room",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -943,6 +874,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Planters",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -950,6 +882,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Gravel Rug",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -957,6 +890,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Table Mirror",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -964,6 +898,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Table Wears",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -971,6 +906,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Dining Decor",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -978,6 +914,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Ray Table Lamp",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -985,6 +922,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Chairs",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -992,6 +930,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Living Room",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -999,6 +938,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Planters",
+            "button_link": "",
             "icon": "check"
           }
         }
@@ -1044,6 +984,7 @@
         "collection_tqdqYc": {
           "type": "collection",
           "settings": {
+            "collection": "",
             "title": "",
             "show_banner": false,
             "color_scheme": "",
@@ -1087,6 +1028,7 @@
         "description": "<p>Traditional divides between personal and professional space.</p>",
         "text_size": "text-base",
         "button_label": "Shop All Products",
+        "button_link": "",
         "button_style": "btn--plain",
         "button_icon": "caret-right",
         "limit": 8,
@@ -1181,6 +1123,7 @@
           "type": "button",
           "settings": {
             "button_label": "Contact Us",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none"
           }
@@ -1220,28 +1163,34 @@
         "testimonial_EtxFFg": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
             "heading": "Testimonials",
             "text": "<p>“The products are artful, fun, have a story just as unique as the designers who made it.”</p>",
             "author": "Jenny Wilson",
-            "bio": "New Mexico"
+            "bio": "New Mexico",
+            "product": ""
           }
         },
         "testimonial_QPUyLy": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
             "heading": "Testimonials",
             "text": "<p>“The best coat I have found.Great colors and materials for life style.”</p>",
             "author": "Samantha Taylor",
-            "bio": "Portland, Oregon"
+            "bio": "Portland, Oregon",
+            "product": ""
           }
         },
         "testimonial_iTzQDb": {
           "type": "testimonial",
           "settings": {
+            "icon": "none",
             "heading": "Testimonials",
             "text": "<p>“Every item feels like a masterpiece, blending creativity and authenticity beautifully.”</p>",
             "author": "David Martinez",
-            "bio": "Austin, Texas"
+            "bio": "Austin, Texas",
+            "product": ""
           }
         }
       },
@@ -1309,6 +1258,7 @@
             "heading_size": "h1",
             "text": "<p>Introducing the latest styles in women's shoes tailored for every occasion taste.</p>",
             "button_label": "Shop Now",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none"
           }
@@ -1329,6 +1279,7 @@
             "heading_size": "h1",
             "text": "<p>Highlighting the unique touches that set every piece apart, crafted to elevate your style effortlessly.</p>",
             "button_label": "Shop Now",
+            "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none"
           }
@@ -1346,7 +1297,8 @@
             "heading_size": "h5",
             "heading_size_mobile": "inherit",
             "heading_size_custom": 18,
-            "text": "<p>Get up to $100 Off</p>"
+            "text": "<p>Get up to $100 Off</p>",
+            "card_link": ""
           }
         },
         "image_card_yb3htw": {
@@ -1362,7 +1314,8 @@
             "heading_size": "h5",
             "heading_size_mobile": "inherit",
             "heading_size_custom": 18,
-            "text": "<p>From $200</p>"
+            "text": "<p>From $200</p>",
+            "card_link": ""
           }
         },
         "image_card_7KqpyL": {
@@ -1378,7 +1331,8 @@
             "heading_size": "h5",
             "heading_size_mobile": "inherit",
             "heading_size_custom": 18,
-            "text": "<p>Get up to $1.000</p>"
+            "text": "<p>Get up to $1.000</p>",
+            "card_link": ""
           }
         },
         "image_card_ag7Eb3": {
@@ -1394,7 +1348,8 @@
             "heading_size": "h5",
             "heading_size_mobile": "inherit",
             "heading_size_custom": 18,
-            "text": "<p>Buy One Get One</p>"
+            "text": "<p>Buy One Get One</p>",
+            "card_link": ""
           }
         }
       },
@@ -1431,6 +1386,7 @@
         "text_m9JnRY": {
           "type": "text",
           "settings": {
+            "text_link": "",
             "text": "Lounge Chairs",
             "text_size": "h2",
             "text_opacity": 100,
@@ -1443,12 +1399,14 @@
           "settings": {
             "image_height": 72,
             "image_rounded": false,
+            "image_link": "",
             "image_height_mobile": 60
           }
         },
         "text_gENJV7": {
           "type": "text",
           "settings": {
+            "text_link": "",
             "text": "Bow Chairs",
             "text_size": "h2",
             "text_opacity": 100,
@@ -1461,12 +1419,14 @@
           "settings": {
             "image_height": 72,
             "image_rounded": false,
+            "image_link": "",
             "image_height_mobile": 60
           }
         },
         "text_ETiRz6": {
           "type": "text",
           "settings": {
+            "text_link": "",
             "text": "Cross Chair",
             "text_size": "h2",
             "text_opacity": 100,
@@ -1479,6 +1439,7 @@
           "settings": {
             "image_height": 72,
             "image_rounded": false,
+            "image_link": "",
             "image_height_mobile": 60
           }
         }
@@ -1509,6 +1470,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "All eco-certified",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -1516,6 +1478,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Product protection",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -1523,6 +1486,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Make it yours",
+            "button_link": "",
             "icon": "check"
           }
         },
@@ -1530,6 +1494,7 @@
           "type": "button_item",
           "settings": {
             "button_label": "Unique tailored",
+            "button_link": "",
             "icon": "check"
           }
         }
@@ -1684,6 +1649,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "thisisaaccount"
           }
@@ -1692,6 +1658,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "furniturelover"
           }
@@ -1700,6 +1667,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "thisisaaccount"
           }
@@ -1708,6 +1676,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "baddyjam"
           }
@@ -1716,6 +1685,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "liamwealthy"
           }
@@ -1724,6 +1694,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "baddyjam"
           }
@@ -1732,6 +1703,7 @@
           "type": "gallery",
           "settings": {
             "color_scheme": "scheme-1",
+            "image_link": "",
             "social_media": "instagram",
             "heading": "liamwealthy"
           }
@@ -1762,6 +1734,7 @@
         "text_size": "text-base",
         "show_button_on_top": false,
         "button_label": "@garage_store",
+        "button_link": "",
         "button_style": "btn--underline",
         "button_icon": "none",
         "direction": "left",
@@ -1776,7 +1749,6 @@
     }
   },
   "order": [
-    "collection_list_slider_6qbNfj",
     "slideshow_q3U4Jn",
     "featured_collection_bdaamt",
     "promotion_banner_VCkmzP",
