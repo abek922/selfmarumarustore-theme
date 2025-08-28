@@ -15,7 +15,7 @@
     "color_badge_hot": "#1d349a",
     "color_badge_new": "#64b7a6",
     "color_badge_coming_soon": "#8d55cb",
-    "type_body_font": "libre_caslon_text_n4",
+    "type_body_font": "noto_sans_japanese_n4",
     "body_font_weight_bolder": "600",
     "body_font_size": 15,
     "type_header_font": "libre_caslon_text_n4",
