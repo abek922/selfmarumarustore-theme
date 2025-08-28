@@ -28,7 +28,7 @@
             "heading_size": "h1",
             "description": "",
             "description_size": "text-base",
-            "button_label": "Shop collection",
+            "button_label": "",
             "button_link": "",
             "button_style": "btn--primary",
             "button_icon": "none",
