@@ -20,12 +20,12 @@
             "content_position": "bottom-left",
             "text_alignment": "left",
             "subheading": "24時間限定ポイント5倍キャンペーン",
-            "title": "24時間限定　　ポイント5倍",
+            "title": "24時間限定　　　　　　　　ポイント5倍",
             "highlight_style": "none",
             "highlight_font_style": "italic",
             "highlight_style_color": "",
             "highlight_text_color": "",
-            "heading_size": "hd1",
+            "heading_size": "h1",
             "description": "",
             "description_size": "text-base",
             "button_label": "Shop collection",
@@ -37,6 +37,7 @@
         },
         "slide_U9bPyj": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "color_scheme": "scheme-inverse",
             "image_overlay_opacity": 30,
@@ -60,6 +61,7 @@
         },
         "slide_cQ6eF8": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "color_scheme": "scheme-inverse",
             "image_overlay_opacity": 30,
