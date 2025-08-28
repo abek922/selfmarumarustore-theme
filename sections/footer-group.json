@@ -150,6 +150,7 @@
       "blocks": {
         "newsletter_3qCrWc": {
           "type": "newsletter",
+          "disabled": true,
           "settings": {
             "block_width": 55,
             "heading": "Join Our Newsletter",
@@ -207,12 +208,12 @@
       "settings": {
         "container": "fixed",
         "color_scheme": "scheme-1",
-        "enable_follow_on_shop": true,
-        "show_social": true,
+        "enable_follow_on_shop": false,
+        "show_social": false,
         "social_button_style": "btn--icon",
-        "enable_country_selector": true,
+        "enable_country_selector": false,
         "enable_language_selector": false,
-        "payment_enable": true,
+        "payment_enable": false,
         "footer_bottom_menu": "",
         "show_section_divider": true,
         "divider_width": "fixed",
