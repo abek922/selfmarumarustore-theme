@@ -1,68 +1,89 @@
-/* ===== MRST Hamburger ===== */
+/* === MRST Hamburger (同サイズ・同位置) === */
 .mrst-hamburger {
-  width: 36px;
-  height: 28px;
+  /* 既存のアイコンと高さ/整列を合わせる */
+  width: 40px;               /* ボタン枠（触りやすさ） */
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
-  position: relative;
+  background: transparent;
+  border: 0;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+  line-height: 1;
 }
+
 .mrst-hamburger__bar {
   display: block;
+  position: relative;
+  width: 22px;               /* 上の線の長さ */
   height: 2px;
   background: currentColor;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  transition: transform .25s ease, width .2s ease, opacity .2s ease, top .2s ease, bottom .2s ease;
+  transition: transform .22s ease, width .18s ease, opacity .18s ease;
 }
-.mrst-hamburger__bar--top { top: 8px; width: 24px; }
-.mrst-hamburger__bar--bottom { bottom: 8px; width: 16px; }
 
-/* open → X */
+.mrst-hamburger__bar--top { transform: translateY(-4px); }
+.mrst-hamburger__bar--bottom {
+  width: 14px;               /* 下の線を短く */
+  transform: translateY(4px);
+}
+
+/* 開状態 → ✗ */
 .mrst-hamburger.is-open .mrst-hamburger__bar--top {
-  top: 13px;
   transform: rotate(45deg);
-  width: 24px;
+  width: 22px;
 }
 .mrst-hamburger.is-open .mrst-hamburger__bar--bottom {
-  bottom: 13px;
   transform: rotate(-45deg);
-  width: 24px;
+  width: 22px;
 }
 
-/* ===== MRST Drawer ===== */
+/* 右側に置いたときもベースラインが揃うようマージンを除去 */
+.header__icons--right .mrst-hamburger { margin: 0; }
+
+/* === Drawer === */
 .mrst-drawer { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
-.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay { opacity: 0; }
-.mrst-drawer[aria-hidden="true"] .mrst-drawer__panel { transform: translateX(-100%); }
 .mrst-drawer__overlay {
   position: absolute; inset: 0; background: rgba(0,0,0,.4);
-  transition: opacity .25s ease;
+  opacity: 1; transition: opacity .25s ease;
 }
 .mrst-drawer__panel {
-  position: absolute; top: 0; bottom: 0; left: 0; width: min(86vw, 340px);
+  position: absolute; top: 0; bottom: 0;
+  width: var(--mrst-drawer-width, 320px);
   background: var(--color-background, #fff);
-  box-shadow: 2px 0 12px rgba(0,0,0,.15);
+  box-shadow: 0 0 14px rgba(0,0,0,.18);
   transition: transform .25s ease;
   display: flex; flex-direction: column;
+  outline: none;
 }
+
+/* スライド方向（left/right） */
+.mrst-drawer[data-side="left"] .mrst-drawer__panel { left: 0; transform: translateX(-100%); }
+.mrst-drawer[data-side="right"] .mrst-drawer__panel { right: 0; transform: translateX(100%); }
+
+.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay { opacity: 0; }
+.mrst-drawer[aria-hidden="true"] .mrst-drawer__panel { transform: translateX(calc(var(--mrst-drawer-side, left) == right ? 100% : -100%)); }
+.mrst-drawer[aria-hidden="false"] { pointer-events: auto; }
+.mrst-drawer[aria-hidden="false"] .mrst-drawer__panel { transform: translateX(0); }
+
 .mrst-drawer__header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 16px; border-bottom: 1px solid rgba(0,0,0,.08);
+  padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,.08);
 }
 .mrst-drawer__title { font-weight: 600; }
-.mrst-drawer__close {
-  font-size: 24px; line-height: 1; background: none; border: 0; cursor: pointer;
-}
+.mrst-drawer__close { background: none; border: 0; font-size: 24px; line-height: 1; cursor: pointer; }
 .mrst-drawer__nav { overflow: auto; padding: 8px 0 24px; }
+
 .mrst-drawer__list, .mrst-drawer__sublist { list-style: none; margin: 0; padding: 0; }
 .mrst-drawer__item { }
-.mrst-drawer__link {
-  display: block; padding: 12px 16px; text-decoration: none;
-}
+.mrst-drawer__link { display: block; padding: 12px 16px; text-decoration: none; }
+
 .mrst-drawer__sublist { padding-left: 8px; }
 .mrst-drawer__sublink { display: block; padding: 8px 16px; text-decoration: none; opacity: .85; }
 
-/* pointer-events 制御 */
-.mrst-drawer[aria-hidden="false"] { pointer-events: auto; }
+.mrst-group { padding-top: 8px; }
+.mrst-group__title { font-weight: 700; font-size: 14px; padding: 10px 16px 6px; opacity: .8; }
+.mrst-group__divider { margin: 10px 0; border: 0; border-top: 1px solid rgba(0,0,0,.08); }

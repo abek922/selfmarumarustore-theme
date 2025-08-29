@@ -1,9 +1,7 @@
 {% comment %}
-  MRST Header (Side Drawer) - Full
-  - Based on existing sections/header.liquid
-  - Keep existing header parts; replace only menu with side drawer
-  - New IDs/classes are prefixed with "mrst-"
-  - Drawer styles & interactions -> assets/add.css, assets/add.js
+  MRST Header (Side Drawer) - Complete
+  - Keep existing header parts; replace dropdown with side drawer
+  - All new selectors prefixed "mrst-"
 {% endcomment %}
 
 <link
@@ -22,16 +20,18 @@
   assign sticky_header = section.settings.sticky_header
   assign menu = section.settings.menu
   assign menu_mobile = section.settings.menu_mobile
-  assign hamburger_position = section.settings.hamburger_position | default: 'left'
-  assign classes = 'header items-center'
-  assign classes = classes | append: ' color-' | append: section.settings.color_scheme
-
-  if section.settings.show_sperator_line
-    assign classes = classes | append: ' header--show-sperator-line'
-  endif
-
   if menu_mobile == blank
     assign menu_mobile = menu
+  endif
+
+  assign hamburger_position = section.settings.hamburger_position | default: 'left'  {# left | right #}
+  assign drawer_side = section.settings.drawer_side | default: 'left'                {# left | right #}
+  assign drawer_width = section.settings.drawer_width | default: '320'               {# px as string #}
+
+  assign classes = 'header items-center'
+  assign classes = classes | append: ' color-' | append: section.settings.color_scheme
+  if section.settings.show_sperator_line
+    assign classes = classes | append: ' header--show-sperator-line'
   endif
 
   assign custom_link = section.blocks | where: 'type', 'custom_link' | first
@@ -41,6 +41,8 @@
   #shopify-section-{{ section.id }} {
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+    --mrst-drawer-width: {{ drawer_width }}px;
+    --mrst-drawer-side: {{ drawer_side }};
   }
   #shopify-section-{{ section.id }} .header__top {
     --section-padding-top: {{ section.settings.header_top_padding_top }}px;
@@ -66,12 +68,11 @@
 >
   <div class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}">
 
-    {%- comment -%} ── 左側アイコン領域（ハンバーガー表示位置が left の場合のみ） {%- endcomment -%}
     {%- if hamburger_position == 'left' -%}
       <div class="header__icons header__icons--left lg:justify-start z-1">
         <div class="header__buttons flex items-center">
           <button
-            class="mrst-hamburger btn btn--inherit flex flex-col items-center justify-center"
+            class="mrst-hamburger btn btn--inherit inline-flex items-center justify-center"
             id="mrst-hamburger"
             type="button"
             aria-controls="mrst-drawer"
@@ -100,14 +101,9 @@
             assign logo = settings.logo
             assign logo_width = settings.logo_width
             assign logo_width_2x = settings.logo_width | times: 2
-
-            assign logo_mobile = settings.logo_mobile
+            assign logo_mobile = settings.logo_mobile | default: logo
             assign logo_width_mobile = settings.logo_width_mobile
             assign logo_width_mobile_2x = settings.logo_width_mobile | times: 2
-
-            if logo_mobile == blank
-              assign logo_mobile = logo
-            endif
           -%}
           {%- if logo_mobile -%}
             <img
@@ -141,10 +137,7 @@
 
     <div class="header__search flex items-center z-2">
       {%- render 'predictive-search' -%}
-      <button
-        class="btn btn--inherit header__search-close inline-flex btn-remove"
-        aria-label="{{ 'general.search.close_search' | t }}"
-      >
+      <button class="btn btn--inherit header__search-close inline-flex btn-remove" aria-label="{{ 'general.search.close_search' | t }}">
         {%- render 'icon-close', class: 'pointer-events-none' -%}
       </button>
     </div>
@@ -152,10 +145,9 @@
     <div class="header__icons header__icons--right flex justify-end z-1">
       <div class="header__buttons flex items-center justify-center">
 
-        {%- comment -%} ── 右側アイコン領域（ハンバーガー表示位置が right の場合のみ） {%- endcomment -%}
         {%- if hamburger_position == 'right' -%}
           <button
-            class="mrst-hamburger btn btn--inherit flex flex-col items-center justify-center"
+            class="mrst-hamburger btn btn--inherit inline-flex items-center justify-center"
             id="mrst-hamburger"
             type="button"
             aria-controls="mrst-drawer"
@@ -169,18 +161,10 @@
         {%- endif -%}
 
         {%- if custom_link and custom_link.settings.label != blank -%}
-          <a
-            href="{{ custom_link.settings.link | default: '#' }}"
-            class="cusstom-button flex items-center justify-center gap-2 reversed-link"
-            aria-label="{{ custom_link.settings.label }}"
-          >
+          <a href="{{ custom_link.settings.link | default: '#' }}" class="cusstom-button flex items-center justify-center gap-2 reversed-link" aria-label="{{ custom_link.settings.label }}">
             {%- if custom_link.settings.custom_icon != blank -%}
               <span class="icon icon--{{ custom_link.settings.icon_size }}">
-                {{-
-                  custom_link.settings.custom_icon
-                  | image_url: width: 30
-                  | image_tag: loading: 'lazy', class: 'motion-reduce', is: 'image-lazy'
-                -}}
+                {{- custom_link.settings.custom_icon | image_url: width: 30 | image_tag: loading: 'lazy', class: 'motion-reduce', is: 'image-lazy' -}}
               </span>
             {%- else -%}
               {%- render 'icons', icon: custom_link.settings.icon, size: custom_link.settings.icon_size -%}
@@ -192,11 +176,7 @@
         {%- endif -%}
 
         {%- if shop.customer_accounts_enabled -%}
-          <a
-            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
-            class="account-button reversed-link flex items-center justify-center gap-2"
-            aria-label="{{ 'customer.account.title' | t }}"
-          >
+          <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="account-button reversed-link flex items-center justify-center gap-2" aria-label="{{ 'customer.account.title' | t }}">
             {%- render 'icon-account', size: 'large' -%}
             <span class="reversed-link__text hidden sm:block lg:hidden xl:block whitespace-nowrap">
               {%- liquid
@@ -222,73 +202,103 @@
         <a
           href="{{ routes.cart_url }}"
           class="cart-drawer-button flex items-center justify-center relative cart-icon cart-icon--{{ settings.cart_style }}"
-          {% if request.page_type != 'cart' and settings.cart_type == 'drawer' %}
-            aria-controls="CartDrawer"
-          {% endif %}
-          {% if cart_icon_inline_css != blank %}
-            style="{{ cart_icon_inline_css }}"
-          {% endif %}
+          {% if request.page_type != 'cart' && settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
+          {% if cart_icon_inline_css != blank %} style="{{ cart_icon_inline_css }}" {% endif %}
         >
           {%- render 'icon-cart', size: 'large', name: settings.cart_icon -%}
           <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
           <cart-count
             class="cart-count cart-count--absolute{% if cart.item_count > 99 %} cart-count--small-medium{% endif %}"
             aria-label="{{ 'general.cart.cart_count' | t: count: cart.item_count | escape }}"
-            {% if cart == empty %}
-              hidden
-            {% endif %}
+            {% if cart == empty %} hidden {% endif %}
           >
-            {%- if cart.item_count < 100 -%}
-              {{- cart.item_count -}}
-            {%- else -%}
-              <span class="text-sm-extra">99+</span>
-            {%- endif -%}
+            {%- if cart.item_count < 100 -%}{{- cart.item_count -}}{%- else -%}<span class="text-sm-extra">99+</span>{%- endif -%}
           </cart-count>
         </a>
       </div>
     </div>
   </div>
 
-  {%- comment -%} デスクトップの下層ナビは不使用（削除） {%- endcomment -%}
+  {%- comment -%} 下層ナビ（ドロップダウン）は使わない {%- endcomment -%}
 
   {%- liquid
-    assign mrst_drawer_menu = menu_mobile
-    if mrst_drawer_menu == blank
-      assign mrst_drawer_menu = menu
-    endif
+    assign mrst_menus = ''
   -%}
-  <div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu">
+  <div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu" data-side="{{ drawer_side }}">
     <div class="mrst-drawer__overlay" data-mrst-close></div>
     <aside class="mrst-drawer__panel" tabindex="-1">
       <div class="mrst-drawer__header">
         <span class="mrst-drawer__title">{{ shop.name }}</span>
         <button class="mrst-drawer__close" type="button" aria-label="Close menu" data-mrst-close>&times;</button>
       </div>
+
       <nav class="mrst-drawer__nav" aria-label="{{ 'general.navigation' | t }}">
-        {% if mrst_drawer_menu != blank %}
-          <ul class="mrst-drawer__list">
-            {% for link in linklists[mrst_drawer_menu].links %}
-              <li class="mrst-drawer__item">
-                <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
-                {% if link.links and link.links.size > 0 %}
-                  <ul class="mrst-drawer__sublist">
-                    {% for sublink in link.links %}
-                      <li class="mrst-drawer__subitem">
-                        <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                {% endif %}
-              </li>
-            {% endfor %}
-          </ul>
-        {% else %}
-          <p class="mrst-drawer__empty">メニューが未設定です。セクション設定からメニューを選択してください。</p>
-        {% endif %}
+        {%- for i in (1..4) -%}
+          {%- assign menu_id = 'menu_' | append: i -%}
+          {%- assign title_id = 'menu_' | append: i | append: '_title' -%}
+          {%- assign divider_id = 'menu_' | append: i | append: '_divider' -%}
+          {%- assign menu_handle = section.settings[menu_id] -%}
+          {%- assign group_title = section.settings[title_id] -%}
+          {%- assign show_divider = section.settings[divider_id] -%}
+
+          {%- if menu_handle != blank -%}
+            <div class="mrst-group">
+              {%- if group_title != blank -%}
+                <h3 class="mrst-group__title">{{ group_title }}</h3>
+              {%- endif -%}
+
+              <ul class="mrst-drawer__list">
+                {%- for link in linklists[menu_handle].links -%}
+                  <li class="mrst-drawer__item">
+                    <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
+                    {%- if link.links and link.links.size > 0 -%}
+                      <ul class="mrst-drawer__sublist">
+                        {%- for sublink in link.links -%}
+                          <li class="mrst-drawer__subitem">
+                            <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+
+              {%- if show_divider -%}
+                <hr class="mrst-group__divider">
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if section.settings.menu_1 == blank and section.settings.menu_2 == blank and section.settings.menu_3 == blank and section.settings.menu_4 == blank -%}
+          {%- assign fallback_menu = menu_mobile | default: menu -%}
+          {%- if fallback_menu != blank -%}
+            <ul class="mrst-drawer__list">
+              {% for link in linklists[fallback_menu].links %}
+                <li class="mrst-drawer__item">
+                  <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
+                  {% if link.links and link.links.size > 0 %}
+                    <ul class="mrst-drawer__sublist">
+                      {% for sublink in link.links %}
+                        <li class="mrst-drawer__subitem">
+                          <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {%- else -%}
+            <p class="mrst-drawer__empty">メニューが未設定です。セクション設定からメニューを選択してください。</p>
+          {%- endif -%}
+        {%- endif -%}
       </nav>
     </aside>
   </div>
 </header>
+
 <div class="fixed-overlay fixed-overlay--header-section z-10"></div>
 
 <script type="application/ld+json">
@@ -348,6 +358,7 @@
     },
 
     { "type": "color_scheme", "id": "color_scheme", "label": "t:general.colors.label" },
+
     { "type": "link_list", "id": "menu", "label": "t:general.menu.label", "default": "main-menu" },
     { "type": "link_list", "id": "menu_mobile", "label": "t:general.menu.mobile.label", "default": "main-menu" },
 
@@ -383,11 +394,44 @@
     { "type": "select", "id": "hamburger_position", "label": "ハンバーガー位置",
       "options": [ { "value": "left", "label": "左端" }, { "value": "right", "label": "右端" } ],
       "default": "left"
-    }
+    },
+    { "type": "select", "id": "drawer_side", "label": "メニューのスライド方向",
+      "options": [ { "value": "left", "label": "左から" }, { "value": "right", "label": "右から" } ],
+      "default": "left"
+    },
+    { "type": "select", "id": "drawer_width", "label": "メニュー幅（px）",
+      "options": [
+        { "value": "280", "label": "280" },
+        { "value": "320", "label": "320" },
+        { "value": "360", "label": "360" },
+        { "value": "400", "label": "400" }
+      ],
+      "default": "320"
+    },
+
+    { "type": "header", "content": "メニューグループ 1" },
+    { "type": "link_list", "id": "menu_1", "label": "メニュー 1" },
+    { "type": "text", "id": "menu_1_title", "label": "タイトル（任意）" },
+    { "type": "checkbox", "id": "menu_1_divider", "label": "区切り線を表示", "default": false },
+
+    { "type": "header", "content": "メニューグループ 2" },
+    { "type": "link_list", "id": "menu_2", "label": "メニュー 2" },
+    { "type": "text", "id": "menu_2_title", "label": "タイトル（任意）" },
+    { "type": "checkbox", "id": "menu_2_divider", "label": "区切り線を表示", "default": false },
+
+    { "type": "header", "content": "メニューグループ 3" },
+    { "type": "link_list", "id": "menu_3", "label": "メニュー 3" },
+    { "type": "text", "id": "menu_3_title", "label": "タイトル（任意）" },
+    { "type": "checkbox", "id": "menu_3_divider", "label": "区切り線を表示", "default": false },
+
+    { "type": "header", "content": "メニューグループ 4" },
+    { "type": "link_list", "id": "menu_4", "label": "メニュー 4" },
+    { "type": "text", "id": "menu_4_title", "label": "タイトル（任意）" },
+    { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false }
   ],
 
-  /* 既存の blocks はそのまま（メガメニュー系も、将来転用できるよう保持） */
-  "blocks": {{ section.blocks | json }},
+  /* 既存の blocks はこのセクションでは未使用のため省略（元の header.liquid と同じものを残したい場合はそのまま複製してください） */
+  "blocks": [],
 
   "enabled_on": { "groups": ["header"] },
   "presets": [
