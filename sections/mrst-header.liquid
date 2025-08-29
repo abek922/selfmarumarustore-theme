@@ -1,5 +1,5 @@
 {% comment %}
-  MRST Header (Side Drawer) - Complete
+  MRST Header (Side Drawer) - Complete (fixed)
   - Keep existing header parts; replace dropdown with side drawer
   - All new selectors prefixed "mrst-"
 {% endcomment %}
@@ -24,9 +24,9 @@
     assign menu_mobile = menu
   endif
 
-  assign hamburger_position = section.settings.hamburger_position | default: 'left'  {# left | right #}
-  assign drawer_side = section.settings.drawer_side | default: 'left'                {# left | right #}
-  assign drawer_width = section.settings.drawer_width | default: '320'               {# px as string #}
+  assign hamburger_position = section.settings.hamburger_position | default: 'left'
+  assign drawer_side = section.settings.drawer_side | default: 'left'
+  assign drawer_width = section.settings.drawer_width | default: '320'
 
   assign classes = 'header items-center'
   assign classes = classes | append: ' color-' | append: section.settings.color_scheme
@@ -42,7 +42,6 @@
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mrst-drawer-width: {{ drawer_width }}px;
-    --mrst-drawer-side: {{ drawer_side }};
   }
   #shopify-section-{{ section.id }} .header__top {
     --section-padding-top: {{ section.settings.header_top_padding_top }}px;
@@ -202,7 +201,7 @@
         <a
           href="{{ routes.cart_url }}"
           class="cart-drawer-button flex items-center justify-center relative cart-icon cart-icon--{{ settings.cart_style }}"
-          {% if request.page_type != 'cart' && settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
+          {% if request.page_type != 'cart' and settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
           {% if cart_icon_inline_css != blank %} style="{{ cart_icon_inline_css }}" {% endif %}
         >
           {%- render 'icon-cart', size: 'large', name: settings.cart_icon -%}
@@ -221,9 +220,6 @@
 
   {%- comment -%} 下層ナビ（ドロップダウン）は使わない {%- endcomment -%}
 
-  {%- liquid
-    assign mrst_menus = ''
-  -%}
   <div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu" data-side="{{ drawer_side }}">
     <div class="mrst-drawer__overlay" data-mrst-close></div>
     <aside class="mrst-drawer__panel" tabindex="-1">
@@ -430,9 +426,7 @@
     { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false }
   ],
 
-  /* 既存の blocks はこのセクションでは未使用のため省略（元の header.liquid と同じものを残したい場合はそのまま複製してください） */
   "blocks": [],
-
   "enabled_on": { "groups": ["header"] },
   "presets": [
     { "name": "MRST Header (Side Drawer)", "category": "SELF 〇〇 STORE" }

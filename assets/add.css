@@ -1,89 +1,53 @@
 /* === MRST Hamburger (同サイズ・同位置) === */
-.mrst-hamburger {
-  /* 既存のアイコンと高さ/整列を合わせる */
-  width: 40px;               /* ボタン枠（触りやすさ） */
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  line-height: 1;
+.mrst-hamburger{
+  width:40px;height:40px;min-width:40px;min-height:40px;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:0;background:transparent;border:0;cursor:pointer;line-height:1;
 }
-
-.mrst-hamburger__bar {
-  display: block;
-  position: relative;
-  width: 22px;               /* 上の線の長さ */
-  height: 2px;
-  background: currentColor;
-  transition: transform .22s ease, width .18s ease, opacity .18s ease;
+.mrst-hamburger__bar{
+  display:block;position:relative;width:22px;height:2px;background:currentColor;
+  transition:transform .22s ease,width .18s ease,opacity .18s ease;
 }
-
-.mrst-hamburger__bar--top { transform: translateY(-4px); }
-.mrst-hamburger__bar--bottom {
-  width: 14px;               /* 下の線を短く */
-  transform: translateY(4px);
-}
+.mrst-hamburger__bar--top{transform:translateY(-4px);}
+.mrst-hamburger__bar--bottom{width:14px;transform:translateY(4px);} /* 下が短い */
 
 /* 開状態 → ✗ */
-.mrst-hamburger.is-open .mrst-hamburger__bar--top {
-  transform: rotate(45deg);
-  width: 22px;
-}
-.mrst-hamburger.is-open .mrst-hamburger__bar--bottom {
-  transform: rotate(-45deg);
-  width: 22px;
-}
+.mrst-hamburger.is-open .mrst-hamburger__bar--top{transform:rotate(45deg);}
+.mrst-hamburger.is-open .mrst-hamburger__bar--bottom{transform:rotate(-45deg);width:22px;}
 
-/* 右側に置いたときもベースラインが揃うようマージンを除去 */
-.header__icons--right .mrst-hamburger { margin: 0; }
+.header__icons--right .mrst-hamburger{margin:0;} /* 右端配置時のズレ防止 */
 
 /* === Drawer === */
-.mrst-drawer { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
-.mrst-drawer__overlay {
-  position: absolute; inset: 0; background: rgba(0,0,0,.4);
-  opacity: 1; transition: opacity .25s ease;
-}
-.mrst-drawer__panel {
-  position: absolute; top: 0; bottom: 0;
-  width: var(--mrst-drawer-width, 320px);
-  background: var(--color-background, #fff);
-  box-shadow: 0 0 14px rgba(0,0,0,.18);
-  transition: transform .25s ease;
-  display: flex; flex-direction: column;
-  outline: none;
+.mrst-drawer{position:fixed;inset:0;z-index:60;pointer-events:none;}
+.mrst-drawer__overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:1;transition:opacity .25s ease;}
+.mrst-drawer__panel{
+  position:absolute;top:0;bottom:0;width:var(--mrst-drawer-width,320px);
+  background:var(--color-background,#fff);box-shadow:0 0 14px rgba(0,0,0,.18);
+  transition:transform .25s ease;display:flex;flex-direction:column;outline:none;
 }
 
-/* スライド方向（left/right） */
-.mrst-drawer[data-side="left"] .mrst-drawer__panel { left: 0; transform: translateX(-100%); }
-.mrst-drawer[data-side="right"] .mrst-drawer__panel { right: 0; transform: translateX(100%); }
+/* 方向別の初期位置／クローズ位置 */
+.mrst-drawer[data-side="left"] .mrst-drawer__panel{left:0;transform:translateX(-100%);}
+.mrst-drawer[data-side="right"] .mrst-drawer__panel{right:0;transform:translateX(100%);}
 
-.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay { opacity: 0; }
-.mrst-drawer[aria-hidden="true"] .mrst-drawer__panel { transform: translateX(calc(var(--mrst-drawer-side, left) == right ? 100% : -100%)); }
-.mrst-drawer[aria-hidden="false"] { pointer-events: auto; }
-.mrst-drawer[aria-hidden="false"] .mrst-drawer__panel { transform: translateX(0); }
+/* hidden時の状態 */
+.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay{opacity:0;}
+.mrst-drawer[aria-hidden="true"][data-side="left"] .mrst-drawer__panel{transform:translateX(-100%);}
+.mrst-drawer[aria-hidden="true"][data-side="right"] .mrst-drawer__panel{transform:translateX(100%);}
 
-.mrst-drawer__header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,.08);
-}
-.mrst-drawer__title { font-weight: 600; }
-.mrst-drawer__close { background: none; border: 0; font-size: 24px; line-height: 1; cursor: pointer; }
-.mrst-drawer__nav { overflow: auto; padding: 8px 0 24px; }
+/* open時 */
+.mrst-drawer[aria-hidden="false"]{pointer-events:auto;}
+.mrst-drawer[aria-hidden="false"] .mrst-drawer__panel{transform:translateX(0);}
 
-.mrst-drawer__list, .mrst-drawer__sublist { list-style: none; margin: 0; padding: 0; }
-.mrst-drawer__item { }
-.mrst-drawer__link { display: block; padding: 12px 16px; text-decoration: none; }
+.mrst-drawer__header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(0,0,0,.08);}
+.mrst-drawer__title{font-weight:600;}
+.mrst-drawer__close{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;}
+.mrst-drawer__nav{overflow:auto;padding:8px 0 24px;}
+.mrst-drawer__list,.mrst-drawer__sublist{list-style:none;margin:0;padding:0;}
+.mrst-drawer__link{display:block;padding:12px 16px;text-decoration:none;}
+.mrst-drawer__sublist{padding-left:8px;}
+.mrst-drawer__sublink{display:block;padding:8px 16px;text-decoration:none;opacity:.85;}
 
-.mrst-drawer__sublist { padding-left: 8px; }
-.mrst-drawer__sublink { display: block; padding: 8px 16px; text-decoration: none; opacity: .85; }
-
-.mrst-group { padding-top: 8px; }
-.mrst-group__title { font-weight: 700; font-size: 14px; padding: 10px 16px 6px; opacity: .8; }
-.mrst-group__divider { margin: 10px 0; border: 0; border-top: 1px solid rgba(0,0,0,.08); }
+.mrst-group{padding-top:8px;}
+.mrst-group__title{font-weight:700;font-size:14px;padding:10px 16px 6px;opacity:.8;}
+.mrst-group__divider{margin:10px 0;border:0;border-top:1px solid rgba(0,0,0,.08);}
