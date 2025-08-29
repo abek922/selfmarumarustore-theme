@@ -366,3 +366,55 @@
   /* 既定の矢印アイコン（必要に応じてテーマに合わせて） */
   font-size: 16px;
 }
+
+/* ===== MRST: ドットのみ（形式2） ===== */
+
+/* outside を選んだら “スライド下” に静的配置 */
+#shopify-section-{{ section.id }} .swiper-controls.mrst--outside{
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ドットコンテナを中央寄せ・横並び */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
+  position: static !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;      /* ドット間隔 */
+  margin: 0 auto;
+}
+
+/* CodePen 参考風：ベースは小さめの丸 */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet{
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: rgba(0,0,0,.25);           /* 薄いドット */
+  opacity: 1;                             /* Swiperのopacity制御は使わない */
+  transition: transform .2s ease, background-color .2s ease, width .2s ease;
+}
+
+/* アクティブは少し大きく（よくあるスタイル） */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active{
+  background: currentColor;               /* テキスト色に追従 */
+  transform: scale(1.2);
+}
+
+/* ホバー(デスクトップ)で軽く強調 */
+@media (hover:hover){
+  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:hover{
+    background: currentColor;
+  }
+}
+
+/* モバイルは少し間隔を詰める */
+@media (max-width: 767px){
+  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
+    gap: 8px;
+  }
+}

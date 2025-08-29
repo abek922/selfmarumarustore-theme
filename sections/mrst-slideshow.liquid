@@ -320,33 +320,34 @@
         </div>
       {%- endfor -%}
     </div>
-    {%- if enable_slider and show_controls -%}
-      {%- if control_style == 'style-2' -%}
-        <!-- 形式2：ドットのみ（JSが拾えるように .swiper-controls を付与） -->
-        <div class="swiper-controls swiper-controls--pagination-bullets mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %}">
-          <div class="swiper-pagination"></div>
-        </div>
-      {%- else -%}
-        <!-- 形式1：従来（左右ボタン＋ドット） -->
-        <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
-          <button
-            class="swiper-button swiper-button-prev swiper-button--blank"
-            name="previous"
-            aria-label="{{ 'general.slider.previous_slide' | t }}"
-          >
-            {% render 'icon-caret-left' %}
-          </button>
-          <div class="swiper-pagination"></div>
-          <button
-            class="swiper-button swiper-button-next swiper-button--blank"
-            name="next"
-            aria-label="{{ 'general.slider.next_slide' | t }}"
-          >
-            {% render 'icon-caret-right' %}
-          </button>
-        </div>
+      {%- if enable_slider and show_controls -%}
+        {%- if control_style == 'style-2' -%}
+          <!-- 形式2：ドットのみ（矢印なし) --> 
+          <div class="swiper-controls mrst-only-dots {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+            <div class="swiper-pagination"></div>
+          </div>
+        {%- else -%}
+          <!-- 形式1：従来（左右ボタン＋ドット) -->
+          <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+            <button
+              class="swiper-button swiper-button-prev swiper-button--blank"
+              name="previous"
+              aria-label="{{ 'general.slider.previous_slide' | t }}"
+            >
+              {% render 'icon-caret-left' %}
+            </button>
+            <div class="swiper-pagination"></div>
+            <button
+              class="swiper-button swiper-button-next swiper-button--blank"
+              name="next"
+              aria-label="{{ 'general.slider.next_slide' | t }}"
+            >
+              {% render 'icon-caret-right' %}
+            </button>
+          </div>
+        {%- endif -%}
       {%- endif -%}
-    {%- endif -%}
+
   </slideshow-component>
 </div>
 
