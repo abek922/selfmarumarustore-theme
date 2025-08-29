@@ -235,3 +235,18 @@
     border-top-color: rgba(255,255,255,.12);
   }
 }
+
+/* === MRST: 検索幅（デスクトップ） === */
+@media (min-width: 1024px) {
+  .mrst-enabled .header__search {
+    max-width: 28rem; /* ← ここをお好みで。例: 24rem / 420px / 480px など */
+    width: 100%;
+  }
+  /* 入力ボックスの高さ・溢れ調整（任意） */
+  .mrst-enabled .header__search input,
+  .mrst-enabled .header__search .predictive-search{
+    max-width: 100%;
+    height: 40px;
+    line-height: 40px;
+  }
+}
