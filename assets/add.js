@@ -1,61 +1,31 @@
-/** ===== MRST: Header Drawer ===== */
 (function () {
-  var root = document;
-  var drawer = root.getElementById('mrst-drawer');
-  var toggleBtn = root.getElementById('mrst-hamburger');
-  if (!drawer || !toggleBtn) return;
+  const drawer = document.getElementById('mrst-drawer');
+  const toggles = document.querySelectorAll('[data-mrst-toggle]');
+  if (!drawer || !toggles.length) return;
 
-  var panel = drawer.querySelector('.mrst-drawer__panel');
-  var overlayCloseEls = drawer.querySelectorAll('[data-mrst-close]');
-  var previouslyFocused = null;
+  const overlay = drawer.querySelector('.mrst-drawer__overlay');
+  const closeButtons = drawer.querySelectorAll('[data-mrst-close]');
 
-  function openDrawer() {
-    if (drawer.getAttribute('aria-hidden') === 'false') return;
-    previouslyFocused = document.activeElement;
+  function open() {
     drawer.setAttribute('aria-hidden', 'false');
-    toggleBtn.setAttribute('aria-expanded', 'true');
-    setTimeout(function(){ panel && panel.focus(); }, 10);
-    trapFocus(true);
+    toggles.forEach(b => { b.classList.add('is-open'); b.setAttribute('aria-expanded', 'true'); });
+    // 初期フォーカス
+    const panel = drawer.querySelector('.mrst-drawer__panel');
+    panel && panel.focus({ preventScroll: true });
+    document.documentElement.style.overflow = 'hidden';
   }
-
-  function closeDrawer() {
-    if (drawer.getAttribute('aria-hidden') === 'true') return;
+  function close() {
     drawer.setAttribute('aria-hidden', 'true');
-    toggleBtn.setAttribute('aria-expanded', 'false');
-    trapFocus(false);
-    if (previouslyFocused && typeof previouslyFocused.focus === 'function') {
-      previouslyFocused.focus();
-    } else {
-      toggleBtn.focus();
-    }
+    toggles.forEach(b => { b.classList.remove('is-open'); b.setAttribute('aria-expanded', 'false'); });
+    document.documentElement.style.overflow = '';
   }
 
-  function onKeydown(e) {
-    if (e.key === 'Escape') { e.preventDefault(); closeDrawer(); }
-  }
-  function trapFocus(enable) {
-    if (enable) {
-      document.addEventListener('keydown', onKeydown);
-      document.addEventListener('focus', enforceFocus, true);
-    } else {
-      document.removeEventListener('keydown', onKeydown);
-      document.removeEventListener('focus', enforceFocus, true);
-    }
-  }
-  function enforceFocus(e) {
-    if (drawer.getAttribute('aria-hidden') === 'true') return;
-    if (!drawer.contains(e.target)) { e.stopPropagation(); panel && panel.focus(); }
-  }
+  toggles.forEach(btn => btn.addEventListener('click', () => {
+    const isOpen = drawer.getAttribute('aria-hidden') === 'false';
+    isOpen ? close() : open();
+  }));
 
-  toggleBtn.addEventListener('click', function () {
-    var hidden = drawer.getAttribute('aria-hidden') !== 'false';
-    if (hidden) openDrawer(); else closeDrawer();
-  });
-  overlayCloseEls.forEach(function (el) { el.addEventListener('click', closeDrawer); });
-  drawer.addEventListener('click', function (e) {
-    var a = e.target.closest('a');
-    if (a && drawer.contains(a)) closeDrawer();
-  });
-
-  if (!drawer.hasAttribute('aria-hidden')) drawer.setAttribute('aria-hidden', 'true');
+  overlay && overlay.addEventListener('click', close);
+  closeButtons.forEach(btn => btn.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 })();
