@@ -235,3 +235,31 @@
     border-top-color: rgba(255,255,255,.12);
   }
 }
+
+/* ===== Desktop layout fix for icon groups ===== */
+  @media (min-width: 1024px) {
+    /* ハンバーガー左配置のとき、左右のアイコンを上下中央に固定配置 */
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] {
+      position: relative;
+    }
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left,
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+    }
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left { left: 0; }
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--right { right: 0; }
+
+    /* ロゴは中央寄せを強制（左右アイコンが絶対配置になるため） */
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__logo {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* 右配置時は既存のフレックスで問題ないが、念のため縦中央を保証 */
+    #shopify-section-{{ section.id }} .header__top[data-hpos="right"] .header__icons--right {
+      align-items: center;
+    }
+  }

@@ -103,7 +103,10 @@
     is="basic-header"
   {% endif %}
 >
-  <div class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}">
+  <div
+  class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}"
+  data-hpos="{{ hamburger_position }}"
+>
 
     {%- if hamburger_position == 'left' -%}
       <div class="header__icons header__icons--left lg:justify-start z-1">
