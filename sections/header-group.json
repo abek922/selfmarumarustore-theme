@@ -20,7 +20,6 @@
         "menu": "main-menu",
         "menu_mobile": "main-menu",
         "header_layout": "logo-left",
-        "menu_trigger": "click",
         "sticky_header": "always",
         "enable_collapse_on_scroll": false,
         "show_sperator_line": false,
@@ -29,10 +28,21 @@
         "enable_country_selector": true,
         "header_top_padding_top": 24,
         "header_top_padding_bottom": 8,
-        "navigation_color_scheme": "",
-        "navigation_content_alignment": "start",
-        "navigation_padding_top": 16,
-        "navigation_padding_bottom": 16
+        "hamburger_position": "left",
+        "drawer_side": "left",
+        "drawer_width": "320",
+        "menu_1": "customer-account-main-menu",
+        "menu_1_title": "メニュータイトル",
+        "menu_1_divider": false,
+        "menu_2": "footer",
+        "menu_2_title": "メニュータイトル",
+        "menu_2_divider": false,
+        "menu_3": "",
+        "menu_3_title": "",
+        "menu_3_divider": false,
+        "menu_4": "",
+        "menu_4_title": "",
+        "menu_4_divider": false
       }
     },
     "header": {
