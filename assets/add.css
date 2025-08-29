@@ -236,53 +236,70 @@
   }
 }
 
-  /* ===== Desktop: 強制グリッドで左アイコンのズレを矯正 ===== */
+  /* ===== Desktop: 4カラム固定（左アイコン / ロゴ / 検索 / 右アイコン） ===== */
   @media (min-width: 1024px) {
-    /* 左配置の時だけ header__top を Grid にして三分割 */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"]{
+
+    /* ヘッダー上段をグリッド化して1行に固定 */
+    #shopify-section-{{ section.id }} .header__top{
       display: grid !important;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      /* 既存のflex系指定に勝つため */
-      gap: 0;
+      grid-template-columns: auto 1fr minmax(220px, 32vw) auto;
+      align-items: center !important;
+      column-gap: 12px;
+      row-gap: 0;
+      position: relative;
     }
-    /* 左アイコン：左端・縦中央に固定 */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left{
-      grid-column: 1 !important;
-      justify-self: start;
-      align-self: center;
-      position: static !important;
-      transform: none !important;
-      margin: 0 !important;
-      display: inline-flex !important;
-    }
-    /* ロゴ：中央固定（左右が絶対配置でも中央キープ） */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__logo{
+
+    /* ─ 配置 ─ */
+    #shopify-section-{{ section.id }} .header__logo{
       grid-column: 2 !important;
       justify-self: center;
       align-self: center;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
+      z-index: 3 !important; /* ロゴが常に前面 */
     }
-    /* 右アイコン：右端・縦中央に固定 */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--right{
+
+    #shopify-section-{{ section.id }} .header__search{
       grid-column: 3 !important;
       justify-self: end;
       align-self: center;
+      max-width: min(32vw, 480px);
+      width: 100%;
+      z-index: 2; /* ロゴ(3) > 検索(2) で重なり防止 */
+    }
+
+    #shopify-section-{{ section.id }} .header__icons--right{
+      grid-column: 4 !important;
+      justify-self: end;
+      align-self: center !important;
       position: static !important;
       transform: none !important;
       margin: 0 !important;
       display: inline-flex !important;
     }
 
-    /* ヘッダー内ボタンの高さを揃える（40px） */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__buttons > *{
-      min-height: 40px;
+    /* ハンバーガー左配置時：左端に固定 */
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left{
+      grid-column: 1 !important;
+      justify-self: start;
+      align-self: center !important;
+      position: static !important;
+      transform: none !important;
+      margin: 0 !important;
+      display: inline-flex !important;
     }
 
-    /* 既存テーマが .items-center 等で高さを崩すのを抑制（必要に応じて） */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"].items-center{
-      align-items: center !important;
+    /* テーマ既存のfloat/absolute等の影響を無効化 */
+    #shopify-section-{{ section.id }} .header__top .header__icons--left,
+    #shopify-section-{{ section.id }} .header__top .header__icons--right,
+    #shopify-section-{{ section.id }} .header__top .header__search,
+    #shopify-section-{{ section.id }} .header__top .header__logo{
+      float: none !important;
+    }
+
+    /* 高さ・余白の統一で2段落ち防止 */
+    #shopify-section-{{ section.id }} .header__buttons > *{ min-height: 40px; }
+    #shopify-section-{{ section.id }} .header__top .header__logo,
+    #shopify-section-{{ section.id }} .header__top .header__search{
+      margin-top: 0 !important;
+      margin-bottom: 0 !important;
     }
   }
-
