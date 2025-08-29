@@ -41,21 +41,13 @@
 -%}
 
 {% style %}
-
-    #shopify-section-{{ section.id }} {
-    --logo-width: {{ settings.logo_width }}px;
-    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
-    --mrst-drawer-width: {{ drawer_width }}px;
-    --mrst-drawer-bg: {{ drawer_bg }};
-    --mrst-icon-img: {{ icon_img_size }}px;  /* ← 追加 */
-    }
-
   /* ===== Section-scoped variables ===== */
   #shopify-section-{{ section.id }} {
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mrst-drawer-width: {{ drawer_width }}px;
     --mrst-drawer-bg: {{ drawer_bg }};
+    --mrst-icon-img: {{ icon_img_size }}px;
   }
   #shopify-section-{{ section.id }} .header__top {
     --section-padding-top: {{ section.settings.header_top_padding_top }}px;
@@ -210,7 +202,6 @@
     object-fit: contain;
     line-height: 1;
   }
-
 {% endstyle %}
 
 <header
@@ -224,9 +215,9 @@
   {% endif %}
 >
   <div
-  class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}"
-  data-hpos="{{ hamburger_position }}"
->
+    class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}"
+    data-hpos="{{ hamburger_position }}"
+  >
 
     {%- if hamburger_position == 'left' -%}
       <div class="header__icons header__icons--left lg:justify-start z-1">
@@ -292,7 +283,6 @@
         {%- if hamburger_position == 'right' -%}
           <button
             class="mrst-hamburger btn btn--inherit inline-flex items-center justify-center"
-            id="mrst-hamburger"
             type="button"
             aria-controls="mrst-drawer"
             aria-label="{{ 'accessibility.menu_drawer' | t }}"
@@ -363,7 +353,7 @@
         <a
           href="{{ routes.cart_url }}"
           class="cart-drawer-button flex items-center justify-center relative cart-icon cart-icon--{{ settings.cart_style }}"
-          {% if request.page_type != 'cart' && settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
+          {% if request.page_type != 'cart' and settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
           {% if cart_icon_inline_css != blank and cart_icon_img == blank %} style="{{ cart_icon_inline_css }}" {% endif %}
         >
           {%- if cart_icon_img != blank -%}
@@ -486,7 +476,6 @@
   <script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":{{ shop.name | json }},"potentialAction":{"@type":"SearchAction","target":{{ potential_action_target | json }},"query-input":"required name=search_term_string"},"url":{{ request.origin | append: page.url | json }}}</script>
 {%- endif -%}
 
-
 {% schema %}
 {
   "name": "MRST Header (Side Drawer)",
@@ -574,29 +563,10 @@
     { "type": "text", "id": "menu_4_title", "label": "タイトル（任意）" },
     { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false },
 
-    {
-    "type": "header",
-    "content": "アイコン画像（任意）"
-    },
-    {
-    "type": "image_picker",
-    "id": "account_icon_img",
-    "label": "ログインアイコン画像（PNG/SVG/JPG）"
-    },
-    {
-    "type": "image_picker",
-    "id": "cart_icon_img",
-    "label": "カートアイコン画像（PNG/SVG/JPG）"
-    },
-    {
-    "type": "range",
-    "id": "icon_img_size",
-    "label": "アイコン画像サイズ（px）",
-    "min": 16,
-    "max": 40,
-    "step": 1,
-    "default": 24
-    }
+    { "type": "header", "content": "アイコン画像（任意）" },
+    { "type": "image_picker", "id": "account_icon_img", "label": "ログインアイコン画像（PNG/SVG/JPG）" },
+    { "type": "image_picker", "id": "cart_icon_img", "label": "カートアイコン画像（PNG/SVG/JPG）" },
+    { "type": "range", "id": "icon_img_size", "label": "アイコン画像サイズ（px）", "min": 16, "max": 40, "step": 1, "default": 24 }
   ],
   "blocks": [],
   "enabled_on": { "groups": ["header"] },
