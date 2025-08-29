@@ -1,0 +1,131 @@
+{% comment %}
+  MRST: Custom Header Section
+  - Always shows hamburger icon
+  - Opens a side drawer menu (no dropdown at top)
+  - Styles and behavior are in assets/add.css and assets/add.js
+{% endcomment %}
+
+<header class="mrst-header {% if section.settings.enable_sticky %}mrst-header--sticky{% endif %}" role="banner">
+  <div class="mrst-header__inner">
+
+    {%- comment -%} Logo {%- endcomment -%}
+    <div class="mrst-header__logo">
+      {% if section.settings.logo != blank %}
+        <a href="{{ routes.root_url }}" class="mrst-logo-link" aria-label="{{ shop.name | escape }}">
+          {{ section.settings.logo | image_url: width: 240 | image_tag:
+            alt: shop.name,
+            class: 'mrst-logo-image',
+            widths: '120,180,240,360',
+            loading: 'eager' }}
+        </a>
+      {% else %}
+        <a href="{{ routes.root_url }}" class="mrst-logo-text">{{ shop.name }}</a>
+      {% endif %}
+    </div>
+
+    {%- comment -%} (Optional) Desktop quick links bar - not dropdown {%- endcomment -%}
+    {% if section.settings.show_desktop_links and section.settings.menu %}
+      <nav class="mrst-header__nav" aria-label="{{ 'general.navigation' | t }}">
+        <ul class="mrst-nav-list">
+          {% for link in linklists[section.settings.menu].links %}
+            <li class="mrst-nav-item">
+              <a class="mrst-nav-link" href="{{ link.url }}">{{ link.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+
+    <div class="mrst-header__actions">
+      {% if section.settings.show_search %}
+        <a class="mrst-action mrst-action--search" href="{{ routes.search_url }}" aria-label="{{ 'general.search.search' | t }}">
+          <span class="mrst-visually-hidden">{{ 'general.search.search' | t }}</span>
+          <!-- simple search icon -->
+          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm8.32 12.9 3.39 3.39-1.41 1.41-3.39-3.39A8.96 8.96 0 0 1 10 20a9 9 0 1 1 0-18 9 9 0 0 1 8.32 14.9z"/></svg>
+        </a>
+      {% endif %}
+
+      {% if section.settings.show_account and shop.customer_accounts_enabled %}
+        <a class="mrst-action mrst-action--account" href="{{ routes.account_url }}" aria-label="{{ 'customer.account.title' | t }}">
+          <span class="mrst-visually-hidden">{{ 'customer.account.title' | t }}</span>
+          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
+        </a>
+      {% endif %}
+
+      {% if section.settings.show_cart %}
+        <a class="mrst-action mrst-action--cart" href="{{ routes.cart_url }}" aria-label="{{ 'sections.header.cart' | t }}">
+          <span class="mrst-visually-hidden">{{ 'sections.header.cart' | t }}</span>
+          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.16 14h9.91a2 2 0 0 0 1.95-1.56l1.48-6.66H6.21L5.7 3H2v2h2.3l2.3 10z"/></svg>
+        </a>
+      {% endif %}
+
+      {%- comment -%} Always-visible hamburger {%- endcomment -%}
+      <button
+        class="mrst-hamburger"
+        id="mrst-hamburger"
+        type="button"
+        aria-controls="mrst-drawer"
+        aria-expanded="false"
+        aria-label="Open menu">
+        <span class="mrst-hamburger__bar"></span>
+        <span class="mrst-hamburger__bar"></span>
+        <span class="mrst-hamburger__bar"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+{%- comment -%} Side Drawer {%- endcomment -%}
+<div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu">
+  <div class="mrst-drawer__overlay" data-mrst-close></div>
+  <aside class="mrst-drawer__panel" tabindex="-1">
+    <div class="mrst-drawer__header">
+      <span class="mrst-drawer__title">{{ section.settings.drawer_title | default: shop.name }}</span>
+      <button class="mrst-drawer__close" type="button" aria-label="Close menu" data-mrst-close>
+        &times;
+      </button>
+    </div>
+    <nav class="mrst-drawer__nav">
+      {% if section.settings.menu %}
+        <ul class="mrst-drawer__list">
+          {% for link in linklists[section.settings.menu].links %}
+            <li class="mrst-drawer__item">
+              <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
+              {% if link.links and link.links.size > 0 %}
+                <ul class="mrst-drawer__sublist">
+                  {% for sublink in link.links %}
+                    <li class="mrst-drawer__subitem">
+                      <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="mrst-drawer__empty">メニューが未設定です。セクション設定からメニューを選択してください。</p>
+      {% endif %}
+    </nav>
+  </aside>
+</div>
+
+{% schema %}
+{
+  "name": "MRST Header (Side Drawer)",
+  "class": "mrst-section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "ロゴ画像" },
+    { "type": "link_list", "id": "menu", "label": "メニュー", "default": "main-menu" },
+    { "type": "text", "id": "drawer_title", "label": "ドロワータイトル", "default": "Menu" },
+    { "type": "checkbox", "id": "show_desktop_links", "label": "デスクトップで上部リンクを表示（任意）", "default": true },
+    { "type": "checkbox", "id": "show_search", "label": "検索アイコンを表示", "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "アカウントアイコンを表示", "default": true },
+    { "type": "checkbox", "id": "show_cart", "label": "カートアイコンを表示", "default": true },
+    { "type": "checkbox", "id": "enable_sticky", "label": "ヘッダーを固定表示（Sticky）", "default": true }
+  ],
+  "presets": [
+    { "name": "MRST Header (Side Drawer)" }
+  ]
+}
+{% endschema %}
