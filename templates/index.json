@@ -72,8 +72,8 @@
         "show_controls": true,
         "controls_position": "outside",
         "control_style": "style-2",
-        "autoplay": false,
-        "autoplay_delay": 3,
+        "autoplay": true,
+        "autoplay_delay": 5,
         "show_text_below": false,
         "text_alignment_mobile": "center",
         "accessibility_info": ""
