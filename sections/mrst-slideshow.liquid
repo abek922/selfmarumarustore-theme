@@ -41,55 +41,6 @@
     --page-padding: 0;
   }
 
-
-  /* ==== MRST: controls を “外側” に出す切替 ==== */
-  #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls,
-  #shopify-section-{{ section.id }} .mrst-slideshow[data-controls-pos="outside"] .swiper-controls{
-    position: absolute;
-    inset: 0;
-    pointer-events: none; /* 全体はクリック不可にして、実ボタンだけ有効化 */
-  }
-
-  /* 前へ */
-  #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-button-prev,
-  #shopify-section-{{ section.id }} .mrst-slideshow[data-controls-pos="outside"] .swiper-controls .swiper-button-prev{
-    position: absolute;
-    left: -48px;         /* ← 外側に出す量。必要なら add.css で調整可 */
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: auto; /* ボタンだけ有効 */
-  }
-
-  /* 次へ */
-  #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-button-next,
-  #shopify-section-{{ section.id }} .mrst-slideshow[data-controls-pos="outside"] .swiper-controls .swiper-button-next{
-    position: absolute;
-    right: -48px;        /* ← 外側に出す量。必要なら add.css で調整可 */
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: auto;
-  }
-
-  /* ページネーション（ドット）があれば、外側指定でも従来位置維持 */
-  #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-pagination,
-  #shopify-section-{{ section.id }} .mrst-slideshow[data-controls-pos="outside"] .swiper-controls .swiper-pagination{
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 12px;
-    pointer-events: auto;
-  }
-
-  /* モバイルは視認性のため “内側” に自動で戻す（必要に応じて外してOK） */
-  @media (max-width: 1023px){
-    #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-button-prev{
-      left: 8px;
-    }
-    #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-button-next{
-      right: 8px;
-    }
-  }
-
   /* ===== MRST: コントロール位置と形式 ===== */
 
   /* outside（＝スライドの下）に出すときは “静的配置” に切替 */
@@ -366,12 +317,12 @@
     </div>
     {%- if enable_slider and show_controls -%}
       {%- if control_style == 'style-2' -%}
-        {# 形式2：ドットのみ #}
+        <!-- 形式2：ドットのみ  -->
         <div class="mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %}">
           <div class="swiper-pagination"></div>
         </div>
       {%- else -%}
-        {# 形式1：従来（左右ボタン＋ドット） #}
+        <!-- 形式1：従来（左右ボタン＋ドット） -->
         <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
           <button
             class="swiper-button swiper-button-prev swiper-button--blank"
@@ -472,16 +423,6 @@
         { "value": "style-2", "label": "形式:2（ドットのみ）" }
       ],
       "default": "style-1"
-    },
-    {
-    "type": "select",
-    "id": "controls_position",
-    "label": "コントロールの表示位置",
-    "options": [
-        { "value": "inside", "label": "内側（従来）" },
-        { "value": "outside", "label": "外側（スライド外）" }
-    ],
-    "default": "inside"
     },
     {
       "type": "checkbox",
