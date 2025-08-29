@@ -13,9 +13,27 @@
   "sections": {
     "header": {
       "type": "header",
+      "blocks": {
+        "sidebar_dQmqQw": {
+          "type": "sidebar",
+          "settings": {
+            "menu_title": "テスト",
+            "enable_hl_link": true,
+            "hl_link_style": "text_color",
+            "hl_link_color": "",
+            "menu_columns": 4,
+            "show_collection_image": true,
+            "show_image_of_first_product": false,
+            "image_ratio": "adapt"
+          }
+        }
+      },
+      "block_order": [
+        "sidebar_dQmqQw"
+      ],
       "custom_css": [],
       "settings": {
-        "container": "fixed",
+        "container": "full",
         "color_scheme": "scheme-1",
         "menu": "main-menu",
         "menu_mobile": "",
