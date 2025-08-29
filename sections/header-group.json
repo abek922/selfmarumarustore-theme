@@ -15,7 +15,7 @@
       "type": "mrst-header",
       "name": "MRST Header (Side Drawer)",
       "settings": {
-        "container": "fixed",
+        "container": "full",
         "color_scheme": "",
         "menu": "main-menu",
         "menu_mobile": "main-menu",
