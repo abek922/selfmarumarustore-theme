@@ -34,6 +34,7 @@
   endcase
 
   assign controls_position = section.settings.controls_position | default: 'inside'
+  assign control_style = section.settings.control_style | default: 'style-1'
 -%}
 {% style %}
   #shopify-section-{{ section.id }} .page-width--full {
@@ -86,6 +87,48 @@
     }
     #shopify-section-{{ section.id }}[data-controls-pos="outside"] .swiper-controls .swiper-button-next{
       right: 8px;
+    }
+  }
+
+  /* ===== MRST: コントロール位置と形式 ===== */
+
+  /* outside（＝スライドの下）に出すときは “静的配置” に切替 */
+  #shopify-section-{{ section.id }} .swiper-controls.mrst--outside,
+  #shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside{
+    position: static !important;
+    inset: auto !important;
+    transform: none !important;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  /* 形式2＝ドットのみ（中央寄せ） */
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-button-prev,
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-button-next{
+    display: none !important;
+  }
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination{
+    position: static !important;
+    margin: 0 auto;
+  }
+
+  /* 形式1（従来）で outside を選んだ時は左右ボタン＋中央ドットを横並びに */
+  #shopify-section-{{ section.id }} .swiper-controls.mrst--outside .swiper-pagination{
+    position: static !important;
+    order: 2;
+  }
+  #shopify-section-{{ section.id }} .swiper-controls.mrst--outside .swiper-button-prev{ order: 1; }
+  #shopify-section-{{ section.id }} .swiper-controls.mrst--outside .swiper-button-next{ order: 3; }
+
+  /* モバイルは詰め気味 */
+  @media (max-width: 767px){
+    #shopify-section-{{ section.id }} .swiper-controls.mrst--outside,
+    #shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside{
+      gap: 12px;
+      margin-top: 10px;
     }
   }
 
@@ -322,23 +365,31 @@
       {%- endfor -%}
     </div>
     {%- if enable_slider and show_controls -%}
-      <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %}">
-        <button
-          class="swiper-button swiper-button-prev swiper-button--blank"
-          name="previous"
-          aria-label="{{ 'general.slider.previous_slide' | t }}"
-        >
-          {% render 'icon-caret-left' %}
-        </button>
-        <div class="swiper-pagination"></div>
-        <button
-          class="swiper-button swiper-button-next swiper-button--blank"
-          name="next"
-          aria-label="{{ 'general.slider.next_slide' | t }}"
-        >
-          {% render 'icon-caret-right' %}
-        </button>
-      </div>
+      {%- if control_style == 'style-2' -%}
+        {# 形式2：ドットのみ #}
+        <div class="mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+          <div class="swiper-pagination"></div>
+        </div>
+      {%- else -%}
+        {# 形式1：従来（左右ボタン＋ドット） #}
+        <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+          <button
+            class="swiper-button swiper-button-prev swiper-button--blank"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret-left' %}
+          </button>
+          <div class="swiper-pagination"></div>
+          <button
+            class="swiper-button swiper-button-next swiper-button--blank"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret-right' %}
+          </button>
+        </div>
+      {%- endif -%}
     {%- endif -%}
   </slideshow-component>
 </div>
@@ -401,6 +452,26 @@
       "id": "show_controls",
       "label": "t:general.carousel.show_controls.label",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "controls_position",
+      "label": "コントロールの表示位置",
+      "options": [
+        { "value": "inside", "label": "内側（スライド上）" },
+        { "value": "outside", "label": "外側（スライド下）" }
+      ],
+      "default": "inside"
+    },
+    {
+      "type": "select",
+      "id": "control_style",
+      "label": "コントロール形式",
+      "options": [
+        { "value": "style-1", "label": "形式:1（左右ボタン＋ドット）" },
+        { "value": "style-2", "label": "形式:2（ドットのみ）" }
+      ],
+      "default": "style-1"
     },
     {
     "type": "select",
