@@ -56,15 +56,20 @@
     gap: 16px;
   }
 
-  /* 形式2＝ドットのみ（中央寄せ） */
-  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-button-prev,
-  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-button-next{
-    display: none !important;
+  /* 形式2：ドットのみ（中央寄せ・下配置にも対応） */
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2{
+    display:flex;
+    align-items:center;
+    justify-content:center;
   }
   #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination{
     position: static !important;
+    display:flex;
+    gap: 8px; /* ドット間の余白。お好みで */
     margin: 0 auto;
   }
+
+  /* outside（スライド下）にした時の余白は既存の .mrst--outside で付与済み */
 
   /* 形式1（従来）で outside を選んだ時は左右ボタン＋中央ドットを横並びに */
   #shopify-section-{{ section.id }} .swiper-controls.mrst--outside .swiper-pagination{
@@ -317,12 +322,12 @@
     </div>
     {%- if enable_slider and show_controls -%}
       {%- if control_style == 'style-2' -%}
-        <!-- 形式2：ドットのみ  -->
-        <div class="mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+        {# 形式2：ドットのみ（JSが拾えるように .swiper-controls を付与） #}
+        <div class="swiper-controls swiper-controls--pagination-bullets mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %}">
           <div class="swiper-pagination"></div>
         </div>
       {%- else -%}
-        <!-- 形式1：従来（左右ボタン＋ドット） -->
+        {# 形式1：従来（左右ボタン＋ドット） #}
         <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
           <button
             class="swiper-button swiper-button-prev swiper-button--blank"
