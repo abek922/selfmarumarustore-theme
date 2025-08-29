@@ -418,3 +418,71 @@
     gap: 8px;
   }
 }
+
+/* ===== MRST: 形式2（ドットのみ）— 背景が黒くなる問題の固定、欠け対策 ===== */
+
+/* コンテナ自体はみ出し許可＆下に余白 */
+#shopify-section-{{ section.id }} .mrst-only-dots{
+  overflow: visible !important;
+  padding-bottom: 12px; /* ← アクティブドットが大きくなっても欠けない */
+}
+
+/* Swiper の pagination 本体にかかる背景系を完全にリセット */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
+  position: static !important;     /* outside では静的配置 */
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  mix-blend-mode: normal !important;
+  isolation: isolate;
+  margin: 0 auto;                  /* 中央寄せ */
+  display: flex;                   /* Safari 安定化 */
+  justify-content: center;
+  align-items: center;
+  gap: 10px;                       /* ドット間隔（お好みで） */
+  min-height: 18px;                /* アクティブ拡大時の保険 */
+}
+
+/* ドットの見た目（色は必要に応じて変更してください） */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet{
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,.35) !important; /* 非アクティブ */
+  box-shadow: 0 0 0 1px rgba(0,0,0,.25);
+  opacity: 1 !important;
+  transform: none;
+  transition: transform .2s ease, background-color .2s ease;
+}
+
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active{
+  background: #fff !important;     /* 常に白で固定（テーマ色の影響を受けない） */
+  transform: scale(1.2);           /* 少し大きく */
+}
+
+/* フォーカス/クリック時も背景を黒にしない（テーマ上書き対策） */
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:focus,
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:active{
+  background: rgba(255,255,255,.35) !important;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active:focus,
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active:active{
+  background: #fff !important;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* outside 配置時、親側で背景が乗るのをさらに保険で無効化 */
+#shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside{
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  overflow: visible !important;
+}

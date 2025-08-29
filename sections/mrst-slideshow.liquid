@@ -323,9 +323,9 @@
       {%- if enable_slider and show_controls -%}
         {%- if control_style == 'style-2' -%}
           <!-- 形式2：ドットのみ（矢印なし) --> 
-          <div class="swiper-controls mrst-only-dots {% if controls_position == 'outside' %}mrst--outside{% endif %}">
-            <div class="swiper-pagination"></div>
-          </div>
+        <div class="mrst-swiper-controls mrst-swiper-controls--style-2 mrst-only-dots {% if controls_position == 'outside' %}mrst--outside{% endif %}">
+          <div class="swiper-pagination"></div>
+        </div>
         {%- else -%}
           <!-- 形式1：従来（左右ボタン＋ドット) -->
           <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
