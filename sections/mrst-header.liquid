@@ -1,131 +1,427 @@
 {% comment %}
-  MRST: Custom Header Section
-  - Always shows hamburger icon
-  - Opens a side drawer menu (no dropdown at top)
-  - Styles and behavior are in assets/add.css and assets/add.js
+  MRST Header (Side Drawer)
+  - Based on existing sections/header.liquid
+  - Keep all existing logic/settings; modify only the menu behavior:
+    * Always-visible hamburger button
+    * Side drawer menu (mrst-*) instead of top dropdown/desktop menu
+  - New classes/ids are prefixed with "mrst-"
+  - Drawer styles & behavior live in assets/add.css and assets/add.js
 {% endcomment %}
 
-<header class="mrst-header {% if section.settings.enable_sticky %}mrst-header--sticky{% endif %}" role="banner">
-  <div class="mrst-header__inner">
+<link
+  rel="stylesheet"
+  href="{{ 'component-custom-card.css' | asset_url }}"
+  media="print"
+  fetchpriority="low"
+  onload="this.media='all'"
+>
+<script src="{{ 'header.js' | asset_url }}" defer="defer"></script>
+{%- if request.page_type != 'search' -%}
+  <script src="{{ 'search.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+{%- liquid
+  assign header_layout = section.settings.header_layout
+  assign sticky_header = section.settings.sticky_header
+  assign menu = section.settings.menu
+  assign menu_mobile = section.settings.menu_mobile
+  assign classes = 'header items-center'
+  assign classes = classes | append: ' color-' | append: section.settings.color_scheme
 
-    {%- comment -%} Logo {%- endcomment -%}
-    <div class="mrst-header__logo">
-      {% if section.settings.logo != blank %}
-        <a href="{{ routes.root_url }}" class="mrst-logo-link" aria-label="{{ shop.name | escape }}">
-          {{ section.settings.logo | image_url: width: 240 | image_tag:
-            alt: shop.name,
-            class: 'mrst-logo-image',
-            widths: '120,180,240,360',
-            loading: 'eager' }}
-        </a>
-      {% else %}
-        <a href="{{ routes.root_url }}" class="mrst-logo-text">{{ shop.name }}</a>
-      {% endif %}
+  if section.settings.show_sperator_line
+    assign classes = classes | append: ' header--show-sperator-line'
+  endif
+
+  if menu_mobile == blank
+    assign menu_mobile = menu
+  endif
+
+  assign custom_link = section.blocks | where: 'type', 'custom_link' | first
+-%}
+
+{% style %}
+  #shopify-section-{{ section.id }} {
+    --logo-width: {{ settings.logo_width }}px;
+    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+  }
+  #shopify-section-{{ section.id }} .header__bottom {
+    --section-padding-top: {{ section.settings.navigation_padding_top }}px;
+    --section-padding-bottom: {{ section.settings.navigation_padding_bottom }}px;
+  }
+  #shopify-section-{{ section.id }} .header__top {
+    --section-padding-top: {{ section.settings.header_top_padding_top }}px;
+    --section-padding-bottom: {{ section.settings.header_top_padding_bottom }}px;
+  }
+  @media (max-width: 1023px) {
+    #shopify-section-{{ section.id }} .header__bottom {
+      --section-padding-top: 0;
+      --section-padding-bottom: 0;
+    }
+    #shopify-section-{{ section.id }} .header__top {
+      --section-padding-top: 1.6rem;
+      --section-padding-bottom: 1.6rem;
+    }
+  }
+{% endstyle %}
+
+<header
+  data-section-id="{{ section.id }}"
+  class="{{ classes }}"
+  {% if sticky_header != 'none' %}
+    is="sticky-header" data-sticky-type="{{ sticky_header }}"
+    data-collapse-on-scroll="{{ section.settings.enable_collapse_on_scroll }}"
+  {% else %}
+    is="basic-header"
+  {% endif %}
+>
+  <div class="header__top header__top--{{ header_layout }} items-center relative section--padding page-width page-width--{{ section.settings.container }}">
+    {%- comment -%} MRST: Always-visible hamburger (replaces original left icons block) {%- endcomment -%}
+    <div class="header__icons header__icons--left lg:justify-start z-1">
+      <div class="header__buttons flex items-center">
+        <button
+          class="mrst-hamburger btn btn--inherit flex flex-col items-center justify-center"
+          id="mrst-hamburger"
+          type="button"
+          aria-controls="mrst-drawer"
+          aria-label="{{ 'accessibility.menu_drawer' | t }}"
+          aria-expanded="false"
+        >
+          <span class="mrst-hamburger__bar"></span>
+          <span class="mrst-hamburger__bar"></span>
+          <span class="mrst-hamburger__bar"></span>
+        </button>
+      </div>
     </div>
 
-    {%- comment -%} (Optional) Desktop quick links bar - not dropdown {%- endcomment -%}
-    {% if section.settings.show_desktop_links and section.settings.menu %}
-      <nav class="mrst-header__nav" aria-label="{{ 'general.navigation' | t }}">
-        <ul class="mrst-nav-list">
-          {% for link in linklists[section.settings.menu].links %}
-            <li class="mrst-nav-item">
-              <a class="mrst-nav-link" href="{{ link.url }}">{{ link.title }}</a>
-            </li>
-          {% endfor %}
-        </ul>
-      </nav>
-    {% endif %}
+    {%- if request.page_type == 'index' -%}
+      <h1 class="header__logo flex justify-center items-center z-1">
+    {%- else -%}
+      <div class="header__logo flex justify-center items-center z-1">
+    {%- endif -%}
+    {%- comment -%} MRST: removed toggle-navigation-button (desktop) {%- endcomment -%}
+    <a
+      href="{{ routes.root_url }}"
+      class="h3 relative flex{% unless settings.logo %} header__logo--text{% else %} header__logo--image{% endunless %}"
+    >
+      {%- if settings.logo != blank -%}
+        {%- liquid
+          assign logo = settings.logo
+          assign logo_width = settings.logo_width
+          assign logo_width_2x = settings.logo_width | times: 2
 
-    <div class="mrst-header__actions">
-      {% if section.settings.show_search %}
-        <a class="mrst-action mrst-action--search" href="{{ routes.search_url }}" aria-label="{{ 'general.search.search' | t }}">
-          <span class="mrst-visually-hidden">{{ 'general.search.search' | t }}</span>
-          <!-- simple search icon -->
-          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M10 4a6 6 0 1 1 0 12 6 6 0 0 1 0-12zm8.32 12.9 3.39 3.39-1.41 1.41-3.39-3.39A8.96 8.96 0 0 1 10 20a9 9 0 1 1 0-18 9 9 0 0 1 8.32 14.9z"/></svg>
-        </a>
-      {% endif %}
+          assign logo_mobile = settings.logo_mobile
+          assign logo_width_mobile = settings.logo_width_mobile
+          assign logo_width_mobile_2x = settings.logo_width_mobile | times: 2
 
-      {% if section.settings.show_account and shop.customer_accounts_enabled %}
-        <a class="mrst-action mrst-action--account" href="{{ routes.account_url }}" aria-label="{{ 'customer.account.title' | t }}">
-          <span class="mrst-visually-hidden">{{ 'customer.account.title' | t }}</span>
-          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z"/></svg>
-        </a>
-      {% endif %}
+          if logo_mobile == blank
+            assign logo_mobile = logo
+          endif
+        -%}
+        {%- if logo_mobile -%}
+          <img
+            srcset="{{ logo_mobile | image_url: width: logo_width_mobile }} 1x, {{ logo_mobile | image_url: width: logo_width_mobile_2x }} 2x"
+            src="{{ logo_mobile | image_url: width: logo_width_mobile }}"
+            loading="eager"
+            width="{{ logo_mobile.width }}"
+            height="{{ logo_mobile.height }}"
+            alt="{{ logo_mobile.alt | default: shop.name | escape }}"
+            class="logo header__logo--mobile lg:hidden"
+          >
+        {%- endif -%}
+        <img
+          srcset="{{ logo | image_url: width: logo_width }} 1x, {{ logo | image_url: width: logo_width_2x }} 2x"
+          src="{{ logo | image_url: width: logo_width }}"
+          loading="eager"
+          width="{{ logo.width }}"
+          height="{{ logo.height }}"
+          alt="{{ logo.alt | default: shop.name | escape }}"
+          class="logo header__logo--desktop lg:block hidden"
+        >
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+    {%- if request.page_type == 'index' -%}
+      </h1>
+    {%- else -%}
+      </div>
+    {%- endif -%}
 
-      {% if section.settings.show_cart %}
-        <a class="mrst-action mrst-action--cart" href="{{ routes.cart_url }}" aria-label="{{ 'sections.header.cart' | t }}">
-          <span class="mrst-visually-hidden">{{ 'sections.header.cart' | t }}</span>
-          <svg class="mrst-icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.16 14h9.91a2 2 0 0 0 1.95-1.56l1.48-6.66H6.21L5.7 3H2v2h2.3l2.3 10z"/></svg>
-        </a>
-      {% endif %}
-
-      {%- comment -%} Always-visible hamburger {%- endcomment -%}
+    <div class="header__search flex items-center z-2">
+      {%- comment -%} MRST: removed toggle-navigation-button (desktop) {%- endcomment -%}
+      {%- render 'predictive-search' -%}
       <button
-        class="mrst-hamburger"
-        id="mrst-hamburger"
-        type="button"
-        aria-controls="mrst-drawer"
-        aria-expanded="false"
-        aria-label="Open menu">
-        <span class="mrst-hamburger__bar"></span>
-        <span class="mrst-hamburger__bar"></span>
-        <span class="mrst-hamburger__bar"></span>
+        class="btn btn--inherit header__search-close inline-flex btn-remove"
+        aria-label="{{ 'general.search.close_search' | t }}"
+      >
+        {%- render 'icon-close', class: 'pointer-events-none' -%}
       </button>
+    </div>
+
+    <div class="header__icons header__icons--right flex justify-end z-1">
+      <div class="header__buttons flex items-center justify-center">
+        {%- if custom_link and custom_link.settings.label != blank -%}
+          <a
+            href="{{ custom_link.settings.link | default: "#" }}"
+            class="cusstom-button flex items-center justify-center gap-2 reversed-link"
+            aria-label="{{ custom_link.settings.label }}"
+          >
+            {%- if custom_link.settings.custom_icon != blank -%}
+              <span class="icon icon--{{ custom_link.settings.icon_size }}">
+                {{-
+                  custom_link.settings.custom_icon
+                  | image_url: width: 30
+                  | image_tag: loading: 'lazy', class: 'motion-reduce', is: 'image-lazy'
+                -}}
+              </span>
+            {%- else -%}
+              {%- render 'icons', icon: custom_link.settings.icon, size: custom_link.settings.icon_size -%}
+            {%- endif -%}
+            <span class="reversed-link__text hidden sm:block lg:hidden xl:block whitespace-nowrap">
+              {{ custom_link.settings.label }}
+            </span>
+          </a>
+        {%- endif -%}
+        {%- if shop.customer_accounts_enabled -%}
+          <a
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            class="account-button reversed-link flex items-center justify-center gap-2"
+            aria-label="{{ 'customer.account.title' | t }}"
+          >
+            {%- render 'icon-account', size: 'large' -%}
+            <span class="reversed-link__text hidden sm:block lg:hidden xl:block whitespace-nowrap">
+              {%- liquid
+                if customer
+                  echo 'customer.account_fallback' | t
+                else
+                  echo 'customer.account_action' | t
+                endif
+              -%}
+            </span>
+          </a>
+        {%- endif -%}
+        {%- liquid
+          assign cart_icon_inline_css = ''
+          if settings.cart_icon_color != blank and settings.cart_icon_color != 'rgba(0,0,0,0)'
+            assign cart_icon_inline_css = cart_icon_inline_css | append: '--cart-icon-color:' | append: settings.cart_icon_color | append: ';'
+          endif
+          if settings.cart_icon_background != blank and settings.cart_icon_background != 'rgba(0,0,0,0)'
+            assign cart_icon_inline_css = cart_icon_inline_css | append: '--cart-icon-background:' | append: settings.cart_icon_background | append: ';'
+          endif
+        -%}
+        <a
+          href="{{ routes.cart_url }}"
+          class="cart-drawer-button flex items-center justify-center relative cart-icon cart-icon--{{ settings.cart_style }}"
+          {% if request.page_type != 'cart' and settings.cart_type == 'drawer' %}
+            aria-controls="CartDrawer"
+          {% endif %}
+          {% if cart_icon_inline_css != blank %}
+            style="{{ cart_icon_inline_css }}"
+          {% endif %}
+        >
+          {%- render 'icon-cart', size: 'large', name: settings.cart_icon -%}
+          <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
+          <cart-count
+            class="cart-count cart-count--absolute{% if cart.item_count > 99 %} cart-count--small-medium{% endif %}"
+            aria-label="{{ 'general.cart.cart_count' | t: count: cart.item_count | escape }}"
+            {% if cart == empty %}
+              hidden
+            {% endif %}
+          >
+            {%- if cart.item_count < 100 -%}
+              {{- cart.item_count -}}
+            {%- else -%}
+              <span class="text-sm-extra">99+</span>
+            {%- endif -%}
+          </cart-count>
+        </a>
+      </div>
     </div>
   </div>
-</header>
 
-{%- comment -%} Side Drawer {%- endcomment -%}
-<div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu">
-  <div class="mrst-drawer__overlay" data-mrst-close></div>
-  <aside class="mrst-drawer__panel" tabindex="-1">
-    <div class="mrst-drawer__header">
-      <span class="mrst-drawer__title">{{ section.settings.drawer_title | default: shop.name }}</span>
-      <button class="mrst-drawer__close" type="button" aria-label="Close menu" data-mrst-close>
-        &times;
-      </button>
-    </div>
-    <nav class="mrst-drawer__nav">
-      {% if section.settings.menu %}
-        <ul class="mrst-drawer__list">
-          {% for link in linklists[section.settings.menu].links %}
-            <li class="mrst-drawer__item">
-              <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
-              {% if link.links and link.links.size > 0 %}
-                <ul class="mrst-drawer__sublist">
-                  {% for sublink in link.links %}
-                    <li class="mrst-drawer__subitem">
-                      <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
-                    </li>
-                  {% endfor %}
-                </ul>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p class="mrst-drawer__empty">メニューが未設定です。セクション設定からメニューを選択してください。</p>
-      {% endif %}
-    </nav>
-  </aside>
-</div>
+  {%- comment -%} MRST: Desktop top navigation disabled; side drawer will be used instead {%- endcomment -%}
+  {%- comment -%}
+    {%- if section.settings.menu != blank -%}
+      <div class="header__bottom color-{{ section.settings.navigation_color_scheme }} relative page-width page-width--{{ section.settings.container }}">
+        <div class="header__navigation section--padding hidden lg:flex justify-{{ section.settings.navigation_content_alignment }}">
+          {% render 'desktop-menu', menu: section.settings.menu, blocks: section.blocks %}
+        </div>
+      </div>
+    {%- endif -%}
+  {%- endcomment -%}
+
+  {%- comment -%} MRST: custom side drawer (replaces `{% render 'menu-drawer' %}`) {%- endcomment -%}
+  {%- liquid
+    assign mrst_drawer_menu = menu_mobile
+    if mrst_drawer_menu == blank
+      assign mrst_drawer_menu = menu
+    endif
+  -%}
+  <div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu">
+    <div class="mrst-drawer__overlay" data-mrst-close></div>
+    <aside class="mrst-drawer__panel" tabindex="-1">
+      <div class="mrst-drawer__header">
+        <span class="mrst-drawer__title">{{ shop.name }}</span>
+        <button class="mrst-drawer__close" type="button" aria-label="Close menu" data-mrst-close>&times;</button>
+      </div>
+      <nav class="mrst-drawer__nav" aria-label="{{ 'general.navigation' | t }}">
+        {% if mrst_drawer_menu != blank %}
+          <ul class="mrst-drawer__list">
+            {% for link in linklists[mrst_drawer_menu].links %}
+              <li class="mrst-drawer__item">
+                <a class="mrst-drawer__link" href="{{ link.url }}">{{ link.title }}</a>
+                {% if link.links and link.links.size > 0 %}
+                  <ul class="mrst-drawer__sublist">
+                    {% for sublink in link.links %}
+                      <li class="mrst-drawer__subitem">
+                        <a class="mrst-drawer__sublink" href="{{ sublink.url }}">{{ sublink.title }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="mrst-drawer__empty">メニューが未設定です。セクション設定からメニューを選択してください。</p>
+        {% endif %}
+      </nav>
+    </aside>
+  </div>
+</header>
+<div class="fixed-overlay fixed-overlay--header-section z-10"></div>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    {% if settings.logo %}
+      "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
+    {% endif %}
+    "sameAs": [
+      {{ settings.social_twitter_link | json }},
+      {{ settings.social_facebook_link | json }},
+      {{ settings.social_pinterest_link | json }},
+      {{ settings.social_instagram_link | json }},
+      {{ settings.social_tiktok_link | json }},
+      {{ settings.social_tumblr_link | json }},
+      {{ settings.social_snapchat_link | json }},
+      {{ settings.social_youtube_link | json }},
+      {{ settings.social_vimeo_link | json }}
+    ],
+    "url": {{ request.origin | append: page.url | json }}
+  }
+</script>
+
+{%- if request.page_type == 'index' -%}
+  {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
+  <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {{ potential_action_target | json }},
+        "query-input": "required name=search_term_string"
+      },
+      "url": {{ request.origin | append: page.url | json }}
+    }
+  </script>
+{%- endif -%}
 
 {% schema %}
 {
   "name": "MRST Header (Side Drawer)",
-  "class": "mrst-section-header",
-  "settings": [
-    { "type": "image_picker", "id": "logo", "label": "ロゴ画像" },
-    { "type": "link_list", "id": "menu", "label": "メニュー", "default": "main-menu" },
-    { "type": "text", "id": "drawer_title", "label": "ドロワータイトル", "default": "Menu" },
-    { "type": "checkbox", "id": "show_desktop_links", "label": "デスクトップで上部リンクを表示（任意）", "default": true },
-    { "type": "checkbox", "id": "show_search", "label": "検索アイコンを表示", "default": true },
-    { "type": "checkbox", "id": "show_account", "label": "アカウントアイコンを表示", "default": true },
-    { "type": "checkbox", "id": "show_cart", "label": "カートアイコンを表示", "default": true },
-    { "type": "checkbox", "id": "enable_sticky", "label": "ヘッダーを固定表示（Sticky）", "default": true }
+  "class": "header-section",
+  "settings": [/* === 既存 header.liquid の settings を完全に流用（変更なし） === */
+    {
+      "type": "header",
+      "content": "t:general.general.name"
+    },
+    {
+      "type": "paragraph",
+      "content": "t:sections.header.paragraph.content"
+    },
+    {
+      "type": "select",
+      "id": "container",
+      "options": [
+        { "value": "full", "label": "t:general.container.options__full.label" },
+        { "value": "fixed", "label": "t:general.container.options__fixed.label" }
+      ],
+      "default": "fixed",
+      "label": "t:general.container.label"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "t:general.colors.label" },
+    { "type": "link_list", "id": "menu", "label": "t:general.menu.label", "default": "main-menu" },
+    { "type": "link_list", "id": "menu_mobile", "label": "t:general.menu.mobile.label", "default": "main-menu" },
+    {
+      "type": "select",
+      "id": "header_layout",
+      "label": "t:sections.header.settings.header_layout.label",
+      "options": [
+        { "value": "logo-left", "label": "t:sections.header.settings.header_layout.options__1.label" },
+        { "value": "logo-center", "label": "t:sections.header.settings.header_layout.options__2.label" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "menu_trigger",
+      "label": "t:sections.header.settings.menu_trigger.label",
+      "options": [
+        { "value": "click", "label": "t:sections.header.settings.menu_trigger.options__1.label" },
+        { "value": "hover", "label": "t:sections.header.settings.menu_trigger.options__2.label" }
+      ],
+      "default": "click"
+    },
+    {
+      "type": "select",
+      "id": "sticky_header",
+      "label": "t:sections.header.settings.header_sticky.label",
+      "options": [
+        { "value": "none", "label": "t:sections.header.settings.header_sticky.options__1.label" },
+        { "value": "always", "label": "t:sections.header.settings.header_sticky.options__2.label" },
+        { "value": "on-scroll-up", "label": "t:sections.header.settings.header_sticky.options__3.label" }
+      ],
+      "default": "always"
+    },
+    { "type": "checkbox", "id": "enable_collapse_on_scroll", "label": "t:sections.header.settings.enable_collapse_on_scroll.label" },
+    { "type": "checkbox", "id": "show_sperator_line", "label": "t:general.show_separator_line.label", "default": true },
+
+    { "type": "header", "content": "t:general.mobile.name" },
+    { "type": "checkbox", "id": "show_social_media_icons", "label": "t:sections.header.settings.show_social_media_icons.label", "default": true },
+    { "type": "checkbox", "id": "enable_language_selector", "label": "t:general.show_language_selector.label", "info": "t:general.show_language_selector.info", "default": true },
+    { "type": "checkbox", "id": "enable_country_selector", "label": "t:general.show_country_selector.label", "info": "t:general.show_country_selector.info", "default": true },
+
+    { "type": "header", "content": "t:sections.header.settings.header__top_padding.content" },
+    { "type": "range", "id": "header_top_padding_top", "label": "t:general.padding.top.label", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 24 },
+    { "type": "range", "id": "header_top_padding_bottom", "label": "t:general.padding.bottom.label", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 8 },
+
+    { "type": "header", "content": "t:sections.header.settings.header__navigation.content" },
+    { "type": "color_scheme", "id": "navigation_color_scheme", "label": "t:general.colors.label" },
+    {
+      "type": "select",
+      "id": "navigation_content_alignment",
+      "label": "t:general.content_alignment.label",
+      "options": [
+        { "value": "start", "label": "t:general.content_alignment.options__1.label" },
+        { "value": "center", "label": "t:general.content_alignment.options__2.label" },
+        { "value": "end", "label": "t:general.content_alignment.options__3.label" }
+      ]
+    },
+    { "type": "range", "id": "navigation_padding_top", "label": "t:general.padding.top.label", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "navigation_padding_bottom", "label": "t:general.padding.bottom.label", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 16 }
   ],
+  "blocks": [/* === 既存 header.liquid の blocks を完全に流用（変更なし、長大のため省略不可なら元ファイルをそのまま貼り付けてください） === */
+    /* NOTE: For brevity in this downloadable file, include your existing blocks JSON verbatim here.
+       The MRST header does not change any block definitions.
+       If you paste this file into your theme, replace this placeholder with the blocks JSON from your current sections/header.liquid.
+    */
+  ],
+  "enabled_on": { "groups": ["header"] },
   "presets": [
-    { "name": "MRST Header (Side Drawer)" }
+    { "name": "MRST Header (Side Drawer)", "category": "SELF 〇〇 STORE" }
   ]
 }
 {% endschema %}
