@@ -37,7 +37,6 @@
         },
         "slide_U9bPyj": {
           "type": "slide",
-          "disabled": true,
           "settings": {
             "color_scheme": "scheme-inverse",
             "image_overlay_opacity": 30,
@@ -58,36 +57,11 @@
             "button_icon": "none",
             "enable_preload_image": false
           }
-        },
-        "slide_cQ6eF8": {
-          "type": "slide",
-          "disabled": true,
-          "settings": {
-            "color_scheme": "scheme-inverse",
-            "image_overlay_opacity": 30,
-            "content_position": "middle-center",
-            "text_alignment": "center",
-            "subheading": "Contemporary Grace",
-            "title": "Dining & Kitchen",
-            "highlight_style": "none",
-            "highlight_font_style": "italic",
-            "highlight_style_color": "",
-            "highlight_text_color": "",
-            "heading_size": "hd1",
-            "description": "",
-            "description_size": "text-base",
-            "button_label": "Shop collection",
-            "button_link": "",
-            "button_style": "btn--primary",
-            "button_icon": "none",
-            "enable_preload_image": false
-          }
         }
       },
       "block_order": [
         "slide_JhU8hg",
-        "slide_U9bPyj",
-        "slide_cQ6eF8"
+        "slide_U9bPyj"
       ],
       "settings": {
         "container": "full",
