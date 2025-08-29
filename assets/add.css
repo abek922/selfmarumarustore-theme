@@ -288,3 +288,11 @@
   object-fit: contain;
   line-height: 1;
 }
+
+/* ===== カートアイコン 背景色を常に無効化 ===== */
+@media (min-width: 640px) {
+  #shopify-section-{{ section.id }} .cart-icon--solid {
+    background-color: transparent !important; /* ← 背景を透明化 */
+    box-shadow: none !important;             /* 念のため影もリセット */
+  }
+}
