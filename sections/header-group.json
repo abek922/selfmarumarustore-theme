@@ -11,6 +11,19 @@
   "name": "t:sections.header.name",
   "type": "header",
   "sections": {
+    "mrst_header_3wezDK": {
+      "type": "mrst-header",
+      "name": "MRST Header (Side Drawer)",
+      "settings": {
+        "menu": "main-menu",
+        "drawer_title": "Menu",
+        "show_desktop_links": true,
+        "show_search": true,
+        "show_account": true,
+        "show_cart": true,
+        "enable_sticky": true
+      }
+    },
     "header": {
       "type": "header",
       "blocks": {
@@ -94,6 +107,7 @@
     }
   },
   "order": [
+    "mrst_header_3wezDK",
     "header",
     "topbar_GCCMfn"
   ]
