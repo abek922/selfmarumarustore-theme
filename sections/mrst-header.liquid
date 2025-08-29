@@ -33,9 +33,23 @@
   endif
 
   assign custom_link = section.blocks | where: 'type', 'custom_link' | first
+
+  assign account_icon_img = section.settings.account_icon_img
+  assign cart_icon_img = section.settings.cart_icon_img
+  assign icon_img_size = section.settings.icon_img_size | default: 24
+  assign icon_img_size_2x = icon_img_size | times: 2
 -%}
 
 {% style %}
+
+    #shopify-section-{{ section.id }} {
+    --logo-width: {{ settings.logo_width }}px;
+    --logo-width-mobile: {{ settings.logo_width_mobile }}px;
+    --mrst-drawer-width: {{ drawer_width }}px;
+    --mrst-drawer-bg: {{ drawer_bg }};
+    --mrst-icon-img: {{ icon_img_size }}px;  /* ← 追加 */
+    }
+
   /* ===== Section-scoped variables ===== */
   #shopify-section-{{ section.id }} {
     --logo-width: {{ settings.logo_width }}px;
@@ -187,6 +201,16 @@
     /* 行落ち保険：ボタン高さを統一 */
     #shopify-section-{{ section.id }} .header__buttons > *{ min-height: 40px; }
   }
+
+  /* 画像アイコン用の共通クラス */
+  #shopify-section-{{ section.id }} .mrst-icon-img{
+    display:block;
+    width: var(--mrst-icon-img);
+    height: var(--mrst-icon-img);
+    object-fit: contain;
+    line-height: 1;
+  }
+
 {% endstyle %}
 
 <header
@@ -296,8 +320,25 @@
         {%- endif -%}
 
         {%- if shop.customer_accounts_enabled -%}
-          <a href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}" class="account-button reversed-link flex items-center justify-center gap-2" aria-label="{{ 'customer.account.title' | t }}">
-            {%- render 'icon-account', size: 'large' -%}
+          <a
+            href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            class="account-button reversed-link flex items-center justify-center gap-2"
+            aria-label="{{ 'customer.account.title' | t }}"
+          >
+            {%- if account_icon_img != blank -%}
+              <img
+                srcset="{{ account_icon_img | image_url: width: icon_img_size }} 1x, {{ account_icon_img | image_url: width: icon_img_size_2x }} 2x"
+                src="{{ account_icon_img | image_url: width: icon_img_size }}"
+                alt="{{ 'customer.account.title' | t | escape }}"
+                width="{{ icon_img_size }}"
+                height="{{ icon_img_size }}"
+                class="mrst-icon-img"
+                loading="lazy"
+              >
+            {%- else -%}
+              {%- render 'icon-account', size: 'large' -%}
+            {%- endif -%}
+
             <span class="reversed-link__text hidden sm:block lg:hidden xl:block whitespace-nowrap">
               {%- liquid
                 if customer
@@ -322,17 +363,36 @@
         <a
           href="{{ routes.cart_url }}"
           class="cart-drawer-button flex items-center justify-center relative cart-icon cart-icon--{{ settings.cart_style }}"
-          {% if request.page_type != 'cart' and settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
-          {% if cart_icon_inline_css != blank %} style="{{ cart_icon_inline_css }}" {% endif %}
+          {% if request.page_type != 'cart' && settings.cart_type == 'drawer' %} aria-controls="CartDrawer" {% endif %}
+          {% if cart_icon_inline_css != blank and cart_icon_img == blank %} style="{{ cart_icon_inline_css }}" {% endif %}
         >
-          {%- render 'icon-cart', size: 'large', name: settings.cart_icon -%}
+          {%- if cart_icon_img != blank -%}
+            <img
+              srcset="{{ cart_icon_img | image_url: width: icon_img_size }} 1x, {{ cart_icon_img | image_url: width: icon_img_size_2x }} 2x"
+              src="{{ cart_icon_img | image_url: width: icon_img_size }}"
+              alt="{{ 'templates.cart.cart' | t | escape }}"
+              width="{{ icon_img_size }}"
+              height="{{ icon_img_size }}"
+              class="mrst-icon-img"
+              loading="lazy"
+            >
+          {%- else -%}
+            {%- render 'icon-cart', size: 'large', name: settings.cart_icon -%}
+          {%- endif -%}
+
           <span class="visually-hidden">{{ 'templates.cart.cart' | t }}</span>
           <cart-count
             class="cart-count cart-count--absolute{% if cart.item_count > 99 %} cart-count--small-medium{% endif %}"
             aria-label="{{ 'general.cart.cart_count' | t: count: cart.item_count | escape }}"
-            {% if cart == empty %} hidden {% endif %}
+            {% if cart == empty %}
+              hidden
+            {% endif %}
           >
-            {%- if cart.item_count < 100 -%}{{- cart.item_count -}}{%- else -%}<span class="text-sm-extra">99+</span>{%- endif -%}
+            {%- if cart.item_count < 100 -%}
+              {{- cart.item_count -}}
+            {%- else -%}
+              <span class="text-sm-extra">99+</span>
+            {%- endif -%}
           </cart-count>
         </a>
       </div>
@@ -512,7 +572,31 @@
     { "type": "header", "content": "メニューグループ 4" },
     { "type": "link_list", "id": "menu_4", "label": "メニュー 4" },
     { "type": "text", "id": "menu_4_title", "label": "タイトル（任意）" },
-    { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false }
+    { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false },
+
+    {
+    "type": "header",
+    "content": "アイコン画像（任意）"
+    },
+    {
+    "type": "image_picker",
+    "id": "account_icon_img",
+    "label": "ログインアイコン画像（PNG/SVG/JPG）"
+    },
+    {
+    "type": "image_picker",
+    "id": "cart_icon_img",
+    "label": "カートアイコン画像（PNG/SVG/JPG）"
+    },
+    {
+    "type": "range",
+    "id": "icon_img_size",
+    "label": "アイコン画像サイズ（px）",
+    "min": 16,
+    "max": 40,
+    "step": 1,
+    "default": 24
+    }
   ],
   "blocks": [],
   "enabled_on": { "groups": ["header"] },

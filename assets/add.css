@@ -279,3 +279,12 @@
     line-height: 40px;
   }
 }
+
+/* 画像アイコンのサイズ統一（mrst-enabled のとき） */
+.mrst-enabled .mrst-icon-img{
+  display:block;
+  width: var(--mrst-icon-img, 24px);
+  height: var(--mrst-icon-img, 24px);
+  object-fit: contain;
+  line-height: 1;
+}
