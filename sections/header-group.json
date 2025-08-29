@@ -43,7 +43,10 @@
         "menu_3_divider": false,
         "menu_4": "",
         "menu_4_title": "",
-        "menu_4_divider": false
+        "menu_4_divider": false,
+        "account_icon_img": "shopify://shop_images/4a786eebcf496773054bcbef0d161706.png",
+        "cart_icon_img": "shopify://shop_images/cart.png",
+        "icon_img_size": 24
       }
     },
     "header": {
