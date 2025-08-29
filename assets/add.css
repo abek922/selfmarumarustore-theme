@@ -296,3 +296,73 @@
     box-shadow: none !important;             /* 念のため影もリセット */
   }
 }
+
+/*------------------------------------------------------------------------------------------------------------*/
+
+
+/* ===== MRST Slideshow controls (outside) ===== */
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap {
+  position: relative;
+  pointer-events: none; /* 子のボタンが拾えるように各ボタンで解除 */
+}
+
+[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button {
+  pointer-events: auto;
+}
+
+/* inside（従来） */
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--inside .mrst-swiper-button--prev {
+  left: var(--mrst-ctrl-inside-gap, 8px);
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--inside .mrst-swiper-button--next {
+  right: var(--mrst-ctrl-inside-gap, 8px);
+}
+
+/* outside（外出し）。ボタンを枠の“外側”へ */
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside {
+  position: absolute;
+  inset: 0;
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button--prev {
+  left: calc(-1 * var(--mrst-ctrl-outside-offset, 24px));
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button--next {
+  right: calc(-1 * var(--mrst-ctrl-outside-offset, 24px));
+}
+
+/* 縦位置切替 */
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap.mrst-v-top .mrst-swiper-button {
+  top: 16px;
+  transform: none;
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap.mrst-v-bottom .mrst-swiper-button {
+  bottom: 16px;
+  top: auto;
+  transform: none;
+}
+
+/* ページネーションは外出し時は下に少し外す（必要なら調整） */
+[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-pagination {
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  transform: translateX(-50%);
+}
+
+/* Swiper 既定ボタンの見た目微調整（任意） */
+[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background: rgba(0,0,0,.52);
+  color: #fff;
+}
+[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button:after {
+  /* 既定の矢印アイコン（必要に応じてテーマに合わせて） */
+  font-size: 16px;
+}

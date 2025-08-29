@@ -29,3 +29,24 @@
   closeButtons.forEach(btn => btn.addEventListener('click', close));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 })();
+
+//------------------------------------------------------
+
+document.querySelectorAll('[data-mrst-slideshow]').forEach((el) => {
+  const showArrows = el.dataset.arrows === 'true';
+  const showPagination = el.dataset.pagination !== 'none';
+
+  new Swiper(el, {
+    loop: el.dataset.loop === 'true',
+    effect: el.dataset.effect || 'slide',
+    autoplay: el.dataset.autoplay === 'true' ? { delay: +el.dataset.autoplayDelay || 5000 } : false,
+    navigation: showArrows ? {
+      nextEl: el.closest('.mrst-slideshow').querySelector('.mrst-swiper-button--next'),
+      prevEl: el.closest('.mrst-slideshow').querySelector('.mrst-swiper-button--prev'),
+    } : undefined,
+    pagination: showPagination ? {
+      el: el.closest('.mrst-slideshow').querySelector('.mrst-swiper-pagination'),
+      clickable: true
+    } : undefined,
+  });
+});
