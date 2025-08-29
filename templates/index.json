@@ -71,7 +71,7 @@
         "slide_height": "adapt",
         "show_controls": true,
         "controls_position": "outside",
-        "control_style": "style-2",
+        "control_style": "style-1",
         "autoplay": false,
         "autoplay_delay": 3,
         "show_text_below": false,
