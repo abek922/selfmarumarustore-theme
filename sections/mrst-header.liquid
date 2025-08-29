@@ -92,45 +92,60 @@
     background: var(--mrst-drawer-bg) !important;
   }
 
-    /* ====== PC修正: 重なり/余白/二段落ちの総合対策 ====== */
+    /* ===== PC: 上段を1行で固定し、ロゴ左右の空きと重なりを解消 ===== */
   @media (min-width: 1024px) {
-    /* 1) 上段は4カラムグリッド（左アイコン / ロゴ / 検索 / 右アイコン） */
+
+    /* 4カラム：左アイコン / ロゴ(auto) / 検索(1fr) / 右アイコン */
     #shopify-section-{{ section.id }} .header__top{
       display: grid !important;
-      grid-template-columns: auto auto minmax(200px, 28vw) auto;
+      grid-template-columns: auto auto 1fr auto;
       align-items: center !important;
-      column-gap: 8px;
+      column-gap: 12px;
       row-gap: 0;
-      position: relative;
-      /* 高さのブレを抑止 */
       min-height: 64px;
+      position: relative;
     }
 
-    /* 2) ロゴ：中央/余白を削減（左右の“空き”を詰める） */
+    /* 左配置：左アイコンを左端に固定 */
+    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left{
+      grid-column: 1 !important;
+      justify-self: start;
+      align-self: center !important;
+      display: inline-flex !important;
+      position: static !important;
+      transform: none !important;
+      margin: 0 !important;
+      z-index: 4 !important;
+    }
+
+    /* ロゴ列は auto。余白を詰めつつ中央寄せ維持 */
     #shopify-section-{{ section.id }} .header__logo{
       grid-column: 2 !important;
       justify-self: center;
       align-self: center;
-      z-index: 3 !important; /* ロゴ > 検索 */
+      z-index: 3 !important; /* 検索より前面 */
       margin: 0 !important;
     }
     #shopify-section-{{ section.id }} .header__logo > a{
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 0 !important;
       padding: 0 !important;
       margin: 0 !important;
       line-height: 1 !important;
     }
 
-    /* 3) 検索：右寄せ／幅を抑えて右アイコンに被らない */
+    /* 検索列は 1fr（伸縮）。右寄せ&最大幅を明示 */
     #shopify-section-{{ section.id }} .header__search{
       grid-column: 3 !important;
       justify-self: end;
       align-self: center;
-      max-width: min(28vw, 420px);
       width: 100%;
-      z-index: 2 !important; /* 右アイコンより下 */
+      max-width: 32rem;         /* ここで幅を締める（必要なら調整可） */
+      z-index: 2 !important;    /* ロゴ(3)より下、右アイコン(4)より下 */
       margin: 0 !important;
     }
-    /* 内部入力のはみ出しや高さ差を抑制（テーマ差分吸収） */
+    /* predictive-search 内部の高さ/溢れを吸収 */
     #shopify-section-{{ section.id }} .header__search input,
     #shopify-section-{{ section.id }} .header__search .predictive-search{
       max-width: 100%;
@@ -138,57 +153,40 @@
       line-height: 40px;
     }
 
-    /* 4) 右アイコン：最前面にして検索の上に重ならないように */
+    /* 右アイコンは最前面にして被り防止 */
     #shopify-section-{{ section.id }} .header__icons--right{
       grid-column: 4 !important;
       justify-self: end;
       align-self: center !important;
+      display: inline-flex !important;
       position: static !important;
       transform: none !important;
       margin: 0 !important;
-      display: inline-flex !important;
-      z-index: 4 !important; /* 右アイコン > ロゴ > 検索 */
+      z-index: 4 !important;    /* 最前面：右アイコン > ロゴ > 検索 */
     }
     #shopify-section-{{ section.id }} .header__icons--right .header__buttons{
       align-items: center !important;
       gap: 8px;
     }
 
-    /* 5) ハンバーガー左配置：左端に固定 */
-    #shopify-section-{{ section.id }} .header__top[data-hpos="left"] .header__icons--left{
-      grid-column: 1 !important;
-      justify-self: start;
-      align-self: center !important;
-      position: static !important;
-      transform: none !important;
-      margin: 0 !important;
-      display: inline-flex !important;
-      z-index: 4 !important; /* 左アイコンも最前面 */
-    }
-
-    /* 6) 既存のfloat/absolute等の影響を打ち消し */
+    /* 既存の float/absolute/order が干渉しないように明示的に無効化 */
     #shopify-section-{{ section.id }} .header__top .header__icons--left,
     #shopify-section-{{ section.id }} .header__top .header__icons--right,
     #shopify-section-{{ section.id }} .header__top .header__search,
     #shopify-section-{{ section.id }} .header__top .header__logo{
       float: none !important;
+      order: 0 !important;
     }
 
-    /* 7) 二段落ちの原因を根本排除：このカスタムヘッダー内では下段ナビを非表示 */
-    #shopify-section-{{ section.id }} .header__bottom{
-      display: none !important;
-    }
-
-    /* 8) 行落ち保険：ボタン高さを統一 */
+    /* ボタン高さを統一して行落ち防止 */
     #shopify-section-{{ section.id }} .header__buttons > *{
       min-height: 40px;
     }
 
-    /* 9) 余白の微調整（念のため） */
-    #shopify-section-{{ section.id }} .header__top .header__logo,
-    #shopify-section-{{ section.id }} .header__top .header__search{
-      margin-top: 0 !important;
-      margin-bottom: 0 !important;
+    /* このカスタムヘッダー内では、下段ナビを非表示にして1行完結 */
+    #shopify-section-{{ section.id }} .header__bottom,
+    #shopify-section-{{ section.id }} .header__navigation{
+      display: none !important;
     }
   }
 
