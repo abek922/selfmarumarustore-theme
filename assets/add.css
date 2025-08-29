@@ -250,3 +250,32 @@
     line-height: 40px;
   }
 }
+
+/* ===== MRST: 検索ボックスをロゴ直後に配置（デスクトップのみ） ===== */
+.mrst-enabled { --mrst-search-width: 28rem; } /* 好みで 22rem～36rem に調整 */
+
+@media (min-width: 1024px) {
+  /* ロゴと検索の隙間を少しだけ詰める（このセクションにだけ効く） */
+  #shopify-section-[section-id] .header__top {
+    column-gap: 8px !important; /* 既存は12px。詰めたい場合は 6～10px で調整 */
+  }
+
+  /* 検索を“左寄せ＆固定幅”にして右端へ伸びないようにする */
+  .mrst-enabled .header__search {
+    justify-self: start !important;   /* ← 右端貼り付けをやめる */
+    align-self: center !important;
+    width: var(--mrst-search-width) !important;
+    max-width: var(--mrst-search-width) !important;
+    margin: 0 !important;
+  }
+
+  /* 入力UIを検索コンテナ幅にフィットさせる */
+  .mrst-enabled .header__search form,
+  .mrst-enabled .header__search .predictive-search,
+  .mrst-enabled .header__search input {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 40px;
+    line-height: 40px;
+  }
+}
