@@ -9,6 +9,75 @@
  */
 {
   "sections": {
+    "mrst_slideshow_3gPnac": {
+      "type": "mrst-slideshow",
+      "blocks": {
+        "slide_GcYdYE": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "background": "shopify://shop_images/slide-sample_pc.jpg",
+            "background_mobile": "shopify://shop_images/slide-sample_sp.jpg",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "",
+            "title": "Image slide",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "hd1",
+            "description": "<p>Tell your brand's story through images</p>",
+            "description_size": "text-base",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": false
+          }
+        },
+        "slide_MdX3nN": {
+          "type": "slide",
+          "settings": {
+            "color_scheme": "",
+            "image_overlay_opacity": 0,
+            "content_position": "middle-center",
+            "text_alignment": "center",
+            "subheading": "",
+            "title": "Image slide",
+            "highlight_style": "none",
+            "highlight_font_style": "italic",
+            "highlight_style_color": "",
+            "highlight_text_color": "",
+            "heading_size": "hd1",
+            "description": "<p>Tell your brand's story through images</p>",
+            "description_size": "text-base",
+            "button_label": "Button label",
+            "button_link": "",
+            "button_style": "btn--primary",
+            "button_icon": "none",
+            "enable_preload_image": false
+          }
+        }
+      },
+      "block_order": [
+        "slide_GcYdYE",
+        "slide_MdX3nN"
+      ],
+      "name": "MRST Slideshow",
+      "settings": {
+        "container": "full",
+        "slide_height": "adapt",
+        "show_controls": true,
+        "controls_position": "outside",
+        "autoplay": false,
+        "autoplay_delay": 3,
+        "show_text_below": false,
+        "text_alignment_mobile": "center",
+        "accessibility_info": "Slideshow about our brand"
+      }
+    },
     "slideshow_q3U4Jn": {
       "type": "slideshow",
       "blocks": {
@@ -2474,6 +2543,7 @@
     }
   },
   "order": [
+    "mrst_slideshow_3gPnac",
     "slideshow_q3U4Jn",
     "multicolumn_ic6f9z",
     "multicolumn_JW8JNU",
