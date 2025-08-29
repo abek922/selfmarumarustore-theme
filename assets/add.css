@@ -1,53 +1,237 @@
-/* === MRST Hamburger (同サイズ・同位置) === */
-.mrst-hamburger{
-  width:40px;height:40px;min-width:40px;min-height:40px;
-  display:inline-flex;align-items:center;justify-content:center;
-  padding:0;background:transparent;border:0;cursor:pointer;line-height:1;
-}
-.mrst-hamburger__bar{
-  display:block;position:relative;width:22px;height:2px;background:currentColor;
-  transition:transform .22s ease,width .18s ease,opacity .18s ease;
-}
-.mrst-hamburger__bar--top{transform:translateY(-4px);}
-.mrst-hamburger__bar--bottom{width:14px;transform:translateY(4px);} /* 下が短い */
+/* =========================================================
+   SELF 〇〇 STORE — MRST Header / Drawer (Complete CSS)
+   - すべての新規クラスは `mrst-` プレフィックス
+   - 他CSSの影響を受けづらいよう、必要箇所は明示指定
+   ========================================================= */
 
-/* 開状態 → ✗ */
-.mrst-hamburger.is-open .mrst-hamburger__bar--top{transform:rotate(45deg);}
-.mrst-hamburger.is-open .mrst-hamburger__bar--bottom{transform:rotate(-45deg);width:22px;}
-
-.header__icons--right .mrst-hamburger{margin:0;} /* 右端配置時のズレ防止 */
-
-/* === Drawer === */
-.mrst-drawer{position:fixed;inset:0;z-index:60;pointer-events:none;}
-.mrst-drawer__overlay{position:absolute;inset:0;background:rgba(0,0,0,.4);opacity:1;transition:opacity .25s ease;}
-.mrst-drawer__panel{
-  position:absolute;top:0;bottom:0;width:var(--mrst-drawer-width,320px);
-  background:var(--color-background,#fff);box-shadow:0 0 14px rgba(0,0,0,.18);
-  transition:transform .25s ease;display:flex;flex-direction:column;outline:none;
+/* -----------------------------------------
+   基本変数（カスタムプロパティ）
+   セクション側の {% style %} で上書きされることを想定
+   ----------------------------------------- */
+:root {
+  --mrst-drawer-width: 320px;
+  --mrst-drawer-bg: #ffffff;
 }
 
-/* 方向別の初期位置／クローズ位置 */
-.mrst-drawer[data-side="left"] .mrst-drawer__panel{left:0;transform:translateX(-100%);}
-.mrst-drawer[data-side="right"] .mrst-drawer__panel{right:0;transform:translateX(100%);}
+/* -----------------------------------------
+   ハンバーガー（ボタン）
+   - 40px のクリック領域
+   - 二本線（下が短い）
+   - 開時に ✗ へ変形
+   ----------------------------------------- */
+.mrst-hamburger {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  line-height: 1;
+  position: relative;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.mrst-hamburger:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
 
-/* hidden時の状態 */
-.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay{opacity:0;}
-.mrst-drawer[aria-hidden="true"][data-side="left"] .mrst-drawer__panel{transform:translateX(-100%);}
-.mrst-drawer[aria-hidden="true"][data-side="right"] .mrst-drawer__panel{transform:translateX(100%);}
+/* バー（2本） */
+.mrst-hamburger__bar {
+  display: block;
+  position: absolute;
+  left: 50%;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  transform: translateX(-50%);
+  transition:
+    transform .22s ease,
+    width .18s ease,
+    opacity .18s ease,
+    top .18s ease,
+    bottom .18s ease;
+}
+/* 上バー位置 */
+.mrst-hamburger__bar--top { top: 13px; }
+/* 下バー位置・短く */
+.mrst-hamburger__bar--bottom { bottom: 13px; width: 14px; }
 
-/* open時 */
-.mrst-drawer[aria-hidden="false"]{pointer-events:auto;}
-.mrst-drawer[aria-hidden="false"] .mrst-drawer__panel{transform:translateX(0);}
+/* 開いたら ✗ に変形 */
+.mrst-hamburger.is-open .mrst-hamburger__bar--top {
+  transform: translateX(-50%) rotate(45deg);
+}
+.mrst-hamburger.is-open .mrst-hamburger__bar--bottom {
+  transform: translateX(-50%) rotate(-45deg);
+  width: 22px;
+}
 
-.mrst-drawer__header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid rgba(0,0,0,.08);}
-.mrst-drawer__title{font-weight:600;}
-.mrst-drawer__close{background:none;border:0;font-size:24px;line-height:1;cursor:pointer;}
-.mrst-drawer__nav{overflow:auto;padding:8px 0 24px;}
-.mrst-drawer__list,.mrst-drawer__sublist{list-style:none;margin:0;padding:0;}
-.mrst-drawer__link{display:block;padding:12px 16px;text-decoration:none;}
-.mrst-drawer__sublist{padding-left:8px;}
-.mrst-drawer__sublink{display:block;padding:8px 16px;text-decoration:none;opacity:.85;}
+/* 右端配置時の縦ズレ防止（余白を持たせない） */
+.header__icons--right .mrst-hamburger { margin: 0; }
 
-.mrst-group{padding-top:8px;}
-.mrst-group__title{font-weight:700;font-size:14px;padding:10px 16px 6px;opacity:.8;}
-.mrst-group__divider{margin:10px 0;border:0;border-top:1px solid rgba(0,0,0,.08);}
+/* -----------------------------------------
+   Drawer（全体コンテナ/オーバーレイ/パネル）
+   - 左右スライドに対応（[data-side="left|right"]）
+   - aria-hidden で開閉制御
+   ----------------------------------------- */
+.mrst-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+.mrst-drawer__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+  opacity: 1;
+  transition: opacity .25s ease;
+}
+.mrst-drawer__panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--mrst-drawer-width, 320px);
+  background: var(--mrst-drawer-bg, #fff);
+  box-shadow: 0 0 14px rgba(0,0,0,.18);
+  transition: transform .25s ease;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+}
+
+/* 方向別 初期位置（クローズ時） */
+.mrst-drawer[data-side="left"] .mrst-drawer__panel {
+  left: 0;
+  transform: translateX(-100%);
+}
+.mrst-drawer[data-side="right"] .mrst-drawer__panel {
+  right: 0;
+  transform: translateX(100%);
+}
+
+/* aria-hidden による表示制御 */
+.mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay { opacity: 0; }
+.mrst-drawer[aria-hidden="true"][data-side="left"]  .mrst-drawer__panel { transform: translateX(-100%); }
+.mrst-drawer[aria-hidden="true"][data-side="right"] .mrst-drawer__panel { transform: translateX(100%); }
+
+.mrst-drawer[aria-hidden="false"] { pointer-events: auto; }
+.mrst-drawer[aria-hidden="false"] .mrst-drawer__panel { transform: translateX(0); }
+
+/* -----------------------------------------
+   Drawer 内部要素
+   ----------------------------------------- */
+.mrst-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.mrst-drawer__title {
+  font-weight: 600;
+}
+.mrst-drawer__close {
+  background: none;
+  border: 0;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.mrst-drawer__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.mrst-drawer__nav {
+  overflow: auto;
+  padding: 8px 0 24px;
+}
+
+/* リスト */
+.mrst-drawer__list,
+.mrst-drawer__sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mrst-drawer__item { }
+.mrst-drawer__link {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+}
+.mrst-drawer__link:hover,
+.mrst-drawer__sublink:hover {
+  text-decoration: underline;
+}
+
+.mrst-drawer__sublist {
+  padding-left: 8px;
+}
+.mrst-drawer__subitem { }
+.mrst-drawer__sublink {
+  display: block;
+  padding: 8px 16px;
+  text-decoration: none;
+  opacity: .85;
+}
+
+/* グループ */
+.mrst-group {
+  padding-top: 8px;
+}
+.mrst-group__title {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 10px 16px 6px;
+  opacity: .8;
+}
+.mrst-group__divider {
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,.08);
+}
+
+/* フォールバックメッセージ */
+.mrst-drawer__empty {
+  padding: 12px 16px;
+  opacity: .75;
+}
+
+/* -----------------------------------------
+   レスポンシブ
+   ----------------------------------------- */
+@media (max-width: 480px) {
+  .mrst-drawer__panel {
+    width: min(100vw, var(--mrst-drawer-width, 320px));
+  }
+}
+
+/* -----------------------------------------
+   アクセシビリティ/アニメーション配慮
+   ----------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .mrst-drawer__overlay { transition: none; }
+  .mrst-drawer__panel { transition: none; }
+  .mrst-hamburger__bar { transition: none; }
+}
+
+/* -----------------------------------------
+   ダーク系テーマ向け軽微調整（任意）
+   ----------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  .mrst-drawer__panel {
+    /* セクション設定で明示された場合はそちらが優先されます */
+    background: var(--mrst-drawer-bg, #121212);
+  }
+  .mrst-group__divider {
+    border-top-color: rgba(255,255,255,.12);
+  }
+}

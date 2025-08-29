@@ -1,8 +1,4 @@
-{% comment %}
-  MRST Header (Side Drawer) - Complete (fixed)
-  - Keep existing header parts; replace dropdown with side drawer
-  - All new selectors prefixed "mrst-"
-{% endcomment %}
+{% comment %} MRST Header (Side Drawer) — hardened & scoped {% endcomment %}
 
 <link
   rel="stylesheet"
@@ -15,6 +11,7 @@
 {%- if request.page_type != 'search' -%}
   <script src="{{ 'search.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
+
 {%- liquid
   assign header_layout = section.settings.header_layout
   assign sticky_header = section.settings.sticky_header
@@ -27,6 +24,7 @@
   assign hamburger_position = section.settings.hamburger_position | default: 'left'
   assign drawer_side = section.settings.drawer_side | default: 'left'
   assign drawer_width = section.settings.drawer_width | default: '320'
+  assign drawer_bg = section.settings.drawer_bg | default: '#ffffff'
 
   assign classes = 'header items-center'
   assign classes = classes | append: ' color-' | append: section.settings.color_scheme
@@ -38,10 +36,12 @@
 -%}
 
 {% style %}
+  /* ===== Section-scoped variables ===== */
   #shopify-section-{{ section.id }} {
     --logo-width: {{ settings.logo_width }}px;
     --logo-width-mobile: {{ settings.logo_width_mobile }}px;
     --mrst-drawer-width: {{ drawer_width }}px;
+    --mrst-drawer-bg: {{ drawer_bg }};
   }
   #shopify-section-{{ section.id }} .header__top {
     --section-padding-top: {{ section.settings.header_top_padding_top }}px;
@@ -52,6 +52,44 @@
       --section-padding-top: 1.6rem;
       --section-padding-bottom: 1.6rem;
     }
+  }
+
+  /* ====== SCOPED Hamburger (他CSSの干渉を無視する強スタイル) ====== */
+  #shopify-section-{{ section.id }} .mrst-hamburger{
+    width:40px;height:40px;min-width:40px;min-height:40px;
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:0;margin:0;background:transparent;border:0;
+    cursor:pointer;line-height:1;position:relative;appearance:none;
+  }
+  #shopify-section-{{ section.id }} .mrst-hamburger:before,
+  #shopify-section-{{ section.id }} .mrst-hamburger:after{content:none;}
+  #shopify-section-{{ section.id }} .mrst-hamburger *{box-shadow:none;}
+
+  #shopify-section-{{ section.id }} .mrst-hamburger__bar{
+    display:block;position:absolute;left:50%;
+    width:22px;height:2px;background:currentColor;
+    transform:translateX(-50%);
+    transition:transform .22s ease,width .18s ease,opacity .18s ease,top .18s ease,bottom .18s ease;
+  }
+  /* 2本線：下が短い（ご指定のイメージ）*/
+  #shopify-section-{{ section.id }} .mrst-hamburger__bar--top{ top:13px; }
+  #shopify-section-{{ section.id }} .mrst-hamburger__bar--bottom{ bottom:13px; width:14px; }
+
+  /* 開いたら ✗ に変形 */
+  #shopify-section-{{ section.id }} .mrst-hamburger.is-open .mrst-hamburger__bar--top{
+    transform:translateX(-50%) rotate(45deg);
+  }
+  #shopify-section-{{ section.id }} .mrst-hamburger.is-open .mrst-hamburger__bar--bottom{
+    transform:translateX(-50%) rotate(-45deg);
+    width:22px;
+  }
+
+  /* 右端配置時もベースライン揃え */
+  #shopify-section-{{ section.id }} .header__icons--right .mrst-hamburger{ margin:0; }
+
+  /* ===== Drawer panel 背景色（透過対策） ===== */
+  #shopify-section-{{ section.id }} .mrst-drawer__panel{
+    background: var(--mrst-drawer-bg) !important;
   }
 {% endstyle %}
 
@@ -91,10 +129,7 @@
     {%- else -%}
       <div class="header__logo flex justify-center items-center z-1">
     {%- endif -%}
-      <a
-        href="{{ routes.root_url }}"
-        class="h3 relative flex{% unless settings.logo %} header__logo--text{% else %} header__logo--image{% endunless %}"
-      >
+      <a href="{{ routes.root_url }}" class="h3 relative flex{% unless settings.logo %} header__logo--text{% else %} header__logo--image{% endunless %}">
         {%- if settings.logo != blank -%}
           {%- liquid
             assign logo = settings.logo
@@ -105,34 +140,22 @@
             assign logo_width_mobile_2x = settings.logo_width_mobile | times: 2
           -%}
           {%- if logo_mobile -%}
-            <img
-              srcset="{{ logo_mobile | image_url: width: logo_width_mobile }} 1x, {{ logo_mobile | image_url: width: logo_width_mobile_2x }} 2x"
-              src="{{ logo_mobile | image_url: width: logo_width_mobile }}"
-              loading="eager"
-              width="{{ logo_mobile.width }}"
-              height="{{ logo_mobile.height }}"
-              alt="{{ logo_mobile.alt | default: shop.name | escape }}"
-              class="logo header__logo--mobile lg:hidden"
-            >
+            <img srcset="{{ logo_mobile | image_url: width: logo_width_mobile }} 1x, {{ logo_mobile | image_url: width: logo_width_mobile_2x }} 2x"
+                 src="{{ logo_mobile | image_url: width: logo_width_mobile }}"
+                 loading="eager" width="{{ logo_mobile.width }}" height="{{ logo_mobile.height }}"
+                 alt="{{ logo_mobile.alt | default: shop.name | escape }}"
+                 class="logo header__logo--mobile lg:hidden">
           {%- endif -%}
-          <img
-            srcset="{{ logo | image_url: width: logo_width }} 1x, {{ logo | image_url: width: logo_width_2x }} 2x"
-            src="{{ logo | image_url: width: logo_width }}"
-            loading="eager"
-            width="{{ logo.width }}"
-            height="{{ logo.height }}"
-            alt="{{ logo.alt | default: shop.name | escape }}"
-            class="logo header__logo--desktop lg:block hidden"
-          >
+          <img srcset="{{ logo | image_url: width: logo_width }} 1x, {{ logo | image_url: width: logo_width_2x }} 2x"
+               src="{{ logo | image_url: width: logo_width }}"
+               loading="eager" width="{{ logo.width }}" height="{{ logo.height }}"
+               alt="{{ logo.alt | default: shop.name | escape }}"
+               class="logo header__logo--desktop lg:block hidden">
         {%- else -%}
           {{ shop.name }}
         {%- endif -%}
       </a>
-    {%- if request.page_type == 'index' -%}
-      </h1>
-    {%- else -%}
-      </div>
-    {%- endif -%}
+    {%- if request.page_type == 'index' -%}</h1>{%- else -%}</div>{%- endif -%}
 
     <div class="header__search flex items-center z-2">
       {%- render 'predictive-search' -%}
@@ -218,7 +241,7 @@
     </div>
   </div>
 
-  {%- comment -%} 下層ナビ（ドロップダウン）は使わない {%- endcomment -%}
+  {%- comment -%} ドロップダウンは使わない {%- endcomment -%}
 
   <div class="mrst-drawer" id="mrst-drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Site menu" data-side="{{ drawer_side }}">
     <div class="mrst-drawer__overlay" data-mrst-close></div>
@@ -297,44 +320,12 @@
 
 <div class="fixed-overlay fixed-overlay--header-section z-10"></div>
 
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "Organization",
-    "name": {{ shop.name | json }},
-    {% if settings.logo %}
-      "logo": {{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},
-    {% endif %}
-    "sameAs": [
-      {{ settings.social_twitter_link | json }},
-      {{ settings.social_facebook_link | json }},
-      {{ settings.social_pinterest_link | json }},
-      {{ settings.social_instagram_link | json }},
-      {{ settings.social_tiktok_link | json }},
-      {{ settings.social_tumblr_link | json }},
-      {{ settings.social_snapchat_link | json }},
-      {{ settings.social_youtube_link | json }},
-      {{ settings.social_vimeo_link | json }}
-    ],
-    "url": {{ request.origin | append: page.url | json }}
-  }
-</script>
+{%- comment -%} 構造化データは既存そのまま {%- endcomment -%}
+<script type="application/ld+json">{"@context":"http://schema.org","@type":"Organization","name":{{ shop.name | json }},{% if settings.logo %}"logo":{{ settings.logo | image_url: width: 500 | prepend: "https:" | json }},{% endif %}"sameAs":[{{ settings.social_twitter_link | json }},{{ settings.social_facebook_link | json }},{{ settings.social_pinterest_link | json }},{{ settings.social_instagram_link | json }},{{ settings.social_tiktok_link | json }},{{ settings.social_tumblr_link | json }},{{ settings.social_snapchat_link | json }},{{ settings.social_youtube_link | json }},{{ settings.social_vimeo_link | json }}],"url":{{ request.origin | append: page.url | json }}}</script>
 
 {%- if request.page_type == 'index' -%}
   {% assign potential_action_target = request.origin | append: routes.search_url | append: '?q={search_term_string}' %}
-  <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "WebSite",
-      "name": {{ shop.name | json }},
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {{ potential_action_target | json }},
-        "query-input": "required name=search_term_string"
-      },
-      "url": {{ request.origin | append: page.url | json }}
-    }
-  </script>
+  <script type="application/ld+json">{"@context":"http://schema.org","@type":"WebSite","name":{{ shop.name | json }},"potentialAction":{"@type":"SearchAction","target":{{ potential_action_target | json }},"query-input":"required name=search_term_string"},"url":{{ request.origin | append: page.url | json }}}</script>
 {%- endif -%}
 
 {% schema %}
@@ -397,13 +388,12 @@
     },
     { "type": "select", "id": "drawer_width", "label": "メニュー幅（px）",
       "options": [
-        { "value": "280", "label": "280" },
-        { "value": "320", "label": "320" },
-        { "value": "360", "label": "360" },
-        { "value": "400", "label": "400" }
+        { "value": "280", "label": "280" }, { "value": "320", "label": "320" },
+        { "value": "360", "label": "360" }, { "value": "400", "label": "400" }
       ],
       "default": "320"
     },
+    { "type": "color", "id": "drawer_bg", "label": "メニュー背景色", "default": "#ffffff" },
 
     { "type": "header", "content": "メニューグループ 1" },
     { "type": "link_list", "id": "menu_1", "label": "メニュー 1" },
@@ -425,7 +415,6 @@
     { "type": "text", "id": "menu_4_title", "label": "タイトル（任意）" },
     { "type": "checkbox", "id": "menu_4_divider", "label": "区切り線を表示", "default": false }
   ],
-
   "blocks": [],
   "enabled_on": { "groups": ["header"] },
   "presets": [
