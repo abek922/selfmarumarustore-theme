@@ -30,7 +30,7 @@
         "header_top_padding_bottom": 8,
         "hamburger_position": "left",
         "drawer_side": "right",
-        "drawer_width": "320",
+        "drawer_width": "400",
         "menu_1": "customer-account-main-menu",
         "menu_1_title": "メニュータイトル",
         "menu_1_divider": false,
