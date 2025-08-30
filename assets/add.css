@@ -126,43 +126,83 @@
   }
 }
 
-/* ========== Slideshow（コントロール外出し & ドットのみ） ========== */
+/* ===== MRST Slideshow — 形式2(ドットのみ)・内側表示の安定化 ===== */
 
-/* ===== MRST: 形式2（シンプルドットのみ） ===== */
-#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 {
-  position: static !important;
+/* スライド全体を相対基準に（絶対配置の基準を明示） */
+#shopify-section-{{ section.id }} .slideshow-wrapper {
+  position: relative;
+}
+
+/* 「内側」のときのドットコンテナを、確実にスライド内に収める */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2:not(.mrst--outside) {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 14px !important;          /* ← 余白を少し持たせて欠けを防止 */
+  transform: translateX(-50%) !important;
+  width: auto !important;
   background: transparent !important;
   box-shadow: none !important;
-  padding-bottom: 14px; /* アクティブ拡大が欠けないよう余白 */
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  z-index: 5;                        /* 画像やオーバーレイより前面に */
+  pointer-events: auto;
 }
 
-/* Swiper のデフォルト挙動を完全リセット */
+/* テーマ既存の「下に浮かせる」系クラスを打ち消し（はみ出し防止） */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2:not(.mrst--outside).swiper-controls,
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2:not(.mrst--outside).swiper-controls--float-bottom {
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: 14px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/* ドット行のレイアウト（純粋な丸のみ・中央寄せ） */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination {
-  position: static !important;
+  position: static !important;       /* 親の中央寄せに従わせる */
   display: flex !important;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
-  margin: 0 auto;
-  background: transparent !important;
-}
-
-/* ドット（共通） */
-#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet {
-  width: 10px !important;   /* ← 固定サイズ */
-  height: 10px !important;
-  border-radius: 50% !important;
-  background: #ccc !important;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  min-height: 18px;                  /* アクティブ拡大の欠け対策 */
+  visibility: visible !important;
   opacity: 1 !important;
-  margin: 0 !important;
-  transition: transform .2s ease, background-color .2s ease;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 
-/* アクティブドット */
-#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet-active {
-  background: #111 !important;
-  transform: scale(1.2);   /* 少しだけ大きく強調 */
-  width: 10px !important;  /* ← Swiper の横長化を強制上書き */
+/* ドット（丸）— シンプル固定。横長化を完全に無効化 */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet {
+  width: 10px !important;
   height: 10px !important;
   border-radius: 50% !important;
+  margin: 0 !important;
+  background: currentColor !important;      /* 単色ドット */
+  opacity: .35 !important;                  /* 非アクティブは薄め */
+  transform: none !important;
+  transition: transform .18s ease, opacity .18s ease !important;
+}
+
+/* アクティブは少し濃く＆拡大のみ（横に伸びない） */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  transform: scale(1.25) !important;
+}
+
+/* hover(PC)で軽く強調（任意） */
+@media (hover:hover) {
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet:hover {
+    opacity: .7 !important;
+  }
+}
+
+/* モバイルは間隔を少し詰める（任意） */
+@media (max-width: 767px) {
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination {
+    gap: 8px;
+  }
 }
