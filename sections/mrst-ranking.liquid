@@ -161,20 +161,39 @@ calc(100vw / {{ columns_desktop }})
                             <!-- Buyer 情報（商品メタフィールド：custom.buyer がメタオブジェクト参照） -->
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
+
                             <div class="mrst-buyer">
                                 <div class="mrst-buyer__avatar">
-                                {%- assign _img = buyer.image -%}
-                                {%- assign _url = _img | image_url: width: 80 -%}
-                                {%- if _url == blank -%}{%- assign _url = _img | file_url -%}{%- endif -%}
-                                {%- if _url == blank -%}
-                                    {%- assign _img_str = _img | append: '' -%}
-                                    {%- if _img_str contains 'http' -%}{%- assign _url = _img_str -%}{%- endif -%}
+                                {%- comment -%}
+                                    buyer.image が:
+                                    - image（単体）
+                                    - file_reference（単体）
+                                    - list.file_reference（配列）
+                                    のいずれでも動くようにハンドリング
+                                {%- endcomment -%}
+                                {%- assign _img_candidate = buyer.image -%}
+                                {%- assign _first_try = _img_candidate[0] -%}
+                                {%- if _first_try != blank -%}
+                                    {%- assign _img_obj = _first_try -%}          {# list の場合: 先頭を採用 #}
+                                {%- else -%}
+                                    {%- assign _img_obj = _img_candidate -%}      {# 単体の場合: そのまま #}
                                 {%- endif -%}
+
+                                {%- assign _url = _img_obj | image_url: width: 80 -%}   {# image 型 #}
+                                {%- if _url == blank -%}
+                                    {%- assign _url = _img_obj | file_url -%}             {# file_reference 型 #}
+                                {%- endif -%}
+
                                 {%- if _url != blank -%}
-                                    <img src="{{ _url }}" alt="{{ buyer.name | default: 'Buyer' | escape }}"
-                                        loading="lazy" width="40" height="40" class="mrst-buyer__img">
+                                    <img
+                                    src="{{ _url }}"
+                                    alt="{{ buyer.name | default: 'Buyer' | escape }}"
+                                    width="40" height="40" loading="lazy"
+                                    class="mrst-buyer__img"
+                                    >
                                 {%- endif -%}
                                 </div>
+
                                 <div class="mrst-buyer__meta">
                                 <span class="mrst-buyer__label">BUYER</span>
                                 <span class="mrst-buyer__name">{{ buyer.name }}</span>
