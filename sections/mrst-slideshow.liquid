@@ -322,12 +322,12 @@
     </div>
       {%- if enable_slider and show_controls -%}
         {%- if control_style == 'style-2' -%}
-          <!-- 形式2：ドットのみ（矢印なし) --> 
-        <div class="mrst-swiper-controls mrst-swiper-controls--style-2 mrst-only-dots {% if controls_position == 'outside' %}mrst--outside{% endif %}">
-          <div class="swiper-pagination"></div>
-        </div>
+          <!-- 形式2：ドットのみ（※ 親に .swiper-controls を必ず付与） -->
+          <div class="swiper-controls mrst-swiper-controls mrst-swiper-controls--style-2 {% if controls_position == 'outside' %}mrst--outside{% endif %} swiper-controls--pagination-bullets">
+            <div class="swiper-pagination"></div>
+          </div>
         {%- else -%}
-          <!-- 形式1：従来（左右ボタン＋ドット) -->
+          <!-- 形式1：従来 -->
           <div class="swiper-controls swiper-controls--grouped swiper-controls--float-bottom swiper-controls--pagination-bullets bg-none flex items-center justify-center color-{{ section.blocks.first.settings.color_scheme }}{% if show_text_below %} mobile-color-{{ color_scheme_mobile }}{% endif %} {% if controls_position == 'outside' %}mrst--outside{% endif %}">
             <button
               class="swiper-button swiper-button-prev swiper-button--blank"

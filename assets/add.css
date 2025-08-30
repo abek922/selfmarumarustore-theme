@@ -1,488 +1,179 @@
 /* =========================================================
-   SELF 〇〇 STORE — MRST Header / Drawer (Complete CSS)
-   - すべての新規クラスは `mrst-` プレフィックス
-   - 他CSSの影響を受けづらいよう、必要箇所は明示指定
+   SELF 〇〇 STORE — MRST Header / Drawer + Slideshow (Clean)
    ========================================================= */
 
-/* -----------------------------------------
-   基本変数（カスタムプロパティ）
-   セクション側の {% style %} で上書きされることを想定
-   ----------------------------------------- */
+/* ---------- 基本カスタムプロパティ ---------- */
 :root {
   --mrst-drawer-width: 320px;
   --mrst-drawer-bg: #ffffff;
 }
 
-/* -----------------------------------------
-   ハンバーガー（ボタン）
-   - 40px のクリック領域
-   - 二本線（下が短い）
-   - 開時に ✗ へ変形
-   ----------------------------------------- */
+/* ========== Header / Drawer ========== */
+
+/* ハンバーガー */
 .mrst-hamburger {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  line-height: 1;
-  position: relative;
-  appearance: none;
-  -webkit-tap-highlight-color: transparent;
+  width: 40px; height: 40px; min-width: 40px; min-height: 40px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin: 0; padding: 0; border: 0; background: transparent;
+  cursor: pointer; line-height: 1; position: relative;
+  appearance: none; -webkit-tap-highlight-color: transparent;
 }
-.mrst-hamburger:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
-
-/* バー（2本） */
+.mrst-hamburger:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .mrst-hamburger__bar {
-  display: block;
-  position: absolute;
-  left: 50%;
-  width: 22px;
-  height: 2px;
-  background: currentColor;
-  transform: translateX(-50%);
-  transition:
-    transform .22s ease,
-    width .18s ease,
-    opacity .18s ease,
-    top .18s ease,
-    bottom .18s ease;
+  position: absolute; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 2px; background: currentColor; display: block;
+  transition: transform .22s ease, width .18s ease, top .18s ease, bottom .18s ease, opacity .18s ease;
 }
-/* 上バー位置 */
 .mrst-hamburger__bar--top { top: 13px; }
-/* 下バー位置・短く */
 .mrst-hamburger__bar--bottom { bottom: 13px; width: 14px; }
-
-/* 開いたら ✗ に変形 */
-.mrst-hamburger.is-open .mrst-hamburger__bar--top {
-  transform: translateX(-50%) rotate(45deg);
-}
-.mrst-hamburger.is-open .mrst-hamburger__bar--bottom {
-  transform: translateX(-50%) rotate(-45deg);
-  width: 22px;
-}
-
-/* 右端配置時の縦ズレ防止（余白を持たせない） */
+/* 開時に✗へ */
+.mrst-hamburger.is-open .mrst-hamburger__bar--top { transform: translateX(-50%) rotate(45deg); }
+.mrst-hamburger.is-open .mrst-hamburger__bar--bottom { transform: translateX(-50%) rotate(-45deg); width: 22px; }
+/* 右端時の縦ズレ保険 */
 .header__icons--right .mrst-hamburger { margin: 0; }
 
-/* -----------------------------------------
-   Drawer（全体コンテナ/オーバーレイ/パネル）
-   - 左右スライドに対応（[data-side="left|right"]）
-   - aria-hidden で開閉制御
-   ----------------------------------------- */
-.mrst-drawer {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  pointer-events: none;
-}
+/* Drawer 本体 */
+.mrst-drawer { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
 .mrst-drawer__overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, .4);
-  opacity: 1;
-  transition: opacity .25s ease;
+  position: absolute; inset: 0; background: rgba(0,0,0,.4);
+  opacity: 1; transition: opacity .25s ease;
 }
 .mrst-drawer__panel {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+  position: absolute; top: 0; bottom: 0;
   width: var(--mrst-drawer-width, 320px);
   background: var(--mrst-drawer-bg, #fff);
   box-shadow: 0 0 14px rgba(0,0,0,.18);
   transition: transform .25s ease;
-  display: flex;
-  flex-direction: column;
-  outline: none;
+  display: flex; flex-direction: column; outline: none;
 }
-
-/* 方向別 初期位置（クローズ時） */
-.mrst-drawer[data-side="left"] .mrst-drawer__panel {
-  left: 0;
-  transform: translateX(-100%);
-}
-.mrst-drawer[data-side="right"] .mrst-drawer__panel {
-  right: 0;
-  transform: translateX(100%);
-}
-
-/* aria-hidden による表示制御 */
+/* スライド方向 */
+.mrst-drawer[data-side="left"]  .mrst-drawer__panel { left: 0;  transform: translateX(-100%); }
+.mrst-drawer[data-side="right"] .mrst-drawer__panel { right: 0; transform: translateX(100%); }
+/* aria-hidden で開閉 */
 .mrst-drawer[aria-hidden="true"] .mrst-drawer__overlay { opacity: 0; }
-.mrst-drawer[aria-hidden="true"][data-side="left"]  .mrst-drawer__panel { transform: translateX(-100%); }
-.mrst-drawer[aria-hidden="true"][data-side="right"] .mrst-drawer__panel { transform: translateX(100%); }
-
 .mrst-drawer[aria-hidden="false"] { pointer-events: auto; }
 .mrst-drawer[aria-hidden="false"] .mrst-drawer__panel { transform: translateX(0); }
 
-/* -----------------------------------------
-   Drawer 内部要素
-   ----------------------------------------- */
+/* Drawer 内部 */
 .mrst-drawer__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(0,0,0,.08);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,.08);
 }
-.mrst-drawer__title {
-  font-weight: 600;
-}
-.mrst-drawer__close {
-  background: none;
-  border: 0;
-  font-size: 24px;
-  line-height: 1;
-  cursor: pointer;
-}
-.mrst-drawer__close:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
-}
+.mrst-drawer__title { font-weight: 600; }
+.mrst-drawer__close { background: none; border: 0; font-size: 24px; line-height: 1; cursor: pointer; }
+.mrst-drawer__close:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.mrst-drawer__nav { overflow: auto; padding: 8px 0 24px; }
 
-.mrst-drawer__nav {
-  overflow: auto;
-  padding: 8px 0 24px;
-}
+.mrst-drawer__list, .mrst-drawer__sublist { list-style: none; margin: 0; padding: 0; }
+.mrst-drawer__link, .mrst-drawer__sublink { display: block; text-decoration: none; }
+.mrst-drawer__link { padding: 12px 16px; }
+.mrst-drawer__sublink { padding: 8px 16px; opacity: .85; }
+.mrst-drawer__link:hover, .mrst-drawer__sublink:hover { text-decoration: underline; }
+.mrst-drawer__sublist { padding-left: 8px; }
+.mrst-group { padding-top: 8px; }
+.mrst-group__title { font-weight: 700; font-size: 14px; padding: 10px 16px 6px; opacity: .8; }
+.mrst-group__divider { margin: 10px 0; border: 0; border-top: 1px solid rgba(0,0,0,.08); }
+.mrst-drawer__empty { padding: 12px 16px; opacity: .75; }
 
-/* リスト */
-.mrst-drawer__list,
-.mrst-drawer__sublist {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.mrst-drawer__item { }
-.mrst-drawer__link {
-  display: block;
-  padding: 12px 16px;
-  text-decoration: none;
-}
-.mrst-drawer__link:hover,
-.mrst-drawer__sublink:hover {
-  text-decoration: underline;
-}
-
-.mrst-drawer__sublist {
-  padding-left: 8px;
-}
-.mrst-drawer__subitem { }
-.mrst-drawer__sublink {
-  display: block;
-  padding: 8px 16px;
-  text-decoration: none;
-  opacity: .85;
-}
-
-/* グループ */
-.mrst-group {
-  padding-top: 8px;
-}
-.mrst-group__title {
-  font-weight: 700;
-  font-size: 14px;
-  padding: 10px 16px 6px;
-  opacity: .8;
-}
-.mrst-group__divider {
-  margin: 10px 0;
-  border: 0;
-  border-top: 1px solid rgba(0,0,0,.08);
-}
-
-/* フォールバックメッセージ */
-.mrst-drawer__empty {
-  padding: 12px 16px;
-  opacity: .75;
-}
-
-/* -----------------------------------------
-   レスポンシブ
-   ----------------------------------------- */
+/* Responsive */
 @media (max-width: 480px) {
-  .mrst-drawer__panel {
-    width: min(100vw, var(--mrst-drawer-width, 320px));
-  }
+  .mrst-drawer__panel { width: min(100vw, var(--mrst-drawer-width, 320px)); }
 }
 
-/* -----------------------------------------
-   アクセシビリティ/アニメーション配慮
-   ----------------------------------------- */
+/* Motion reduce */
 @media (prefers-reduced-motion: reduce) {
-  .mrst-drawer__overlay { transition: none; }
-  .mrst-drawer__panel { transition: none; }
-  .mrst-hamburger__bar { transition: none; }
+  .mrst-hamburger__bar, .mrst-drawer__overlay, .mrst-drawer__panel { transition: none; }
 }
 
-/* -----------------------------------------
-   ダーク系テーマ向け軽微調整（任意）
-   ----------------------------------------- */
+/* Dark scheme（背景色はセクション設定優先） */
 @media (prefers-color-scheme: dark) {
-  .mrst-drawer__panel {
-    /* セクション設定で明示された場合はそちらが優先されます */
-    background: var(--mrst-drawer-bg, #121212);
-  }
-  .mrst-group__divider {
-    border-top-color: rgba(255,255,255,.12);
-  }
+  .mrst-drawer__panel { background: var(--mrst-drawer-bg, #121212); }
+  .mrst-group__divider { border-top-color: rgba(255,255,255,.12); }
 }
 
-/* === MRST: 検索幅（デスクトップ） === */
+/* ========== Header 補助 ========== */
+
+/* 検索幅（デスクトップ） */
 @media (min-width: 1024px) {
-  .mrst-enabled .header__search {
-    max-width: 28rem; /* ← ここをお好みで。例: 24rem / 420px / 480px など */
-    width: 100%;
-  }
-  /* 入力ボックスの高さ・溢れ調整（任意） */
+  .mrst-enabled .header__search { max-width: 28rem; width: 100%; }
   .mrst-enabled .header__search input,
-  .mrst-enabled .header__search .predictive-search{
-    max-width: 100%;
-    height: 40px;
-    line-height: 40px;
-  }
+  .mrst-enabled .header__search .predictive-search { max-width: 100%; height: 40px; line-height: 40px; }
 }
 
-/* ===== MRST: 検索ボックスをロゴ直後に配置（デスクトップのみ） ===== */
-.mrst-enabled { --mrst-search-width: 28rem; } /* 好みで 22rem～36rem に調整 */
-
+/* ロゴ直後に検索を寄せる（デスクトップ）。※セクション内{% style %}想定スコープ */
+#shopify-section-{{ section.id }} .header__top { column-gap: 8px !important; }
 @media (min-width: 1024px) {
-  /* ロゴと検索の隙間を少しだけ詰める（このセクションにだけ効く） */
-  #shopify-section-[section-id] .header__top {
-    column-gap: 8px !important; /* 既存は12px。詰めたい場合は 6～10px で調整 */
-  }
-
-  /* 検索を“左寄せ＆固定幅”にして右端へ伸びないようにする */
   .mrst-enabled .header__search {
-    justify-self: start !important;   /* ← 右端貼り付けをやめる */
-    align-self: center !important;
-    width: var(--mrst-search-width) !important;
-    max-width: var(--mrst-search-width) !important;
-    margin: 0 !important;
+    justify-self: start !important; align-self: center !important;
+    --mrst-search-width: 28rem;
+    width: var(--mrst-search-width) !important; max-width: var(--mrst-search-width) !important; margin: 0 !important;
   }
-
-  /* 入力UIを検索コンテナ幅にフィットさせる */
   .mrst-enabled .header__search form,
   .mrst-enabled .header__search .predictive-search,
-  .mrst-enabled .header__search input {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 40px;
-    line-height: 40px;
-  }
+  .mrst-enabled .header__search input { width: 100% !important; max-width: 100% !important; height: 40px; line-height: 40px; }
 }
 
-/* 画像アイコンのサイズ統一（mrst-enabled のとき） */
-.mrst-enabled .mrst-icon-img{
-  display:block;
-  width: var(--mrst-icon-img, 24px);
-  height: var(--mrst-icon-img, 24px);
-  object-fit: contain;
-  line-height: 1;
+/* 画像アイコンのサイズ統一 */
+.mrst-enabled .mrst-icon-img {
+  display: block; width: var(--mrst-icon-img, 24px); height: var(--mrst-icon-img, 24px);
+  object-fit: contain; line-height: 1;
 }
 
-/* ===== カートアイコン 背景色を常に無効化 ===== */
+/* カートアイコンの背景を常に透明（テーマ既定のSolidを上書き） */
 @media (min-width: 640px) {
   #shopify-section-{{ section.id }} .cart-icon--solid {
-    background-color: transparent !important; /* ← 背景を透明化 */
-    box-shadow: none !important;             /* 念のため影もリセット */
+    background-color: transparent !important; box-shadow: none !important;
   }
 }
 
-/*------------------------------------------------------------------------------------------------------------*/
+/* ========== Slideshow（コントロール外出し & ドットのみ） ========== */
 
-
-/* ===== MRST Slideshow controls (outside) ===== */
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap {
-  position: relative;
-  pointer-events: none; /* 子のボタンが拾えるように各ボタンで解除 */
-}
-
-[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button {
-  pointer-events: auto;
+/* “外側”に出すときは、コントロールのコンテナを静的配置に */
+#shopify-section-{{ section.id }} .swiper-controls.mrst--outside,
+#shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside {
+  position: static !important; inset: auto !important; transform: none !important;
+  margin-top: 16px; display: flex; justify-content: center; background: transparent !important;
+  box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; overflow: visible !important;
 }
 
-/* inside（従来） */
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--inside .mrst-swiper-button--prev {
-  left: var(--mrst-ctrl-inside-gap, 8px);
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--inside .mrst-swiper-button--next {
-  right: var(--mrst-ctrl-inside-gap, 8px);
+/* 形式2（ドットのみ） */
+#shopify-section-{{ section.id }} { --mrst-dot: #333; --mrst-dot-active: #111; --mrst-dot-ring: rgba(0,0,0,.15); }
+
+/* コンテナ（style-2 / only-dots いずれでも有効） */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2,
+#shopify-section-{{ section.id }} .mrst-only-dots {
+  position: static !important; background: transparent !important; box-shadow: none !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
 }
 
-/* outside（外出し）。ボタンを枠の“外側”へ */
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside {
-  position: absolute;
-  inset: 0;
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button--prev {
-  left: calc(-1 * var(--mrst-ctrl-outside-offset, 24px));
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-button--next {
-  right: calc(-1 * var(--mrst-ctrl-outside-offset, 24px));
+/* 欠け防止の余白（下） */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2.mrst--outside,
+#shopify-section-{{ section.id }} .mrst-only-dots { padding-bottom: 14px; z-index: 2; }
+
+/* ドット列（pagination）を常に表示・中央寄せ */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination,
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination {
+  position: static !important; display: flex !important; visibility: visible !important; opacity: 1 !important;
+  background: transparent !important; background-color: transparent !important;
+  margin: 0 auto; justify-content: center; align-items: center; gap: 10px; min-height: 18px; pointer-events: auto;
 }
 
-/* 縦位置切替 */
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap.mrst-v-top .mrst-swiper-button {
-  top: 16px;
-  transform: none;
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap.mrst-v-bottom .mrst-swiper-button {
-  bottom: 16px;
-  top: auto;
-  transform: none;
+/* ドット */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet,
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet {
+  width: 10px; height: 10px; border-radius: 9999px;
+  background: var(--mrst-dot) !important; box-shadow: 0 0 0 1px var(--mrst-dot-ring);
+  opacity: 1 !important; transform: none; transition: transform .2s ease, background-color .2s ease;
 }
 
-/* ページネーションは外出し時は下に少し外す（必要なら調整） */
-[id^="shopify-section-"] .mrst-slideshow .mrst-controls-wrap--outside .mrst-swiper-pagination {
-  position: absolute;
-  left: 50%;
-  bottom: -18px;
-  transform: translateX(-50%);
+/* アクティブ・ホバー */
+#shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet.swiper-pagination-bullet-active,
+#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active {
+  background: var(--mrst-dot-active) !important; transform: scale(1.25);
 }
-
-/* Swiper 既定ボタンの見た目微調整（任意） */
-[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 9999px;
-  background: rgba(0,0,0,.52);
-  color: #fff;
-}
-[id^="shopify-section-"] .mrst-slideshow .mrst-swiper-button:after {
-  /* 既定の矢印アイコン（必要に応じてテーマに合わせて） */
-  font-size: 16px;
-}
-
-/* ===== MRST: ドットのみ（形式2） ===== */
-
-/* outside を選んだら “スライド下” に静的配置 */
-#shopify-section-{{ section.id }} .swiper-controls.mrst--outside{
-  position: static !important;
-  inset: auto !important;
-  transform: none !important;
-  margin-top: 16px;
-  display: flex;
-  justify-content: center;
-}
-
-/* ドットコンテナを中央寄せ・横並び */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
-  position: static !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;      /* ドット間隔 */
-  margin: 0 auto;
-}
-
-/* CodePen 参考風：ベースは小さめの丸 */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet{
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  background: rgba(0,0,0,.25);           /* 薄いドット */
-  opacity: 1;                             /* Swiperのopacity制御は使わない */
-  transition: transform .2s ease, background-color .2s ease, width .2s ease;
-}
-
-/* アクティブは少し大きく（よくあるスタイル） */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active{
-  background: currentColor;               /* テキスト色に追従 */
-  transform: scale(1.2);
-}
-
-/* ホバー(デスクトップ)で軽く強調 */
-@media (hover:hover){
-  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:hover{
-    background: currentColor;
+@media (hover:hover) {
+  #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet:hover,
+  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:hover {
+    background: var(--mrst-dot-active) !important;
   }
-}
-
-/* モバイルは少し間隔を詰める */
-@media (max-width: 767px){
-  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
-    gap: 8px;
-  }
-}
-
-/* ===== MRST: 形式2（ドットのみ）— 表示が消える対策・色/欠け/重なり補正 ===== */
-
-/* セクションごとに色を変えたい場合はここで上書きできます
-   #shopify-section-{{ section.id }} { --mrst-dot:#333; --mrst-dot-active:#111; }
-*/
-#shopify-section-{{ section.id }}{
-  --mrst-dot: #333;           /* 非アクティブの塗り */
-  --mrst-dot-active: #111;    /* アクティブの塗り */
-  --mrst-dot-ring: rgba(0,0,0,.15); /* 輪郭 */
-}
-
-#shopify-section-{{ section.id }} .mrst-only-dots{
-  overflow: visible !important;
-  padding-bottom: 14px;                /* アクティブ拡大の欠け防止 */
-  position: relative;
-  z-index: 2;                           /* 背景やオーバーレイより前に */
-}
-
-/* pagination 本体を “必ず見える” に固定 */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination{
-  position: static !important;
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  min-height: 18px;
-  pointer-events: auto;
-}
-
-/* ドット（非アクティブ） */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet{
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px;
-  background: var(--mrst-dot) !important;   /* ← 視認できる濃色に */
-  box-shadow: 0 0 0 1px var(--mrst-dot-ring);
-  opacity: 1 !important;
-  transform: none;
-  transition: transform .2s ease, background-color .2s ease;
-}
-
-/* ドット（アクティブ） */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active{
-  background: var(--mrst-dot-active) !important;
-  transform: scale(1.25);
-}
-
-/* フォーカス時の見え方（テーマ上書き防止） */
-#shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:focus{
-  outline: 2px solid var(--mrst-dot-active);
-  outline-offset: 2px;
-}
-
-/* “outside” 親コンテナの背景を常に透明に（黒背景化対策の保険） */
-#shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside{
-  background: transparent !important;
-  box-shadow: none !important;
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-  overflow: visible !important;
 }
