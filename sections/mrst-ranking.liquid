@@ -157,13 +157,13 @@ calc(100vw / {{ columns_desktop }})
                     {%- if product.metafields.custom.buyer_name or product.metafields.custom.buyer_avatar -%}
                     <div class="mrst-buyer">
                         <div class="mrst-buyer__avatar">
-                        {%- if product.metafields.custom.buyer_avatar -%}
-                            {{ product.metafields.custom.buyer_avatar | image_url: width: 64 | image_tag: loading: 'lazy', alt: product.metafields.custom.buyer_name | default: 'Buyer' }}
+                        {%- if product.metafields.custom.buyer.image -%}
+                            {{ product.metafields.custom.buyer.image | image_url: width: 64 | image_tag: loading: 'lazy', alt: product.metafields.custom.buyer.image | default: 'Buyer' }}
                         {%- endif -%}
                         </div>
                         <div class="mrst-buyer__meta">
                         <div class="mrst-buyer__label">BUYER</div>
-                        <div class="mrst-buyer__name">{{ product.metafields.custom.buyer_name }}</div>
+                        <div class="mrst-buyer__name">{{ product.metafields.custom.buyer.name }}</div>
                         </div>
                     </div>
                     {%- endif -%}
