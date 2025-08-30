@@ -29,7 +29,7 @@
   assign classes = 'header items-center'
   assign classes = classes | append: ' color-' | append: section.settings.color_scheme
   if section.settings.show_sperator_line
-    assign classes = classes | append: ' header--show-separator-line'
+    assign classes = classes | append: ' header--show-sperator-line'
   endif
 
   assign custom_link = section.blocks | where: 'type', 'custom_link' | first
