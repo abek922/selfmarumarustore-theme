@@ -70,7 +70,7 @@
         "container": "full",
         "slide_height": "adapt",
         "show_controls": true,
-        "controls_position": "inside",
+        "controls_position": "outside",
         "control_style": "style-1",
         "autoplay": true,
         "autoplay_delay": 3,
