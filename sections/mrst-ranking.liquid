@@ -142,38 +142,45 @@ calc(100vw / {{ columns_desktop }})
               <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
                 {% for product in coll.products limit: limit %}
                     <div class="f-column{% if enable_slider %} swiper-slide{% endif %}">
-                    <div class="mrst-ranking-item">
-                        {%- render 'card-product',
-                        product: product,
-                        parent_color_scheme: section.settings.color_scheme,
-                        image_sizes: image_sizes,
-                        image_ratio: section.settings.pcard_image_ratio,
-                        section_index: section.index,
-                        index: forloop.index
-                        -%}
+                        <div class="mrst-ranking-item">
+                            <!-- ランク番号（1,2,3...） -->
+                            <div class="mrst-rank-badge">{{ forloop.index }}</div>
 
-                        {%- if product.metafields.custom.buyer != blank -%}
-                        {%- assign buyer = product.metafields.custom.buyer.value -%}
-                        <div class="mrst-buyer">
-                            <div class="mrst-buyer__avatar">
-                            {%- if buyer.image != blank -%}
-                                <img
-                                src="{{ buyer.image | file_url }}"
-                                alt="{{ buyer.name | escape }}"
-                                loading="lazy"
-                                width="40"
-                                height="40"
-                                class="mrst-buyer__img"
-                                >
+                            <!-- カード本体をラップして相対配置に -->
+                            <div class="mrst-card-wrap">
+                            {%- render 'card-product',
+                                product: product,
+                                parent_color_scheme: section.settings.color_scheme,
+                                image_sizes: image_sizes,
+                                image_ratio: section.settings.pcard_image_ratio,
+                                section_index: section.index,
+                                index: forloop.index
+                            -%}
+                            </div>
+
+                            <!-- Buyer 情報（商品メタフィールド：custom.buyer がメタオブジェクト参照） -->
+                            {%- if product.metafields.custom.buyer != blank -%}
+                            {%- assign buyer = product.metafields.custom.buyer.value -%}
+                            <div class="mrst-buyer">
+                                <div class="mrst-buyer__avatar">
+                                {%- if buyer.image != blank -%}
+                                    <img
+                                    src="{{ buyer.image | file_url }}"
+                                    alt="{{ buyer.name | escape }}"
+                                    loading="lazy"
+                                    width="40"
+                                    height="40"
+                                    class="mrst-buyer__img"
+                                    >
+                                {%- endif -%}
+                                </div>
+                                <div class="mrst-buyer__meta">
+                                <span class="mrst-buyer__label">BUYER</span>
+                                <span class="mrst-buyer__name">{{ buyer.name }}</span>
+                                </div>
+                            </div>
                             {%- endif -%}
-                            </div>
-                            <div class="mrst-buyer__meta">
-                            <span class="mrst-buyer__label">BUYER</span>
-                            <span class="mrst-buyer__name">{{ buyer.name }}</span>
-                            </div>
                         </div>
-                        {%- endif -%}
-                    </div>
                     </div>
                 {% endfor %}
               </div>

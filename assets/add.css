@@ -354,49 +354,77 @@
   .mrst-ranking-section .mrst-buyer__name { color: rgba(255,255,255,.9); }
 }
 
-/* === Ranking: Buyer Info === */
-.mrst-ranking-item {
+/* ===== Ranking 基本配置 ===== */
+.mrst-ranking-item{
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.mrst-buyer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 12px;
-  gap: 8px;
-  border-top: 1px solid rgba(0,0,0,.15);
-  padding-top: 8px;
+/* カードを相対にしてバッジの基準に */
+.mrst-card-wrap{
+  position: relative;
   width: 100%;
 }
 
-.mrst-buyer__avatar {
-  flex-shrink: 0;
+/* ===== ランク丸バッジ ===== */
+.mrst-rank-badge{
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 0;                 /* 画像の上縁に重ねる */
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #fff;
+  color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.12);
 }
 
-.mrst-buyer__img {
+/* テーマによってカードに余白がある場合の微調整（必要なら調整） */
+.mrst-ranking-item .card,
+.mrst-ranking-item .product-card,
+.mrst-ranking-item .card-product{
+  margin-top: 22px; /* バッジ分のクリアランス */
+}
+
+/* ===== Buyer 表示 ===== */
+.mrst-buyer{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 10px;
+  width: 100%;
+  border-top: 1px solid rgba(0,0,0,.12);
+}
+.mrst-buyer__img{
   width: 36px;
   height: 36px;
   border-radius: 50%;
   object-fit: cover;
+  display: block;
 }
-
-.mrst-buyer__meta {
+.mrst-buyer__meta{
   display: flex;
   flex-direction: column;
-  font-size: 12px;
   line-height: 1.2;
   text-align: left;
 }
-
-.mrst-buyer__label {
+.mrst-buyer__label{
   font-size: 10px;
   text-transform: uppercase;
-  opacity: 0.6;
+  opacity: .6;
 }
-
-.mrst-buyer__name {
-  font-weight: 500;
+.mrst-buyer__name{
+  font-size: 12px;
+  font-weight: 600;
 }
