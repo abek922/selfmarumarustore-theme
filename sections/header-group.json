@@ -27,7 +27,7 @@
         "enable_language_selector": true,
         "enable_country_selector": true,
         "header_top_padding_top": 16,
-        "header_top_padding_bottom": 8,
+        "header_top_padding_bottom": 16,
         "hamburger_position": "left",
         "drawer_side": "left",
         "drawer_width": "400",
