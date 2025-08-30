@@ -95,14 +95,14 @@
         "collection_CXB7Yb": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": ""
           }
         },
         "collection_PyAGwB": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "frontpage",
             "title": ""
           }
         }
