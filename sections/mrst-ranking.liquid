@@ -141,39 +141,40 @@ calc(100vw / {{ columns_desktop }})
               {%- endcomment -%}
               <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
                 {% for product in coll.products limit: limit %}
-                <div class="f-column">
-                    <div class="mrst-rank-wrap">
-                    <span class="mrst-rank-badge" data-rank="{{ forloop.index }}">{{ forloop.index }}</span>
-                    {% render 'card-product',
+                    <div class="f-column{% if enable_slider %} swiper-slide{% endif %}">
+                    <div class="mrst-ranking-item">
+                        {%- render 'card-product',
                         product: product,
                         parent_color_scheme: section.settings.color_scheme,
                         image_sizes: image_sizes,
                         image_ratio: section.settings.pcard_image_ratio,
                         section_index: section.index,
                         index: forloop.index
-                    %}
-                    </div>
-                </div>
-                    {%- if product.metafields.custom.buyer != blank -%}
-                    {%- assign buyer = product.metafields.custom.buyer.value -%}
-                    <div class="mrst-buyer">
-                        <div class="mrst-buyer__avatar">
-                        {%- if buyer.image != blank -%}
-                            <img
-                            src="{{ buyer.image | file_url }}"
-                            alt="{{ buyer.name | default: 'Buyer' | escape }}"
-                            loading="lazy"
-                            width="64" height="64"
-                            style="width:64px;height:64px;object-fit:cover;border-radius:9999px;"
-                            >
+                        -%}
+
+                        {%- if product.metafields.custom.buyer != blank -%}
+                        {%- assign buyer = product.metafields.custom.buyer.value -%}
+                        <div class="mrst-buyer">
+                            <div class="mrst-buyer__avatar">
+                            {%- if buyer.image != blank -%}
+                                <img
+                                src="{{ buyer.image | file_url }}"
+                                alt="{{ buyer.name | escape }}"
+                                loading="lazy"
+                                width="40"
+                                height="40"
+                                class="mrst-buyer__img"
+                                >
+                            {%- endif -%}
+                            </div>
+                            <div class="mrst-buyer__meta">
+                            <span class="mrst-buyer__label">BUYER</span>
+                            <span class="mrst-buyer__name">{{ buyer.name }}</span>
+                            </div>
+                        </div>
                         {%- endif -%}
-                        </div>
-                        <div class="mrst-buyer__meta">
-                        <div class="mrst-buyer__label">BUYER</div>
-                        <div class="mrst-buyer__name">{{ buyer.name }}</div>
-                        </div>
                     </div>
-                    {%- endif -%}
+                    </div>
                 {% endfor %}
               </div>
             </div>
