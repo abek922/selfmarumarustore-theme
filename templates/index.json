@@ -65,6 +65,9 @@
         "slide_GcYdYE",
         "slide_MdX3nN"
       ],
+      "custom_css": [
+        ".slideshow__text {margin-bottom: 3rem; margin-left: 3rem;}"
+      ],
       "name": "MRST Slideshow",
       "settings": {
         "container": "full",
