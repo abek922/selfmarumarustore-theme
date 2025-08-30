@@ -206,3 +206,150 @@
     gap: 8px;
   }
 }
+
+/* =======================================================
+   MRST Ranking – polish
+   対象セクション: .mrst-ranking-section
+   他セクションへ影響しないようセレクタをスコープ
+   ======================================================= */
+
+/* --- 見出し（RANKING） --- */
+.mrst-ranking-section .s__header .rich-text__heading {
+  /* PCで大きめ、モバイルで自動縮小 */
+  font-weight: 600;
+  letter-spacing: .06em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  /* clamp(最小, 推奨, 最大) */
+  font-size: clamp(28px, 6vw, 64px);
+}
+
+/* --- タブ（コレクションのナビ）を “丸タブ/チップ” に --- */
+.mrst-ranking-section .tabs-nav__inner {
+  gap: 8px;
+}
+.mrst-ranking-section .tabs__btn {
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  line-height: 1;
+  font-size: 13px;
+  letter-spacing: .02em;
+  color: rgba(0,0,0,.70);
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.mrst-ranking-section .tabs__btn:hover {
+  background: rgba(0,0,0,.04);
+  color: rgba(0,0,0,.85);
+}
+.mrst-ranking-section .tabs__btn.active {
+  border-color: rgba(0,0,0,.8);
+  background: rgba(0,0,0,.85);
+  color: #fff;
+}
+
+/* --- グリッドの余白をやや広めに --- */
+.mrst-ranking-section .f-grid {
+  row-gap: 28px !important;
+}
+
+/* --- ランキング番号のバッジ（画像の上部中央に重ねる） --- */
+.mrst-ranking-section .mrst-rank-wrap {
+  position: relative;
+}
+.mrst-ranking-section .mrst-rank-badge {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 0;                 /* 画像上端に重ねる */
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 20px;
+  color: #222;
+  z-index: 3;
+}
+
+/* テーマのカード画像ラッパの上に出しやすくする（保険） */
+.mrst-ranking-section .mrst-rank-wrap .media,
+.mrst-ranking-section .mrst-rank-wrap .media-wrapper,
+.mrst-ranking-section .mrst-rank-wrap .card-media {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- カード内のタイトル/価格のトーンを近づける --- */
+.mrst-ranking-section .card__information,
+.mrst-ranking-section .card-information,
+.mrst-ranking-section .product-card__info {
+  text-align: center;
+}
+.mrst-ranking-section .card__information .price,
+.mrst-ranking-section .product-card__info .price {
+  margin-top: 4px;
+}
+
+/* --- BUYER 行（あれば） --- */
+.mrst-ranking-section .mrst-buyer {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,.12);
+}
+.mrst-ranking-section .mrst-buyer__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+.mrst-ranking-section .mrst-buyer__avatar img { width: 100%; height: 100%; object-fit: cover; }
+.mrst-ranking-section .mrst-buyer__meta {
+  line-height: 1.2;
+}
+.mrst-ranking-section .mrst-buyer__label {
+  font-size: 10px;
+  letter-spacing: .12em;
+  color: rgba(0,0,0,.55);
+}
+.mrst-ranking-section .mrst-buyer__name {
+  font-size: 12px;
+  color: rgba(0,0,0,.9);
+}
+
+/* --- “view more” ボタン（中央に） --- */
+.mrst-ranking-section .rich-text__button,
+.mrst-ranking-section .section__header--buttons:has(.rich-text__button) {
+  justify-content: center;
+}
+.mrst-ranking-section .btn--underline,
+.mrst-ranking-section .btn--primary,
+.mrst-ranking-section .btn--secondary {
+  border-radius: 9999px;
+  padding-inline: 22px;
+  min-height: 40px;
+}
+
+/* --- スライダーの下にナビが来る場合の余白調整（保険） --- */
+@media (min-width: 768px){
+  .mrst-ranking-section .swiper-controls--grouped { margin-top: 8px; }
+}
+
+/* --- ダーク面の軽微調整（任意） --- */
+@media (prefers-color-scheme: dark){
+  .mrst-ranking-section .tabs__btn { border-color: rgba(255,255,255,.18); background: transparent; color:#ddd; }
+  .mrst-ranking-section .tabs__btn.active { background:#fff; color:#111; border-color:#fff; }
+  .mrst-ranking-section .mrst-rank-badge { background:#111; color:#fff; border-color: rgba(255,255,255,.14); }
+  .mrst-ranking-section .mrst-buyer__label { color: rgba(255,255,255,.6); }
+  .mrst-ranking-section .mrst-buyer__name { color: rgba(255,255,255,.9); }
+}
