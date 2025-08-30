@@ -128,52 +128,70 @@
 
 /* ========== Slideshow（コントロール外出し & ドットのみ） ========== */
 
-/* “外側”に出すときは、コントロールのコンテナを静的配置に */
-#shopify-section-{{ section.id }} .swiper-controls.mrst--outside,
-#shopify-section-{{ section.id }} .mrst-swiper-controls.mrst--outside {
-  position: static !important; inset: auto !important; transform: none !important;
-  margin-top: 16px; display: flex; justify-content: center; background: transparent !important;
-  box-shadow: none !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; overflow: visible !important;
-}
+/* ===== MRST: 形式2（シンプルなドット） ===== */
 
-/* 形式2（ドットのみ） */
-#shopify-section-{{ section.id }} { --mrst-dot: #333; --mrst-dot-active: #111; --mrst-dot-ring: rgba(0,0,0,.15); }
-
-/* コンテナ（style-2 / only-dots いずれでも有効） */
+/* コンテナ設定（ドットのみ） */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2,
 #shopify-section-{{ section.id }} .mrst-only-dots {
-  position: static !important; background: transparent !important; box-shadow: none !important;
-  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  position: static !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
-/* 欠け防止の余白（下） */
+/* ドットの欠け防止（下余白を確保） */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2.mrst--outside,
-#shopify-section-{{ section.id }} .mrst-only-dots { padding-bottom: 14px; z-index: 2; }
+#shopify-section-{{ section.id }} .mrst-only-dots {
+  padding-bottom: 14px;
+  z-index: 2;
+}
 
-/* ドット列（pagination）を常に表示・中央寄せ */
+/* ドットの表示（中央寄せ、背景やアニメーションを無効化） */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination,
 #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination {
-  position: static !important; display: flex !important; visibility: visible !important; opacity: 1 !important;
-  background: transparent !important; background-color: transparent !important;
-  margin: 0 auto; justify-content: center; align-items: center; gap: 10px; min-height: 18px; pointer-events: auto;
+  position: static !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: transparent !important;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  min-height: 18px;
+  pointer-events: auto;
 }
 
-/* ドット */
+/* ドット（非アクティブ） */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet,
 #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet {
-  width: 10px; height: 10px; border-radius: 9999px;
-  background: var(--mrst-dot) !important; box-shadow: 0 0 0 1px var(--mrst-dot-ring);
-  opacity: 1 !important; transform: none; transition: transform .2s ease, background-color .2s ease;
+  width: 8px; /* ドットの大きさを調整 */
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mrst-dot, #333) !important; /* デフォルトの色 */
+  opacity: 1 !important;
+  transition: transform .2s ease, background-color .2s ease;
 }
 
-/* アクティブ・ホバー */
+/* アクティブドット */
 #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet.swiper-pagination-bullet-active,
 #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet.swiper-pagination-bullet-active {
-  background: var(--mrst-dot-active) !important; transform: scale(1.25);
+  background: var(--mrst-dot-active, #111) !important;
+  transform: scale(1.2); /* 少しだけ大きくする */
 }
+
+/* ホバー時（デスクトップ用） */
 @media (hover:hover) {
   #shopify-section-{{ section.id }} .mrst-swiper-controls--style-2 .swiper-pagination-bullet:hover,
   #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination-bullet:hover {
-    background: var(--mrst-dot-active) !important;
+    background: var(--mrst-dot-active, #111) !important;
+  }
+}
+
+/* モバイルでは間隔を少し詰める */
+@media (max-width: 767px) {
+  #shopify-section-{{ section.id }} .mrst-only-dots .swiper-pagination {
+    gap: 8px;
   }
 }
