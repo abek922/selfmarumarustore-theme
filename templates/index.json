@@ -88,7 +88,7 @@
         "collection_jUbRmX": {
           "type": "collection",
           "settings": {
-            "collection": "frontpage",
+            "collection": "all-products",
             "title": "タイトル"
           }
         },
@@ -118,16 +118,14 @@
         "color_scheme": "",
         "subheading": "",
         "heading": "RANKING",
-        "heading_size": "h1",
         "section_header_alignment": "center",
         "section_header_alignment_mobile": "inherit",
         "limit": 8,
         "columns": 4,
+        "columns_mobile": "1",
+        "pcard_image_ratio": "",
         "column_gap": "medium",
         "row_gap": "inherit",
-        "pcard_image_ratio": "",
-        "columns_mobile": "1",
-        "show_view_more": true,
         "padding_top": 50,
         "padding_bottom": 50,
         "show_section_divider": false,
