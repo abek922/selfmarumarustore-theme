@@ -15,7 +15,7 @@
         "slide_GcYdYE": {
           "type": "slide",
           "settings": {
-            "color_scheme": "scheme-inverse",
+            "color_scheme": "scheme-1",
             "background": "shopify://shop_images/slide-sample_pc.jpg",
             "background_mobile": "shopify://shop_images/slide-sample_sp.jpg",
             "image_overlay_opacity": 0,
