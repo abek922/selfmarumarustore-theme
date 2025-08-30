@@ -82,6 +82,58 @@
         "accessibility_info": ""
       }
     },
+    "mrst_ranking_DyYJFa": {
+      "type": "mrst-ranking",
+      "blocks": {
+        "collection_jUbRmX": {
+          "type": "collection",
+          "settings": {
+            "collection": "frontpage",
+            "title": ""
+          }
+        },
+        "collection_CXB7Yb": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        },
+        "collection_PyAGwB": {
+          "type": "collection",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        }
+      },
+      "block_order": [
+        "collection_jUbRmX",
+        "collection_CXB7Yb",
+        "collection_PyAGwB"
+      ],
+      "name": "MRST Ranking (Best sellers)",
+      "settings": {
+        "container": "fixed",
+        "color_scheme": "",
+        "subheading": "",
+        "heading": "RANKING",
+        "heading_size": "h1",
+        "section_header_alignment": "center",
+        "section_header_alignment_mobile": "inherit",
+        "limit": 8,
+        "columns": 4,
+        "column_gap": "medium",
+        "row_gap": "inherit",
+        "pcard_image_ratio": "",
+        "columns_mobile": "1",
+        "show_view_more": true,
+        "padding_top": 50,
+        "padding_bottom": 50,
+        "show_section_divider": false,
+        "divider_width": "fixed"
+      }
+    },
     "slideshow_q3U4Jn": {
       "type": "slideshow",
       "blocks": {
@@ -2549,6 +2601,7 @@
   },
   "order": [
     "mrst_slideshow_3gPnac",
+    "mrst_ranking_DyYJFa",
     "slideshow_q3U4Jn",
     "multicolumn_ic6f9z",
     "multicolumn_JW8JNU",
