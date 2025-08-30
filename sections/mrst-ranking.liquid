@@ -49,6 +49,26 @@ calc(100vw / {{ columns_desktop }})
       grid-template-columns: repeat(var(--f-columns-mobile), minmax(0,1fr));
     }
   }
+  /* === MRST: ランキング番号バッジ === */
+  .section-{{ section.id }} .mrst-rank-wrap{ position: relative; }
+  .section-{{ section.id }} .mrst-rank-badge{
+    position: absolute;
+    top: 8px; left: 8px;
+    z-index: 5;
+    min-width: 28px; height: 28px;
+    padding: 0 8px;
+    border-radius: 9999px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; line-height: 1;
+    color: #fff;
+    background: rgba(0,0,0,.7);
+    box-shadow: 0 2px 6px rgba(0,0,0,.18);
+    pointer-events: none;   /* クリック干渉しない */
+  }
+  /* 1〜3位を少し強調（任意） */
+  .section-{{ section.id }} .mrst-rank-badge[data-rank="1"]{ background:#111; }
+  .section-{{ section.id }} .mrst-rank-badge[data-rank="2"]{ background:#333; }
+  .section-{{ section.id }} .mrst-rank-badge[data-rank="3"]{ background:#555; }
 {% endstyle %}
 
 {% render 'divider',
@@ -121,25 +141,19 @@ calc(100vw / {{ columns_desktop }})
               {%- endcomment -%}
               <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
                 {% for product in coll.products limit: limit %}
-                  <div class="f-column">
+                <div class="f-column">
+                    <div class="mrst-rank-wrap">
+                    <span class="mrst-rank-badge" data-rank="{{ forloop.index }}">{{ forloop.index }}</span>
                     {% render 'card-product',
-                      product: product,
-                      parent_color_scheme: section.settings.color_scheme,
-                      image_sizes: image_sizes,
-                      image_ratio: section.settings.pcard_image_ratio,
-                      section_index: section.index,
-                      index: forloop.index
-                    %}
-                  </div>
-                {% else %}
-                  {% for i in (1..limit) %}
-                    <div class="f-column">
-                      {% render 'card-product-placeholder',
+                        product: product,
+                        parent_color_scheme: section.settings.color_scheme,
+                        image_sizes: image_sizes,
                         image_ratio: section.settings.pcard_image_ratio,
-                        parent_color_scheme: section.settings.color_scheme
-                      %}
+                        section_index: section.index,
+                        index: forloop.index
+                    %}
                     </div>
-                  {% endfor %}
+                </div>
                 {% endfor %}
               </div>
             </div>
