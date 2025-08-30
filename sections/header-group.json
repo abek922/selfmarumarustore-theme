@@ -85,7 +85,7 @@
         "enable_language_selector": false,
         "enable_country_selector": true,
         "header_top_padding_top": 20,
-        "header_top_padding_bottom": 20,
+        "header_top_padding_bottom": 26,
         "navigation_color_scheme": "",
         "navigation_content_alignment": "start",
         "navigation_padding_top": 0,
