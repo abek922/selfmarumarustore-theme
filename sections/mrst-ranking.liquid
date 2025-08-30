@@ -154,16 +154,17 @@ calc(100vw / {{ columns_desktop }})
                     %}
                     </div>
                 </div>
-                    {%- if product.metafields.custom.buyer_name or product.metafields.custom.buyer_avatar -%}
+                    {%- if product.metafields.custom.buyer != blank -%}
+                    {%- assign buyer = product.metafields.custom.buyer.value -%}
                     <div class="mrst-buyer">
                         <div class="mrst-buyer__avatar">
-                        {%- if product.metafields.custom.buyer.image -%}
-                            {{ product.metafields.custom.buyer.image | image_url: width: 64 | image_tag: loading: 'lazy', alt: product.metafields.custom.buyer.image | default: 'Buyer' }}
+                        {%- if buyer.image != blank -%}
+                            {{ buyer.image | image_url: width: 64 | image_tag: loading: 'lazy', alt: buyer.name }}
                         {%- endif -%}
                         </div>
                         <div class="mrst-buyer__meta">
                         <div class="mrst-buyer__label">BUYER</div>
-                        <div class="mrst-buyer__name">{{ product.metafields.custom.buyer.name }}</div>
+                        <div class="mrst-buyer__name">{{ buyer.name }}</div>
                         </div>
                     </div>
                     {%- endif -%}
