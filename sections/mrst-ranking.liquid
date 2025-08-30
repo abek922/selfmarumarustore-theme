@@ -1,20 +1,24 @@
 {{ 'section-featured-collection.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign columns_desktop = section.settings.columns
-  assign columns_tablet = columns_desktop | at_most: 3
-  assign columns_mobile = section.settings.columns_mobile | plus: 0
+  assign columns_desktop = section.settings.columns | default: 4
+  assign columns_mobile  = section.settings.columns_mobile | default: '1'
+  assign limit           = section.settings.limit | default: 8
+
   assign header_alignment = section.settings.section_header_alignment
   assign header_alignment_mobile = section.settings.section_header_alignment_mobile
-  if header_alignment_mobile == 'inherit' 
+  if header_alignment_mobile == 'inherit'
     assign header_alignment_mobile = header_alignment
   endif
-  assign motion_delay = 50
+
+  assign has_richtext = false
+  if section.settings.heading != blank or section.settings.description != blank or section.settings.subheading != blank
+    assign has_richtext = true
+  endif
 -%}
 
 {%- capture image_sizes -%}
 (max-width: 767px) calc((100vw - 30px) / {{ columns_mobile }}),
-(max-width: 1023px) calc((100vw - 30px) / {{ columns_tablet }}),
 calc(100vw / {{ columns_desktop }})
 {%- endcapture -%}
 
@@ -22,20 +26,29 @@ calc(100vw / {{ columns_desktop }})
   .section-{{ section.id }}{
     --section-padding-top: {{ section.settings.padding_top }}px;
     --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --f-columns-xl: {{ columns_desktop }};
+    --f-columns-mobile: {{ columns_mobile }};
   }
-  /* ランキング番号の丸バッジ */
-  .mrst-rank-badge{
-    position:absolute; left:50%; top:-22px; transform:translateX(-50%);
-    width:44px; height:44px; border-radius:9999px; background:#fff;
-    display:flex; align-items:center; justify-content:center;
-    box-shadow:0 0 0 1px rgba(0,0,0,.12);
-    font: 600 16px/1 var(--font-body, system-ui);
+  .section-{{ section.id }} .mrst-tabs-nav{ margin:12px 0 20px; overflow:auto; }
+  .section-{{ section.id }} .mrst-tabs-nav__inner{ display:flex; gap:12px; }
+  .section-{{ section.id }} .mrst-tab{
+    appearance:none; background:none; border:none; padding:6px 10px; cursor:pointer;
+    border-bottom:2px solid transparent; white-space:nowrap;
   }
-  .mrst-card{ position:relative; padding-top:28px; } /* バッジ分の上余白 */
-  .mrst-buyer-chip{ display:flex; align-items:center; gap:10px; padding-top:12px; }
-  .mrst-buyer-chip__avatar{ width:36px; height:36px; border-radius:9999px; object-fit:cover; }
-  .mrst-buyer-chip__meta{ font-size:12px; line-height:1.4; opacity:.9 }
-  .mrst-viewmore{ margin-top:28px; text-align:center; }
+  .section-{{ section.id }} .mrst-tab.is-active{ border-color: currentColor; }
+  .section-{{ section.id }} .mrst-tab-panel{ display:none; }
+  .section-{{ section.id }} .mrst-tab-panel.is-active{ display:block; }
+
+  /* グリッド（テーマの f-grid ユーティリティに合わせた最小指定） */
+  .section-{{ section.id }} .mrst-ranking-grid{
+    display:grid;
+    grid-template-columns: repeat(var(--f-columns-xl), minmax(0,1fr));
+  }
+  @media (max-width: 767px){
+    .section-{{ section.id }} .mrst-ranking-grid{
+      grid-template-columns: repeat(var(--f-columns-mobile), minmax(0,1fr));
+    }
+  }
 {% endstyle %}
 
 {% render 'divider',
@@ -43,193 +56,280 @@ calc(100vw / {{ columns_desktop }})
   divider_width: section.settings.divider_width
 %}
 
-<div class="section section-{{ section.id }} section--padding color-{{ section.settings.color_scheme }}">
+<div class="section section-{{ section.id }} section--padding color-{{ section.settings.color_scheme }}" data-id="{{ section.id }}">
   <div class="section__container page-width page-width--{{ section.settings.container }}">
-    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
-      <div class="s__header rich-text md:text-{{ header_alignment }} text-{{ header_alignment_mobile }}">
-        {%- if section.settings.subheading != blank -%}
-          <motion-element class="rich-text__subheading text-subheading" data-motion="fade-up" data-motion-delay="{{ motion_delay }}">
-            {{ section.settings.subheading }}
-          </motion-element>
-          {%- assign motion_delay = motion_delay | plus: 50 -%}
-        {%- endif -%}
-        {%- if section.settings.heading != blank -%}
+    <div class="section__wrapper" data-section-id="{{ section.id }}">
+
+      {%- if has_richtext -%}
+      <div class="section__header s__header rich-text rich-text--tight md:text-{{ header_alignment }} text-{{ header_alignment_mobile }}">
+        {% if section.settings.subheading != blank %}
+          <div class="rich-text__subheading text-subheading">{{ section.settings.subheading }}</div>
+        {% endif %}
+        {% if section.settings.heading != blank %}
           <h2 class="rich-text__heading inline-richtext {{ section.settings.heading_size }}">
-            <motion-element data-motion="fade-up" data-motion-delay="{{ motion_delay }}">
-              {% render 'highlight-text',
-                hl_text: section.settings.heading,
-                hl_style: section.settings.highlight_style,
-                hl_font_style: section.settings.highlight_font_style,
-                hl_style_color: section.settings.highlight_style_color,
-                hl_text_color: section.settings.highlight_text_color
-              %}
-            </motion-element>
+            {% render 'highlight-text',
+              hl_text: section.settings.heading,
+              hl_style: section.settings.highlight_style,
+              hl_font_style: section.settings.highlight_font_style,
+              hl_style_color: section.settings.highlight_style_color,
+              hl_text_color: section.settings.highlight_text_color
+            %}
           </h2>
-        {%- endif -%}
+        {% endif %}
+        {% if section.settings.description != blank %}
+          <div class="rich-text__text rte {{ section.settings.text_size }} text-subtext">
+            {{ section.settings.description }}
+          </div>
+        {% endif %}
       </div>
-    {%- endif -%}
+      {%- endif -%}
 
-    <div class="tabs__panels">
-      {%- for block in section.blocks -%}
-        {%- liquid
-          assign collection = collections[block.settings.collection]
-          assign limit = section.settings.limit
-          if collection != blank and collection.all_products_count < limit
-            assign limit = collection.all_products_count
-          endif
-          assign show_view_more = section.settings.show_view_more
-        -%}
+      {%- if section.blocks.size > 1 -%}
+        <div class="mrst-tabs-nav" role="tablist" aria-label="Ranking tabs">
+          <div class="mrst-tabs-nav__inner">
+            {% for block in section.blocks %}
+              {% assign coll = collections[block.settings.collection] %}
+              {% if coll %}
+                <button
+                  class="mrst-tab{% if forloop.first %} is-active{% endif %}"
+                  role="tab"
+                  data-index="{{ forloop.index0 }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {{ block.settings.title | default: coll.title }}
+                </button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      {%- endif -%}
 
-        <div class="featured-collection__content" {{ block.shopify_attributes }}>
-          {%- if block.settings.title != blank -%}
-            <div class="mb-6 md:mb-8 text-center">
-              <h3 class="h4">{{ block.settings.title }}</h3>
-              <small class="opacity-70">
-                コレクションを<strong>Best selling</strong>並び替えに設定してください
-              </small>
-            </div>
-          {%- endif -%}
-
-          <div class="products-list f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}"
-               style="--f-columns-xl: {{ columns_desktop }}; --f-columns-md: {{ columns_tablet }}; --f-columns-mobile: {{ columns_mobile }};">
-            {%- if collection != blank -%}
-              {%- for product in collection.products limit: limit -%}
-                <div class="f-column">
-                  <div class="mrst-card">
-                    <div class="mrst-rank-badge">{{ forloop.index }}</div>
-
-                    {%- render 'card-product',
+      <div class="section__content tabs__panels">
+        {% for block in section.blocks %}
+          {% assign coll = collections[block.settings.collection] %}
+          {% if coll %}
+            <div
+              class="mrst-tab-panel{% if forloop.first %} is-active{% endif %}"
+              role="tabpanel"
+              data-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- comment -%}
+                ランキング（売上順）について：
+                Liquid ではベストセラーのソートキー指定ができないため、
+                対象コレクションの「並び順」を管理画面で「ベストセラー」に設定してください。
+              {%- endcomment -%}
+              <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
+                {% for product in coll.products limit: limit %}
+                  <div class="f-column">
+                    {% render 'card-product',
                       product: product,
                       parent_color_scheme: section.settings.color_scheme,
                       image_sizes: image_sizes,
                       image_ratio: section.settings.pcard_image_ratio,
                       section_index: section.index,
                       index: forloop.index
-                    -%}
-
-                    {%- comment -%} 商品にバイヤーがいれば簡易チップを表示（先にご提案した設計） {%- endcomment -%}
-                    {%- assign b = product.metafields.buyer.primary_buyer.value -%}
-                    {%- if b -%}
-                      <div class="mrst-buyer-chip">
-                        {%- if b.avatar -%}
-                          <img class="mrst-buyer-chip__avatar" src="{{ b.avatar | image_url: width: 72, height: 72, crop: 'center' }}" alt="{{ b.display_name | escape }}" loading="lazy">
-                        {%- endif -%}
-                        <div class="mrst-buyer-chip__meta">
-                          <div class="opacity-60 uppercase tracking-wider" style="font-size:11px;">BUYER</div>
-                          <div>{{ b.display_name }}</div>
-                        </div>
-                      </div>
-                    {%- endif -%}
+                    %}
                   </div>
-                </div>
-              {%- else -%}
-                {%- for i in (1..limit) -%}
-                  <div class="f-column">{% render 'card-product-placeholder', parent_color_scheme: section.settings.color_scheme %}</div>
-                {%- endfor -%}
-              {%- endfor -%}
-            {%- else -%}
-              <div class="rte">コレクションを選択してください。</div>
-            {%- endif -%}
-          </div>
-
-          {%- if show_view_more and collection != blank -%}
-            <div class="mrst-viewmore">
-              <a class="btn btn--plain" href="{{ collection.url }}?sort_by=best-selling">
-                view more
-              </a>
+                {% else %}
+                  {% for i in (1..limit) %}
+                    <div class="f-column">
+                      {% render 'card-product-placeholder',
+                        image_ratio: section.settings.pcard_image_ratio,
+                        parent_color_scheme: section.settings.color_scheme
+                      %}
+                    </div>
+                  {% endfor %}
+                {% endfor %}
+              </div>
             </div>
-          {%- endif -%}
-        </div>
-      {%- endfor -%}
+          {% endif %}
+        {% endfor %}
+      </div>
+
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const root = document.querySelector('.section-{{ section.id }}');
+  if(!root) return;
+  const tabs = root.querySelectorAll('.mrst-tab');
+  const panels = root.querySelectorAll('.mrst-tab-panel');
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('is-active'));
+      panels.forEach(p => p.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      if (panels[i]) panels[i].classList.add('is-active');
+    });
+  });
+});
+</script>
 
 {% schema %}
 {
   "name": "MRST Ranking",
   "disabled_on": { "groups": ["header", "footer", "custom.overlay"] },
   "settings": [
-    { "type": "select", "id": "container", "label": "Container", "default": "fixed",
+    { "type": "header", "content": "General" },
+    {
+      "type": "select",
+      "id": "container",
+      "label": "Container",
       "options": [
         { "value": "full", "label": "Full width" },
-        { "value": "fixed", "label": "Fixed" }
-      ]
+        { "value": "fixed", "label": "Fixed width" }
+      ],
+      "default": "fixed"
     },
     { "type": "color_scheme", "id": "color_scheme", "label": "Colors", "default": "scheme-1" },
 
     { "type": "header", "content": "Heading" },
     { "type": "inline_richtext", "id": "subheading", "label": "Subheading" },
     { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "RANKING" },
-    { "type": "select", "id": "heading_size", "label": "Heading size", "default": "h1",
+    {
+      "type": "select",
+      "id": "highlight_style",
+      "label": "Highlight style",
       "options": [
-        { "value": "h5", "label": "H5" },{ "value": "h4", "label": "H4" },{ "value": "h3", "label": "H3" },
-        { "value": "h2", "label": "H2" },{ "value": "h1", "label": "H1" },{ "value": "hd2", "label": "HD2" },{ "value": "hd1", "label": "HD1" }
+        { "value": "none", "label": "None" },
+        { "value": "hand_drawn_circle", "label": "Hand drawn circle" },
+        { "value": "thick_underline", "label": "Thick underline" },
+        { "value": "wave_underline", "label": "Wave underline" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "highlight_font_style",
+      "label": "Highlight font style",
+      "options": [
+        { "value": "italic", "label": "Italic" },
+        { "value": "normal", "label": "Normal" }
+      ],
+      "default": "normal"
+    },
+    { "type": "color", "id": "highlight_style_color", "label": "Highlight color" },
+    { "type": "color", "id": "highlight_text_color", "label": "Highlight text color" },
+    {
+      "id": "section_header_alignment",
+      "type": "select",
+      "label": "Heading alignment",
+      "default": "center",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
       ]
     },
-    { "type": "select", "id": "section_header_alignment", "label": "Heading alignment", "default": "center",
+    {
+      "id": "section_header_alignment_mobile",
+      "type": "select",
+      "label": "Heading alignment (mobile)",
+      "default": "inherit",
       "options": [
-        { "value": "left", "label": "Left" },{ "value": "center", "label": "Center" },{ "value": "right", "label": "Right" }
+        { "value": "inherit", "label": "Inherit" },
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
       ]
     },
-    { "type": "select", "id": "section_header_alignment_mobile", "label": "Heading alignment (mobile)", "default": "inherit",
-      "options": [
-        { "value": "inherit", "label": "Inherit" },{ "value": "left", "label": "Left" },{ "value": "center", "label": "Center" },{ "value": "right", "label": "Right" }
-      ]
-    },
+    { "type": "richtext", "id": "description", "label": "Description" },
 
     { "type": "header", "content": "Grid" },
     { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 8 },
     { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
-    { "type": "select", "id": "column_gap", "label": "Column gap", "default": "medium",
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns (mobile)",
       "options": [
-        { "value": "none", "label": "None" },{ "value": "2xs", "label": "2xs" },{ "value": "extra-small", "label": "XS" },
-        { "value": "small", "label": "SM" },{ "value": "medium", "label": "MD" },{ "value": "large", "label": "LG" },{ "value": "extra-large", "label": "XL" }
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "pcard_image_ratio",
+      "label": "Product image ratio",
+      "default": "",
+      "options": [
+        { "value": "", "label": "Inherit" },
+        { "value": "adapt", "label": "Adapt" },
+        { "value": "1/1", "label": "1:1" },
+        { "value": "3/4", "label": "3:4" },
+        { "value": "4/3", "label": "4:3" }
       ]
     },
-    { "type": "select", "id": "row_gap", "label": "Row gap", "default": "inherit",
+    {
+      "type": "select",
+      "id": "column_gap",
+      "label": "Column gap",
       "options": [
-        { "value": "inherit", "label": "Inherit" },{ "value": "none", "label": "None" },{ "value": "extra-small", "label": "XS" },
-        { "value": "small", "label": "SM" },{ "value": "medium", "label": "MD" },{ "value": "large", "label": "LG" },{ "value": "extra-large", "label": "XL" }
-      ]
+        { "value": "none", "label": "None" },
+        { "value": "2xs", "label": "2xs" },
+        { "value": "extra-small", "label": "XS" },
+        { "value": "small", "label": "SM" },
+        { "value": "medium", "label": "MD" },
+        { "value": "large", "label": "LG" },
+        { "value": "extra-large", "label": "XL" }
+      ],
+      "default": "medium"
     },
-    { "type": "select", "id": "pcard_image_ratio", "label": "Card image ratio", "default": "",
+    {
+      "type": "select",
+      "id": "row_gap",
+      "label": "Row gap",
       "options": [
-        { "value": "", "label": "Inherit" },{ "value": "adapt", "label": "Adapt" },{ "value": "1/1", "label": "1:1" },
-        { "value": "3/4", "label": "3:4" },{ "value": "4/3", "label": "4:3" }
-      ]
+        { "value": "inherit", "label": "Inherit" },
+        { "value": "none", "label": "None" },
+        { "value": "extra-small", "label": "XS" },
+        { "value": "small", "label": "SM" },
+        { "value": "medium", "label": "MD" },
+        { "value": "large", "label": "LG" },
+        { "value": "extra-large", "label": "XL" }
+      ],
+      "default": "inherit"
     },
 
-    { "type": "header", "content": "Mobile" },
-    { "type": "select", "id": "columns_mobile", "label": "Columns (mobile)", "default": "1",
-      "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ]
-    },
-
-    { "type": "header", "content": "Extras" },
-    { "type": "checkbox", "id": "show_view_more", "label": "\"View more\" button", "default": true },
-
-    { "type": "header", "content": "Padding / Divider" },
-    { "type": "range", "id": "padding_top", "label": "Padding top", "default": 50, "min": 0, "max": 100, "step": 2, "unit": "px" },
-    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "default": 50, "min": 0, "max": 100, "step": 2, "unit": "px" },
+    { "type": "header", "content": "Padding & Divider" },
+    { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 50 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 50 },
     { "type": "checkbox", "id": "show_section_divider", "label": "Show divider", "default": false },
-    { "type": "select", "id": "divider_width", "label": "Divider width", "default": "fixed",
-      "options": [ { "value": "fixed", "label": "Fixed" }, { "value": "full", "label": "Full" } ]
+    {
+      "type": "select",
+      "id": "divider_width",
+      "label": "Divider width",
+      "options": [
+        { "value": "fixed", "label": "Fixed" },
+        { "value": "full", "label": "Full" }
+      ],
+      "default": "fixed"
     }
   ],
   "blocks": [
     {
       "type": "collection",
-      "name": "Ranking source",
+      "name": "Collection",
       "limit": 8,
       "settings": [
-        { "type": "collection", "id": "collection", "label": "Collection (set to Best selling)" },
-        { "type": "text", "id": "title", "label": "Tab title / Label" }
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Tab label (optional)" }
       ]
     }
   ],
   "presets": [
-    { "name": "MRST Ranking (Best sellers)", "category": "SELF 〇〇 STORE",
-      "blocks": [ { "type": "collection" } ]
+    {
+      "name": "MRST Ranking",
+      "category": "SELF 〇〇 STORE",
+      "blocks": [
+        { "type": "collection" },
+        { "type": "collection" },
+        { "type": "collection" }
+      ]
     }
   ]
 }
