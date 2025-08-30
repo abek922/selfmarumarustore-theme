@@ -70,10 +70,10 @@
         "container": "full",
         "slide_height": "adapt",
         "show_controls": true,
-        "controls_position": "outside",
-        "control_style": "style-2",
+        "controls_position": "inside",
+        "control_style": "style-1",
         "autoplay": true,
-        "autoplay_delay": 5,
+        "autoplay_delay": 3,
         "show_text_below": false,
         "text_alignment_mobile": "center",
         "accessibility_info": ""
