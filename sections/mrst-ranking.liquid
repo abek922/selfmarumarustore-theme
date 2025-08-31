@@ -49,26 +49,15 @@ calc(100vw / {{ columns_desktop }})
       grid-template-columns: repeat(var(--f-columns-mobile), minmax(0,1fr));
     }
   }
-  /* === MRST: ランキング番号バッジ === */
-  .section-{{ section.id }} .mrst-rank-wrap{ position: relative; }
-  .section-{{ section.id }} .mrst-rank-badge{
-    position: absolute;
-    top: 8px; left: 8px;
-    z-index: 5;
-    min-width: 28px; height: 28px;
-    padding: 0 8px;
-    border-radius: 9999px;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px; line-height: 1;
-    color: #fff;
-    background: rgba(0,0,0,.7);
-    box-shadow: 0 2px 6px rgba(0,0,0,.18);
-    pointer-events: none;   /* クリック干渉しない */
+  .section-{{ section.id }} .mrst-tab{
+    border-bottom:2px solid transparent;
+    color:#444;
   }
-  /* 1〜3位を少し強調（任意） */
-  .section-{{ section.id }} .mrst-rank-badge[data-rank="1"]{ background:#111; }
-  .section-{{ section.id }} .mrst-rank-badge[data-rank="2"]{ background:#333; }
-  .section-{{ section.id }} .mrst-rank-badge[data-rank="3"]{ background:#555; }
+  .section-{{ section.id }} .mrst-tab:is(:hover,:focus-visible){ color:#111; }
+  .section-{{ section.id }} .mrst-tab.is-active{
+    color:#111;
+    border-color:#111;
+  }
 {% endstyle %}
 
 {% render 'divider',
@@ -144,7 +133,7 @@ calc(100vw / {{ columns_desktop }})
                     <div class="f-column{% if enable_slider %} swiper-slide{% endif %}">
                         <div class="mrst-ranking-item">
                             <!-- ランク番号（1,2,3...） -->
-                            <div class="mrst-rank-badge">{{ forloop.index }}</div>
+                            <div class="mrst-rank-badge" data-rank="{{ forloop.index }}">{{ forloop.index }}</div>
 
                             <!-- カード本体をラップして相対配置に -->
                             <div class="mrst-card-wrap">

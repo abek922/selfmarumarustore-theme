@@ -428,3 +428,57 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+
+/* === MRST: ランキング番号バッジ（中央上・白丸） === */
+.section-{{ section.id }} .mrst-card-wrap{ position: relative; }
+.section-{{ section.id }} .mrst-rank-badge{
+  position: absolute;
+  left: 50%;
+  top: -12px;                      /* 画像の外側に少しはみ出す */
+  transform: translateX(-50%);
+  z-index: 5;
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px;
+  background: #fff;                /* 白丸 */
+  color: #242424;                  /* 文字色 */
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.12);
+  border: 1px solid rgba(0,0,0,.06);
+  pointer-events: none;
+}
+
+/* === MRST: Buyer row === */
+.section-{{ section.id }} .mrst-buyer{
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,.08);   /* カードの下罫線風 */
+}
+.section-{{ section.id }} .mrst-buyer__avatar{
+  width: 44px; height: 44px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #f4f4f4;
+  display:flex; align-items:center; justify-content:center;
+}
+.section-{{ section.id }} .mrst-buyer__img{ width:100%; height:100%; object-fit:cover; display:block; }
+.section-{{ section.id }} .mrst-buyer__img--placeholder{
+  width: 44px; height: 44px; border-radius: 9999px;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; color:#666;
+}
+.section-{{ section.id }} .mrst-buyer__meta{ line-height: 1.25; }
+.section-{{ section.id }} .mrst-buyer__label{
+  display:block; font-size:11px; letter-spacing:.06em;
+  color:#8a8a8a; margin-bottom: 4px;
+}
+.section-{{ section.id }} .mrst-buyer__name{
+  font-size:14px; font-weight:600; color:#222;
+}
+{% endstyle %}
