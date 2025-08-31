@@ -165,96 +165,98 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            buyer.fieldsがnullの場合の対応
-            shop.metaobjectsから直接完全なメタオブジェクトを取得
+            MediaListDropの正しい処理方法
         {%- endcomment -%}
         
         <!-- デバッグ情報 -->
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>完全なメタオブジェクト取得テスト:</strong><br>
+            <strong>MediaListDrop処理テスト:</strong><br>
             
-            buyer.buyer_id: {{ buyer.buyer_id }}<br>
-            
-            {%- comment -%} shop.metaobjects['buyer'].valuesから完全なオブジェクトを検索 {%- endcomment -%}
             {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
                 {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                    Found complete metaobject!<br>
-                    meta_buyer.fields: {{ meta_buyer.fields | json }}<br>
-                    meta_buyer.image: {{ meta_buyer.image }}<br>
-                    meta_buyer.image.value: {{ meta_buyer.image.value }}<br>
-                    meta_buyer.image.value.url: {{ meta_buyer.image.value.url }}<br>
-                    {%- if meta_buyer.image.value.first -%}
-                        meta_buyer.image.value.first: {{ meta_buyer.image.value.first }}<br>
-                        meta_buyer.image.value.first.url: {{ meta_buyer.image.value.first.url }}<br>
-                    {%- endif -%}
+                    meta_buyer.image.value type: {{ meta_buyer.image.value | type }}<br>
+                    meta_buyer.image.value size: {{ meta_buyer.image.value.size }}<br>
+                    meta_buyer.image.value.first: {{ meta_buyer.image.value.first }}<br>
+                    meta_buyer.image.value.first type: {{ meta_buyer.image.value.first | type }}<br>
+                    
+                    {%- comment -%} MediaListDropの要素をループで確認 {%- endcomment -%}
+                    MediaListDrop loop:<br>
+                    {%- for media_item in meta_buyer.image.value -%}
+                        Item {{ forloop.index }}: {{ media_item }}<br>
+                        Item type: {{ media_item | type }}<br>
+                        Item url: {{ media_item.url }}<br>
+                        Item preview_image: {{ media_item.preview_image }}<br>
+                        Item preview_image.url: {{ media_buyer.preview_image.url }}<br>
+                    {%- endfor -%}
+                    
+                    {%- comment -%} 直接的なフィルター試行 {%- endcomment -%}
+                    Direct image_url filter: {{ meta_buyer.image.value | image_url: width: 80 }}<br>
+                    Direct file_url filter: {{ meta_buyer.image.value | file_url }}<br>
+                    Direct first image_url: {{ meta_buyer.image.value.first | image_url: width: 80 }}<br>
+                    Direct first file_url: {{ meta_buyer.image.value.first | file_url }}<br>
+                    
                     {%- break -%}
                 {%- endif -%}
             {%- endfor -%}
-            
-            {%- comment -%} handleベースでのアクセスも試行 {%- endcomment -%}
-            {%- assign buyer_handle = buyer.buyer_id -%}
-            {%- assign direct_buyer = shop.metaobjects['buyer'][buyer_handle] -%}
-            {%- if direct_buyer -%}
-                Direct access by handle:<br>
-                direct_buyer.image.value.url: {{ direct_buyer.image.value.url }}<br>
-                {%- if direct_buyer.image.value.first -%}
-                    direct_buyer.image.value.first.url: {{ direct_buyer.image.value.first.url }}<br>
-                {%- endif -%}
-            {%- else -%}
-                Direct access failed<br>
-            {%- endif -%}
         </div>
         
         {%- assign image_url = '' -%}
         
-        {%- comment -%} 完全なメタオブジェクトから画像URLを取得 {%- endcomment -%}
+        {%- comment -%} MediaListDropから画像URLを取得 {%- endcomment -%}
         {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
             {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                {%- comment -%} 単体画像の場合 {%- endcomment -%}
-                {%- if meta_buyer.image.value.url -%}
-                    {%- assign image_url = meta_buyer.image.value.url -%}
-                {%- comment -%} 配列の場合 {%- endcomment -%}
-                {%- elsif meta_buyer.image.value.first.url -%}
-                    {%- assign image_url = meta_buyer.image.value.first.url -%}
-                {%- comment -%} metafield_tagを試行 {%- endcomment -%}
-                {%- else -%}
-                    {%- assign image_tag = meta_buyer.image | metafield_tag -%}
-                    {%- if image_tag != blank -%}
-                        {%- assign use_html_tag = true -%}
+                
+                {%- comment -%} アプローチ1: 直接image_urlフィルター {%- endcomment -%}
+                {%- assign temp_url = meta_buyer.image.value | image_url: width: 80 -%}
+                {%- if temp_url != blank and temp_url != 'no-image' -%}
+                    {%- assign image_url = temp_url -%}
+                {%- endif -%}
+                
+                {%- comment -%} アプローチ2: firstでimage_urlフィルター {%- endcomment -%}
+                {%- if image_url == blank -%}
+                    {%- assign temp_url = meta_buyer.image.value.first | image_url: width: 80 -%}
+                    {%- if temp_url != blank and temp_url != 'no-image' -%}
+                        {%- assign image_url = temp_url -%}
                     {%- endif -%}
                 {%- endif -%}
+                
+                {%- comment -%} アプローチ3: file_urlフィルター {%- endcomment -%}
+                {%- if image_url == blank -%}
+                    {%- assign temp_url = meta_buyer.image.value | file_url -%}
+                    {%- if temp_url != blank -%}
+                        {%- assign image_url = temp_url -%}
+                    {%- endif -%}
+                {%- endif -%}
+                
+                {%- comment -%} アプローチ4: firstでfile_urlフィルター {%- endcomment -%}
+                {%- if image_url == blank -%}
+                    {%- assign temp_url = meta_buyer.image.value.first | file_url -%}
+                    {%- if temp_url != blank -%}
+                        {%- assign image_url = temp_url -%}
+                    {%- endif -%}
+                {%- endif -%}
+                
+                {%- comment -%} アプローチ5: ループでmedia_itemのurlを取得 {%- endcomment -%}
+                {%- if image_url == blank -%}
+                    {%- for media_item in meta_buyer.image.value -%}
+                        {%- if media_item.url != blank -%}
+                            {%- assign image_url = media_item.url -%}
+                            {%- break -%}
+                        {%- endif -%}
+                    {%- endfor -%}
+                {%- endif -%}
+                
                 {%- break -%}
             {%- endif -%}
         {%- endfor -%}
-        
-        {%- comment -%} handleベースでの直接アクセスも試行 {%- endcomment -%}
-        {%- if image_url == blank and use_html_tag != true -%}
-            {%- assign direct_buyer = shop.metaobjects['buyer'][buyer.buyer_id] -%}
-            {%- if direct_buyer -%}
-                {%- if direct_buyer.image.value.url -%}
-                    {%- assign image_url = direct_buyer.image.value.url -%}
-                {%- elsif direct_buyer.image.value.first.url -%}
-                    {%- assign image_url = direct_buyer.image.value.first.url -%}
-                {%- endif -%}
-            {%- endif -%}
-        {%- endif -%}
-        
-        {%- comment -%} 画像変換フィルターを適用 {%- endcomment -%}
-        {%- if image_url != blank -%}
-            {%- assign final_image_url = image_url | image_url: width: 80 -%}
-        {%- endif -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            {% if use_html_tag %}Using HTML tag: {{ image_tag | escape }}{% else %}Final image_url = {{ final_image_url }}{% endif %}
+            Final image_url = {{ image_url }}
         </div>
 
-        {%- if use_html_tag -%}
-            <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
-                {{ image_tag }}
-            </div>
-        {%- elsif final_image_url != blank -%}
+        {%- if image_url != blank -%}
             <img
-                src="{{ final_image_url }}"
+                src="{{ image_url }}"
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
                 width="40" height="40" loading="lazy"
                 class="mrst-buyer__img"
