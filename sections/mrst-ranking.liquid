@@ -162,102 +162,63 @@ calc(100vw / {{ columns_desktop }})
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
 
-<div class="mrst-buyer">
-    <div class="mrst-buyer__avatar">
-        {%- comment -%}
-            MediaListDropから正しいファイル名を抽出してURLを構築
-        {%- endcomment -%}
-        
-        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>ファイル名抽出テスト:</strong><br>
-            
-            {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
-                {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                    {%- for media_item in meta_buyer.image.value -%}
-                        Raw item: {{ media_item }}<br>
-                        Item as string: "{{ media_item }}"<br>
-                        
-                        {%- comment -%} ファイル名を抽出 {%- endcomment -%}
-                        {%- assign item_str = media_item | append: '' -%}
-                        {%- assign filename = item_str | split: 'files/' | last -%}
-                        Extracted filename: {{ filename }}<br>
-                        
-                        {%- comment -%} 正しいURLを構築 {%- endcomment -%}
-                        {%- assign constructed_url = filename | file_url -%}
-                        Constructed URL: {{ constructed_url }}<br>
-                        
-                        {%- comment -%} HTTPSを明示的に追加 {%- endcomment -%}
-                        {%- if constructed_url contains '//' and constructed_url contains 'marumarustore.jp' -%}
-                            {%- unless constructed_url contains 'https:' -%}
-                                {%- assign final_url = 'https:' | append: constructed_url -%}
-                            {%- else -%}
-                                {%- assign final_url = constructed_url -%}
-                            {%- endunless -%}
-                            Final URL with HTTPS: {{ final_url }}<br>
-                        {%- endif -%}
-                        
-                        {%- break -%}
-                    {%- endfor -%}
-                    {%- break -%}
-                {%- endif -%}
-            {%- endfor -%}
-        </div>
-        
-        {%- assign image_url = '' -%}
-        
-        {%- comment -%} MediaListDropからファイル名を抽出してURLを構築 {%- endcomment -%}
-        {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
-            {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                {%- for media_item in meta_buyer.image.value -%}
-                    {%- comment -%} ファイル名を抽出 {%- endcomment -%}
-                    {%- assign item_str = media_item | append: '' -%}
-                    {%- assign filename = item_str | split: 'files/' | last -%}
-                    
-                    {%- if filename != blank and filename != item_str -%}
-                        {%- comment -%} 正しいURLを構築 {%- endcomment -%}
-                        {%- assign image_url = filename | file_url -%}
-                        
-                        {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
-                        {%- if image_url contains '//' and image_url contains 'marumarustore.jp' -%}
-                            {%- unless image_url contains 'https:' -%}
-                                {%- assign image_url = 'https:' | append: image_url -%}
-                            {%- endunless -%}
-                        {%- endif -%}
-                        
-                        {%- comment -%} 画像変換フィルターを適用 {%- endcomment -%}
-                        {%- assign image_url = image_url | image_url: width: 80 -%}
-                        
-                        {%- break -%}
-                    {%- endif -%}
-                {%- endfor -%}
-                {%- break -%}
-            {%- endif -%}
-        {%- endfor -%}
+                            <div class="mrst-buyer">
+                                <div class="mrst-buyer__avatar">
+                                    {%- comment -%}
+                                        メタオブジェクトのMediaListDropから画像URLを取得
+                                        files/ファイル名の形式から正しいURLを構築
+                                    {%- endcomment -%}
+                                    
+                                    {%- assign image_url = '' -%}
+                                    
+                                    {%- comment -%} MediaListDropからファイル名を抽出してURLを構築 {%- endcomment -%}
+                                    {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
+                                        {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
+                                            {%- for media_item in meta_buyer.image.value -%}
+                                                {%- comment -%} ファイル名を抽出 {%- endcomment -%}
+                                                {%- assign item_str = media_item | append: '' -%}
+                                                {%- assign filename = item_str | split: 'files/' | last -%}
+                                                
+                                                {%- if filename != blank and filename != item_str -%}
+                                                    {%- comment -%} 正しいURLを構築 {%- endcomment -%}
+                                                    {%- assign image_url = filename | file_url -%}
+                                                    
+                                                    {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
+                                                    {%- if image_url contains '//' and image_url contains 'marumarustore.jp' -%}
+                                                        {%- unless image_url contains 'https:' -%}
+                                                            {%- assign image_url = 'https:' | append: image_url -%}
+                                                        {%- endunless -%}
+                                                    {%- endif -%}
+                                                    
+                                                    {%- comment -%} 画像変換フィルターを適用 {%- endcomment -%}
+                                                    {%- assign image_url = image_url | image_url: width: 80 -%}
+                                                    
+                                                    {%- break -%}
+                                                {%- endif -%}
+                                            {%- endfor -%}
+                                            {%- break -%}
+                                        {%- endif -%}
+                                    {%- endfor -%}
 
-        <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final processed image_url = {{ image_url }}
-        </div>
+                                    {%- if image_url != blank -%}
+                                        <img
+                                            src="{{ image_url }}"
+                                            alt="{{ buyer.name | default: 'Buyer' | escape }}"
+                                            width="40" height="40" loading="lazy"
+                                            class="mrst-buyer__img"
+                                        >
+                                    {%- else -%}
+                                        <div class="mrst-buyer__img mrst-buyer__img--placeholder">
+                                            {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
+                                        </div>
+                                    {%- endif -%}
+                                </div>
 
-        {%- if image_url != blank -%}
-            <img
-                src="{{ image_url }}"
-                alt="{{ buyer.name | default: 'Buyer' | escape }}"
-                width="40" height="40" loading="lazy"
-                class="mrst-buyer__img"
-                style="border-radius: 50%; object-fit: cover;"
-            >
-        {%- else -%}
-            <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
-                {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
-            </div>
-        {%- endif -%}
-    </div>
-
-    <div class="mrst-buyer__meta">
-        <span class="mrst-buyer__label">BUYER</span>
-        <span class="mrst-buyer__name">{{ buyer.name }}</span>
-    </div>
-</div>
+                                <div class="mrst-buyer__meta">
+                                    <span class="mrst-buyer__label">BUYER</span>
+                                    <span class="mrst-buyer__name">{{ buyer.name }}</span>
+                                </div>
+                            </div>
 
                             {%- endif -%}
                         </div>
