@@ -165,61 +165,77 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            Shopify AIの回答に基づいた正しいアクセス方法
-            メタオブジェクトの画像フィールドは .fields['フィールド名'].value.url でアクセス
+            buyer.fieldsがnullの場合の対応
+            shop.metaobjectsから直接完全なメタオブジェクトを取得
         {%- endcomment -%}
         
         <!-- デバッグ情報 -->
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>正しいアクセス方法テスト:</strong><br>
+            <strong>完全なメタオブジェクト取得テスト:</strong><br>
             
-            {%- comment -%} buyerオブジェクト全体の構造確認 {%- endcomment -%}
-            buyer.fields: {{ buyer.fields | json }}<br>
+            buyer.buyer_id: {{ buyer.buyer_id }}<br>
             
-            {%- comment -%} imageフィールドへの直接アクセス {%- endcomment -%}
-            buyer.fields.image: {{ buyer.fields.image }}<br>
-            buyer.fields.image.value: {{ buyer.fields.image.value }}<br>
-            buyer.fields.image.value.url: {{ buyer.fields.image.value.url }}<br>
-            
-            {%- comment -%} 配列の場合の処理 {%- endcomment -%}
-            {%- if buyer.fields.image.value.first -%}
-                buyer.fields.image.value.first: {{ buyer.fields.image.value.first }}<br>
-                buyer.fields.image.value.first.url: {{ buyer.fields.image.value.first.url }}<br>
-            {%- endif -%}
-            
-            {%- comment -%} 別の書き方 {%- endcomment -%}
-            buyer['image']: {{ buyer['image'] }}<br>
-            
-            {%- comment -%} メタオブジェクトから直接取得 {%- endcomment -%}
-            {%- assign buyer_meta = shop.metaobjects['buyer'][buyer.buyer_id] -%}
-            {%- if buyer_meta -%}
-                Direct metaobject access:<br>
-                buyer_meta.fields.image.value.url: {{ buyer_meta.fields.image.value.url }}<br>
-                {%- if buyer_meta.fields.image.value.first -%}
-                    buyer_meta.fields.image.value.first.url: {{ buyer_meta.fields.image.value.first.url }}<br>
+            {%- comment -%} shop.metaobjects['buyer'].valuesから完全なオブジェクトを検索 {%- endcomment -%}
+            {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
+                {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
+                    Found complete metaobject!<br>
+                    meta_buyer.fields: {{ meta_buyer.fields | json }}<br>
+                    meta_buyer.image: {{ meta_buyer.image }}<br>
+                    meta_buyer.image.value: {{ meta_buyer.image.value }}<br>
+                    meta_buyer.image.value.url: {{ meta_buyer.image.value.url }}<br>
+                    {%- if meta_buyer.image.value.first -%}
+                        meta_buyer.image.value.first: {{ meta_buyer.image.value.first }}<br>
+                        meta_buyer.image.value.first.url: {{ meta_buyer.image.value.first.url }}<br>
+                    {%- endif -%}
+                    {%- break -%}
                 {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} handleベースでのアクセスも試行 {%- endcomment -%}
+            {%- assign buyer_handle = buyer.buyer_id -%}
+            {%- assign direct_buyer = shop.metaobjects['buyer'][buyer_handle] -%}
+            {%- if direct_buyer -%}
+                Direct access by handle:<br>
+                direct_buyer.image.value.url: {{ direct_buyer.image.value.url }}<br>
+                {%- if direct_buyer.image.value.first -%}
+                    direct_buyer.image.value.first.url: {{ direct_buyer.image.value.first.url }}<br>
+                {%- endif -%}
+            {%- else -%}
+                Direct access failed<br>
             {%- endif -%}
         </div>
         
         {%- assign image_url = '' -%}
         
-        {%- comment -%} アプローチ1: buyer.fields.image.value.url {%- endcomment -%}
-        {%- if buyer.fields.image.value.url -%}
-            {%- assign image_url = buyer.fields.image.value.url -%}
-        {%- endif -%}
+        {%- comment -%} 完全なメタオブジェクトから画像URLを取得 {%- endcomment -%}
+        {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
+            {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
+                {%- comment -%} 単体画像の場合 {%- endcomment -%}
+                {%- if meta_buyer.image.value.url -%}
+                    {%- assign image_url = meta_buyer.image.value.url -%}
+                {%- comment -%} 配列の場合 {%- endcomment -%}
+                {%- elsif meta_buyer.image.value.first.url -%}
+                    {%- assign image_url = meta_buyer.image.value.first.url -%}
+                {%- comment -%} metafield_tagを試行 {%- endcomment -%}
+                {%- else -%}
+                    {%- assign image_tag = meta_buyer.image | metafield_tag -%}
+                    {%- if image_tag != blank -%}
+                        {%- assign use_html_tag = true -%}
+                    {%- endif -%}
+                {%- endif -%}
+                {%- break -%}
+            {%- endif -%}
+        {%- endfor -%}
         
-        {%- comment -%} アプローチ2: 配列の場合 buyer.fields.image.value.first.url {%- endcomment -%}
-        {%- if image_url == blank and buyer.fields.image.value.first.url -%}
-            {%- assign image_url = buyer.fields.image.value.first.url -%}
-        {%- endif -%}
-        
-        {%- comment -%} アプローチ3: メタオブジェクトから直接アクセス {%- endcomment -%}
-        {%- if image_url == blank -%}
-            {%- assign buyer_meta = shop.metaobjects['buyer'][buyer.buyer_id] -%}
-            {%- if buyer_meta.fields.image.value.url -%}
-                {%- assign image_url = buyer_meta.fields.image.value.url -%}
-            {%- elsif buyer_meta.fields.image.value.first.url -%}
-                {%- assign image_url = buyer_meta.fields.image.value.first.url -%}
+        {%- comment -%} handleベースでの直接アクセスも試行 {%- endcomment -%}
+        {%- if image_url == blank and use_html_tag != true -%}
+            {%- assign direct_buyer = shop.metaobjects['buyer'][buyer.buyer_id] -%}
+            {%- if direct_buyer -%}
+                {%- if direct_buyer.image.value.url -%}
+                    {%- assign image_url = direct_buyer.image.value.url -%}
+                {%- elsif direct_buyer.image.value.first.url -%}
+                    {%- assign image_url = direct_buyer.image.value.first.url -%}
+                {%- endif -%}
             {%- endif -%}
         {%- endif -%}
         
@@ -229,10 +245,14 @@ calc(100vw / {{ columns_desktop }})
         {%- endif -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final image_url = {{ final_image_url }}
+            {% if use_html_tag %}Using HTML tag: {{ image_tag | escape }}{% else %}Final image_url = {{ final_image_url }}{% endif %}
         </div>
 
-        {%- if final_image_url != blank -%}
+        {%- if use_html_tag -%}
+            <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+                {{ image_tag }}
+            </div>
+        {%- elsif final_image_url != blank -%}
             <img
                 src="{{ final_image_url }}"
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
