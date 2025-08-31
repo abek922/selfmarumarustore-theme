@@ -120,7 +120,7 @@
         "show_rank": true,
         "display_mode": "scroll",
         "limit": 12,
-        "columns": 4,
+        "columns": 6,
         "columns_mobile": "1",
         "pcard_image_ratio": "",
         "column_gap": "medium",
