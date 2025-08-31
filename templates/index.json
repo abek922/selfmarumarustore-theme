@@ -119,7 +119,7 @@
         "description": "",
         "show_rank": true,
         "display_mode": "scroll",
-        "limit": 8,
+        "limit": 12,
         "columns": 4,
         "columns_mobile": "1",
         "pcard_image_ratio": "",
