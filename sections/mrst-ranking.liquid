@@ -165,42 +165,79 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            metafield_tagを使用してメタオブジェクトの画像を表示
-            これが最も確実な方法です
+            メタオブジェクトの場合は、metafield_tagではなく
+            file参照を適切に処理する必要があります
         {%- endcomment -%}
         
-        {%- assign image_html = buyer.image | metafield_tag -%}
-        
-        {%- if image_html != blank -%}
-            {%- comment -%} metafield_tagで画像HTMLが生成された場合 {%- endcomment -%}
-            <div class="mrst-buyer__img-wrapper" style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
-                {{ image_html }}
-            </div>
-        {%- else -%}
-            {%- comment -%} metafield_tagで取得できない場合の代替処理 {%- endcomment -%}
-            {%- assign image_url = buyer.image | file_url -%}
+        <!-- デバッグ情報 -->
+        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
+            buyer.image = {{ buyer.image }}<br>
+            buyer.image type = {{ buyer.image | type }}<br>
             
-            {%- if image_url != blank -%}
-                {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
-                {%- assign final_image_url = image_url -%}
-                {%- if image_url contains '//' and image_url contains 'marumarustore.jp' -%}
-                    {%- unless image_url contains 'https:' -%}
-                        {%- assign final_image_url = 'https:' | append: image_url -%}
-                    {%- endunless -%}
-                {%- endif -%}
+            {%- comment -%} 配列の要素をforループで確認 {%- endcomment -%}
+            Array content:<br>
+            {%- for img_ref in buyer.image -%}
+                Item {{ forloop.index }}: {{ img_ref }}<br>
+                Item type: {{ img_ref | type }}<br>
                 
-                <img
-                    src="{{ final_image_url }}"
-                    alt="{{ buyer.name | default: 'Buyer' | escape }}"
-                    width="40" height="40" loading="lazy"
-                    class="mrst-buyer__img"
-                >
-            {%- else -%}
-                {%- comment -%} 画像が取得できない場合のプレースホルダー {%- endcomment -%}
-                <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
-                    {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
-                </div>
-            {%- endif -%}
+                {%- comment -%} shop.filesからマッチするファイルを探す {%- endcomment -%}
+                {%- assign gid_parts = img_ref | split: '/' -%}
+                {%- assign file_id = gid_parts.last | remove: '"' -%}
+                
+                Looking for file ID: {{ file_id }}<br>
+                
+                {%- for file in shop.files -%}
+                    {%- assign shop_file_id = file.id | append: '' -%}
+                    {%- if shop_file_id == file_id -%}
+                        Found file: {{ file.url }}<br>
+                        File type: {{ file.content_type }}<br>
+                        Preview: {{ file.preview_image.url }}<br>
+                        {%- break -%}
+                    {%- endif -%}
+                {%- endfor -%}
+            {%- endfor -%}
+        </div>
+        
+        {%- assign image_url = '' -%}
+        
+        {%- if buyer.image != blank -%}
+            {%- for img_ref in buyer.image -%}
+                {%- comment -%} GIDからファイルIDを抽出 {%- endcomment -%}
+                {%- assign gid_parts = img_ref | split: '/' -%}
+                {%- assign file_id = gid_parts.last | remove: '"' -%}
+                
+                {%- comment -%} shop.filesから対応するファイルを探す {%- endcomment -%}
+                {%- for file in shop.files -%}
+                    {%- assign shop_file_id = file.id | append: '' -%}
+                    {%- if shop_file_id == file_id -%}
+                        {%- if file.preview_image -%}
+                            {%- assign image_url = file.preview_image | image_url: width: 80 -%}
+                        {%- else -%}
+                            {%- assign image_url = file.url -%}
+                        {%- endif -%}
+                        {%- break -%}
+                    {%- endif -%}
+                {%- endfor -%}
+                {%- break -%} {%- comment -%} 最初の画像のみ使用 {%- endcomment -%}
+            {%- endfor -%}
+        {%- endif -%}
+
+        <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
+            Final image_url = {{ image_url }}
+        </div>
+
+        {%- if image_url != blank -%}
+            <img
+                src="{{ image_url }}"
+                alt="{{ buyer.name | default: 'Buyer' | escape }}"
+                width="40" height="40" loading="lazy"
+                class="mrst-buyer__img"
+                style="border-radius: 50%; object-fit: cover;"
+            >
+        {%- else -%}
+            <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
+                {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
+            </div>
         {%- endif -%}
     </div>
 
