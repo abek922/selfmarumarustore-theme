@@ -165,99 +165,76 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            MediaImageへの直接アクセスを試行
-            Shopify Admin APIの新しい方法
+            Shopify AIの回答に基づいた正しいアクセス方法
+            メタオブジェクトの画像フィールドは .fields['フィールド名'].value.url でアクセス
         {%- endcomment -%}
         
+        <!-- デバッグ情報 -->
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>MediaImage直接アクセステスト:</strong><br>
+            <strong>正しいアクセス方法テスト:</strong><br>
             
-            {%- assign image_string = buyer.image | join: '' -%}
-            {%- assign gid_parts = image_string | split: 'gid://shopify/MediaImage/' -%}
-            {%- assign media_id = gid_parts[1] | split: '"' | first -%}
+            {%- comment -%} buyerオブジェクト全体の構造確認 {%- endcomment -%}
+            buyer.fields: {{ buyer.fields | json }}<br>
             
-            Media ID: {{ media_id }}<br>
+            {%- comment -%} imageフィールドへの直接アクセス {%- endcomment -%}
+            buyer.fields.image: {{ buyer.fields.image }}<br>
+            buyer.fields.image.value: {{ buyer.fields.image.value }}<br>
+            buyer.fields.image.value.url: {{ buyer.fields.image.value.url }}<br>
             
-            {%- comment -%} shop.media でアクセスを試行 {%- endcomment -%}
-            {%- for media in shop.media -%}
-                {%- assign media_id_str = media.id | append: '' -%}
-                {%- if media_id_str == media_id -%}
-                    Media found in shop.media!<br>
-                    Media URL: {{ media.url }}<br>
-                    Media preview: {{ media.preview_image.url }}<br>
-                    {%- break -%}
+            {%- comment -%} 配列の場合の処理 {%- endcomment -%}
+            {%- if buyer.fields.image.value.first -%}
+                buyer.fields.image.value.first: {{ buyer.fields.image.value.first }}<br>
+                buyer.fields.image.value.first.url: {{ buyer.fields.image.value.first.url }}<br>
+            {%- endif -%}
+            
+            {%- comment -%} 別の書き方 {%- endcomment -%}
+            buyer['image']: {{ buyer['image'] }}<br>
+            
+            {%- comment -%} メタオブジェクトから直接取得 {%- endcomment -%}
+            {%- assign buyer_meta = shop.metaobjects['buyer'][buyer.buyer_id] -%}
+            {%- if buyer_meta -%}
+                Direct metaobject access:<br>
+                buyer_meta.fields.image.value.url: {{ buyer_meta.fields.image.value.url }}<br>
+                {%- if buyer_meta.fields.image.value.first -%}
+                    buyer_meta.fields.image.value.first.url: {{ buyer_meta.fields.image.value.first.url }}<br>
                 {%- endif -%}
-            {%- endfor -%}
-            
-            {%- comment -%} 別の方法：buyer全体からimage値を再取得 {%- endcomment -%}
-            Re-accessing buyer.image directly:<br>
-            {%- assign buyer_data = shop.metaobjects['buyer'].values -%}
-            {%- for meta_buyer in buyer_data -%}
-                {%- if meta_buyer.buyer_id == buyer.buyer_id -%}
-                    Meta buyer image: {{ meta_buyer.image }}<br>
-                    Meta buyer image metafield_tag: {{ meta_buyer.image | metafield_tag }}<br>
-                    {%- break -%}
-                {%- endif -%}
-            {%- endfor -%}
-            
-            {%- comment -%} 手動URL構築の試行 {%- endcomment -%}
-            Manual URL: https://{{ shop.domain }}/cdn/shop/files/{{ media_id }}<br>
+            {%- endif -%}
         </div>
         
         {%- assign image_url = '' -%}
         
-        {%- if buyer.image != blank -%}
-            {%- comment -%} アプローチ1: shop.mediaから検索 {%- endcomment -%}
-            {%- assign image_string = buyer.image | join: '' -%}
-            {%- assign gid_parts = image_string | split: 'gid://shopify/MediaImage/' -%}
-            {%- assign media_id = gid_parts[1] | split: '"' | first -%}
-            
-            {%- for media in shop.media -%}
-                {%- assign media_id_str = media.id | append: '' -%}
-                {%- if media_id_str == media_id -%}
-                    {%- if media.preview_image -%}
-                        {%- assign image_url = media.preview_image | image_url: width: 80 -%}
-                    {%- else -%}
-                        {%- assign image_url = media.url -%}
-                    {%- endif -%}
-                    {%- break -%}
-                {%- endif -%}
-            {%- endfor -%}
-            
-            {%- comment -%} アプローチ2: メタオブジェクトから再取得してmetafield_tag {%- endcomment -%}
-            {%- if image_url == blank -%}
-                {%- assign buyer_data = shop.metaobjects['buyer'].values -%}
-                {%- for meta_buyer in buyer_data -%}
-                    {%- if meta_buyer.buyer_id == buyer.buyer_id -%}
-                        {%- assign image_tag = meta_buyer.image | metafield_tag -%}
-                        {%- if image_tag != blank -%}
-                            {%- comment -%} metafield_tagが成功した場合はHTMLをそのまま出力 {%- endcomment -%}
-                            {%- assign use_html_tag = true -%}
-                        {%- endif -%}
-                        {%- break -%}
-                    {%- endif -%}
-                {%- endfor -%}
+        {%- comment -%} アプローチ1: buyer.fields.image.value.url {%- endcomment -%}
+        {%- if buyer.fields.image.value.url -%}
+            {%- assign image_url = buyer.fields.image.value.url -%}
+        {%- endif -%}
+        
+        {%- comment -%} アプローチ2: 配列の場合 buyer.fields.image.value.first.url {%- endcomment -%}
+        {%- if image_url == blank and buyer.fields.image.value.first.url -%}
+            {%- assign image_url = buyer.fields.image.value.first.url -%}
+        {%- endif -%}
+        
+        {%- comment -%} アプローチ3: メタオブジェクトから直接アクセス {%- endcomment -%}
+        {%- if image_url == blank -%}
+            {%- assign buyer_meta = shop.metaobjects['buyer'][buyer.buyer_id] -%}
+            {%- if buyer_meta.fields.image.value.url -%}
+                {%- assign image_url = buyer_meta.fields.image.value.url -%}
+            {%- elsif buyer_meta.fields.image.value.first.url -%}
+                {%- assign image_url = buyer_meta.fields.image.value.first.url -%}
             {%- endif -%}
-            
-            {%- comment -%} アプローチ3: 手動URLの試行 {%- endcomment -%}
-            {%- if image_url == blank and use_html_tag != true -%}
-                {%- assign manual_url = 'https://' | append: shop.domain | append: '/cdn/shop/files/' | append: media_id -%}
-                {%- assign image_url = manual_url -%}
-            {%- endif -%}
+        {%- endif -%}
+        
+        {%- comment -%} 画像変換フィルターを適用 {%- endcomment -%}
+        {%- if image_url != blank -%}
+            {%- assign final_image_url = image_url | image_url: width: 80 -%}
         {%- endif -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final approach: {% if use_html_tag %}HTML tag{% else %}Image URL{% endif %}<br>
-            {% if use_html_tag %}HTML: {{ image_tag | escape }}{% else %}URL: {{ image_url }}{% endif %}
+            Final image_url = {{ final_image_url }}
         </div>
 
-        {%- if use_html_tag -%}
-            <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
-                {{ image_tag }}
-            </div>
-        {%- elsif image_url != blank -%}
+        {%- if final_image_url != blank -%}
             <img
-                src="{{ image_url }}"
+                src="{{ final_image_url }}"
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
                 width="40" height="40" loading="lazy"
                 class="mrst-buyer__img"
