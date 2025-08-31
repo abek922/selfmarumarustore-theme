@@ -481,4 +481,31 @@
 .section-{{ section.id }} .mrst-buyer__name{
   font-size:14px; font-weight:600; color:#222;
 }
-{% endstyle %}
+
+/* ===== MRST Ranking: 横スクロール表示 ===== */
+.section-{{ section.id }} .mrst-scroll-row{
+  display: flex;
+  gap: var(--mrst-scroll-gap, 16px);
+  overflow-x: auto;
+  padding-bottom: 6px;                /* 影や拡大が欠けないように少し余白 */
+  scroll-snap-type: x mandatory;      /* スナップ（お好みで off に） */
+  -webkit-overflow-scrolling: touch;
+}
+
+.section-{{ section.id }} .mrst-scroll-row > .f-column{
+  flex: 0 0 auto;                     /* 折り返さず横に並べる */
+  scroll-snap-align: start;           /* スナップ先頭 */
+  min-width: clamp(220px, 24vw, 320px); /* カードの最小幅（好みで調整） */
+}
+
+/* スクロールバーを控えめに（対応ブラウザのみ） */
+.section-{{ section.id }} .mrst-scroll-row{
+  scrollbar-width: thin;
+}
+.section-{{ section.id }} .mrst-scroll-row::-webkit-scrollbar{
+  height: 8px;
+}
+.section-{{ section.id }} .mrst-scroll-row::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,.2);
+  border-radius: 4px;
+}

@@ -15,6 +15,7 @@
   if section.settings.heading != blank or section.settings.description != blank or section.settings.subheading != blank
     assign has_richtext = true
   endif
+  assign display_mode = section.settings.display_mode | default: 'grid'
 -%}
 
 {%- capture image_sizes -%}
@@ -128,13 +129,18 @@ calc(100vw / {{ columns_desktop }})
                 Liquid ではベストセラーのソートキー指定ができないため、
                 対象コレクションの「並び順」を管理画面で「ベストセラー」に設定してください。
               {%- endcomment -%}
-              <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
+               {%- if display_mode == 'scroll' -%}
+                <div class="mrst-scroll-row">
+              {%- else -%}
+                <div class="mrst-ranking-grid f-grid f-grid--gap-{{ section.settings.column_gap }} f-grid--row-gap-{{ section.settings.row_gap }}">
+              {%- endif -%}
                 {% for product in coll.products limit: limit %}
                     <div class="f-column{% if enable_slider %} swiper-slide{% endif %}">
                         <div class="mrst-ranking-item">
                             <!-- ランク番号（1,2,3...） -->
-                            <div class="mrst-rank-badge" data-rank="{{ forloop.index }}">{{ forloop.index }}</div>
-
+                            {%- if section.settings.show_rank -%}
+                              <div class="mrst-rank-badge" data-rank="{{ forloop.index }}">{{ forloop.index }}</div>
+                            {%- endif -%}
                             <!-- カード本体をラップして相対配置に -->
                             <div class="mrst-card-wrap">
                             {%- render 'card-product',
@@ -214,6 +220,13 @@ calc(100vw / {{ columns_desktop }})
                     </div>
                 {% endfor %}
               </div>
+              {%- if section.settings.show_view_more and coll.url -%}
+                <div class="mrst-viewmore-wrap" style="text-align:center; margin-top:22px;">
+                  <a class="btn btn--plain" href="{{ coll.url }}">
+                    {{ section.settings.view_more_label | default: 'view more' }}
+                  </a>
+                </div>
+              {%- endif -%}
             </div>
           {% endif %}
         {% endfor %}
@@ -311,7 +324,18 @@ document.addEventListener('DOMContentLoaded', function(){
     { "type": "richtext", "id": "description", "label": "Description" },
 
     { "type": "header", "content": "Grid" },
-    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "checkbox", "id": "show_rank", "label": "Show rank badge", "default": true },
+    {
+      "type": "select",
+      "id": "display_mode",
+      "label": "Display mode",
+      "default": "grid",
+      "options": [
+        { "value": "grid",   "label": "通常表示（グリッド）" },
+        { "value": "scroll", "label": "横スクロール" }
+      ]
+    },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 24, "step": 1, "default": 8 },
     { "type": "range", "id": "columns", "label": "Columns (desktop)", "min": 2, "max": 6, "step": 1, "default": 4 },
     {
       "type": "select",
@@ -368,6 +392,8 @@ document.addEventListener('DOMContentLoaded', function(){
     },
 
     { "type": "header", "content": "Padding & Divider" },
+    { "type": "checkbox", "id": "show_view_more", "label": "Show “view more” button", "default": true },
+    { "type": "text", "id": "view_more_label", "label": "View more label", "default": "view more" },
     { "type": "range", "id": "padding_top", "label": "Padding top", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 50 },
     { "type": "range", "id": "padding_bottom", "label": "Padding bottom", "min": 0, "max": 100, "step": 2, "unit": "px", "default": 50 },
     { "type": "checkbox", "id": "show_section_divider", "label": "Show divider", "default": false },
