@@ -162,64 +162,66 @@ calc(100vw / {{ columns_desktop }})
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
 
-                            <!-- デバッグ情報を表示 -->
-<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
-    <strong>デバッグ情報:</strong><br>
-    buyer.image = {{ buyer.image | json }}<br>
-    buyer.image type = {{ buyer.image | type }}<br>
-    buyer全体 = {{ buyer | json }}
-</div>
-
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- assign image_url = '' -%}
         
-        {%- comment -%} 最も一般的なパターンから順番に試行 {%- endcomment -%}
+        {%- comment -%}
+            buyer.imageは配列で、MediaImageのGIDが格納されている
+            ["gid://shopify/MediaImage/43429370462526"] の形式
+        {%- endcomment -%}
         
-        {%- comment -%} パターン1: file_url フィルター {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- assign image_url = buyer.image | file_url -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン2: 配列の場合の最初の要素 {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- if buyer.image.first -%}
-                {%- assign image_url = buyer.image.first | file_url -%}
+        {%- if buyer.image != blank -%}
+            {%- comment -%} 配列の最初の要素を取得 {%- endcomment -%}
+            {%- assign media_id = buyer.image.first -%}
+            
+            {%- comment -%} GIDからMediaImageオブジェクトを取得してimage_urlフィルターを適用 {%- endcomment -%}
+            {%- assign media_object = shop.metaobjects['buyer'].values -%}
+            {%- for media in shop.files -%}
+                {%- if media.id == media_id -%}
+                    {%- if media.preview_image -%}
+                        {%- assign image_url = media.preview_image | image_url: width: 80 -%}
+                    {%- elsif media.image -%}
+                        {%- assign image_url = media.image | image_url: width: 80 -%}
+                    {%- else -%}
+                        {%- assign image_url = media | image_url: width: 80 -%}
+                    {%- endif -%}
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} 上記で取得できない場合の代替手段 {%- endcomment -%}
+            {%- if image_url == blank -%}
+                {%- comment -%} MediaImageのIDから直接URLを構築 {%- endcomment -%}
+                {%- assign media_id_num = media_id | split: '/' | last -%}
+                {%- for file in shop.files -%}
+                    {%- assign file_id_str = file.id | append: '' -%}
+                    {%- if file_id_str == media_id_num -%}
+                        {%- if file.preview_image -%}
+                            {%- assign image_url = file.preview_image | image_url: width: 80 -%}
+                        {%- else -%}
+                            {%- assign image_url = file | image_url: width: 80 -%}
+                        {%- endif -%}
+                        {%- break -%}
+                    {%- endif -%}
+                {%- endfor -%}
             {%- endif -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン3: .value プロパティ経由 {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- assign image_url = buyer.image.value | file_url -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン4: image_url フィルター {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- assign image_url = buyer.image | image_url: width: 80 -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン5: 配列 + image_url フィルター {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- if buyer.image.first -%}
-                {%- assign image_url = buyer.image.first | image_url: width: 80 -%}
+            
+            {%- comment -%} さらなる代替手段：metaobjectsから直接参照 {%- endcomment -%}
+            {%- if image_url == blank -%}
+                {%- assign current_buyer_id = buyer.buyer_id -%}
+                {%- for metaobject in shop.metaobjects['buyer'].values -%}
+                    {%- if metaobject.buyer_id == current_buyer_id -%}
+                        {%- if metaobject.image.first.preview_image -%}
+                            {%- assign image_url = metaobject.image.first.preview_image | image_url: width: 80 -%}
+                        {%- elsif metaobject.image.first -%}
+                            {%- assign image_url = metaobject.image.first | image_url: width: 80 -%}
+                        {%- endif -%}
+                        {%- break -%}
+                    {%- endif -%}
+                {%- endfor -%}
             {%- endif -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン6: .url プロパティ直接アクセス {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- assign image_url = buyer.image.url -%}
-        {%- endunless -%}
-        
-        {%- comment -%} パターン7: 配列の .url {%- endcomment -%}
-        {%- unless image_url != blank -%}
-            {%- if buyer.image.first.url -%}
-                {%- assign image_url = buyer.image.first.url -%}
-            {%- endif -%}
-        {%- endunless -%}
-
-        <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 11px;">
-            最終的な image_url = {{ image_url }}
-        </div>
+        {%- endif -%}
 
         {%- if image_url != blank and image_url != 'no-image' -%}
             <img
@@ -229,7 +231,7 @@ calc(100vw / {{ columns_desktop }})
                 class="mrst-buyer__img"
             >
         {%- else -%}
-            <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+            <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
                 {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
             </div>
         {%- endif -%}
