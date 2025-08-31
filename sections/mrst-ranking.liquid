@@ -162,66 +162,65 @@ calc(100vw / {{ columns_desktop }})
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
 
+<!-- さらに詳細なデバッグ情報 -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
+    <strong>デバッグ情報:</strong><br>
+    buyer.image = {{ buyer.image }}<br>
+    buyer.image.first = {{ buyer.image.first }}<br>
+    buyer.image.size = {{ buyer.image.size }}<br>
+    
+    {%- assign media_id = buyer.image.first | split: '/' | last -%}
+    Media ID extracted = {{ media_id }}<br>
+    
+    {%- comment -%} shop.filesをチェック {%- endcomment -%}
+    Files check:<br>
+    {%- for file in shop.files limit: 3 -%}
+        File {{ forloop.index }}: ID={{ file.id }}, URL={{ file.url }}<br>
+    {%- endfor -%}
+    
+    {%- comment -%} 直接的なアプローチ：URLを構築 {%- endcomment -%}
+    {%- assign cdn_url = 'https://' | append: shop.domain | append: '/cdn/shop/files/' -%}
+    Manual URL attempt = {{ cdn_url }}{{ media_id }}<br>
+</div>
+
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- assign image_url = '' -%}
         
-        {%- comment -%}
-            buyer.imageは配列で、MediaImageのGIDが格納されている
-            ["gid://shopify/MediaImage/43429370462526"] の形式
-        {%- endcomment -%}
-        
         {%- if buyer.image != blank -%}
-            {%- comment -%} 配列の最初の要素を取得 {%- endcomment -%}
-            {%- assign media_id = buyer.image.first -%}
+            {%- comment -%} アプローチ1: 単純なfile_url {%- endcomment -%}
+            {%- assign image_url = buyer.image.first | file_url -%}
             
-            {%- comment -%} GIDからMediaImageオブジェクトを取得してimage_urlフィルターを適用 {%- endcomment -%}
-            {%- assign media_object = shop.metaobjects['buyer'].values -%}
-            {%- for media in shop.files -%}
-                {%- if media.id == media_id -%}
-                    {%- if media.preview_image -%}
-                        {%- assign image_url = media.preview_image | image_url: width: 80 -%}
-                    {%- elsif media.image -%}
-                        {%- assign image_url = media.image | image_url: width: 80 -%}
-                    {%- else -%}
-                        {%- assign image_url = media | image_url: width: 80 -%}
-                    {%- endif -%}
-                    {%- break -%}
-                {%- endif -%}
-            {%- endfor -%}
-            
-            {%- comment -%} 上記で取得できない場合の代替手段 {%- endcomment -%}
+            {%- comment -%} アプローチ2: shop.filesから検索 {%- endcomment -%}
             {%- if image_url == blank -%}
-                {%- comment -%} MediaImageのIDから直接URLを構築 {%- endcomment -%}
-                {%- assign media_id_num = media_id | split: '/' | last -%}
+                {%- assign media_id_str = buyer.image.first | split: '/' | last -%}
                 {%- for file in shop.files -%}
-                    {%- assign file_id_str = file.id | append: '' -%}
-                    {%- if file_id_str == media_id_num -%}
-                        {%- if file.preview_image -%}
-                            {%- assign image_url = file.preview_image | image_url: width: 80 -%}
-                        {%- else -%}
-                            {%- assign image_url = file | image_url: width: 80 -%}
-                        {%- endif -%}
+                    {%- assign file_id = file.id | append: '' -%}
+                    {%- if file_id == media_id_str -%}
+                        {%- assign image_url = file.url -%}
                         {%- break -%}
                     {%- endif -%}
                 {%- endfor -%}
             {%- endif -%}
             
-            {%- comment -%} さらなる代替手段：metaobjectsから直接参照 {%- endcomment -%}
+            {%- comment -%} アプローチ3: CDN URLを手動構築 {%- endcomment -%}
             {%- if image_url == blank -%}
-                {%- assign current_buyer_id = buyer.buyer_id -%}
-                {%- for metaobject in shop.metaobjects['buyer'].values -%}
-                    {%- if metaobject.buyer_id == current_buyer_id -%}
-                        {%- if metaobject.image.first.preview_image -%}
-                            {%- assign image_url = metaobject.image.first.preview_image | image_url: width: 80 -%}
-                        {%- elsif metaobject.image.first -%}
-                            {%- assign image_url = metaobject.image.first | image_url: width: 80 -%}
-                        {%- endif -%}
-                        {%- break -%}
-                    {%- endif -%}
-                {%- endfor -%}
+                {%- assign media_id_num = buyer.image.first | split: '/' | last -%}
+                {%- assign image_url = shop.url | append: '/cdn/shop/files/' | append: media_id_num -%}
+            {%- endif -%}
+            
+            {%- comment -%} アプローチ4: 画像変換フィルターを試行 {%- endcomment -%}
+            {%- if image_url == blank -%}
+                {%- assign temp_url = buyer.image.first | img_url: '80x80' -%}
+                {%- unless temp_url contains 'no-image' -%}
+                    {%- assign image_url = temp_url -%}
+                {%- endunless -%}
             {%- endif -%}
         {%- endif -%}
+
+        <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
+            Final image_url = {{ image_url }}
+        </div>
 
         {%- if image_url != blank and image_url != 'no-image' -%}
             <img
@@ -229,6 +228,7 @@ calc(100vw / {{ columns_desktop }})
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
                 width="40" height="40" loading="lazy"
                 class="mrst-buyer__img"
+                onerror="console.log('Image failed to load:', this.src)"
             >
         {%- else -%}
             <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
