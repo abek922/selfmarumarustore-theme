@@ -165,72 +165,97 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            メタオブジェクトの配列要素への別のアクセス方法を試行
+            MediaImageへの直接アクセスを試行
+            Shopify Admin APIの新しい方法
         {%- endcomment -%}
         
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>配列アクセステスト:</strong><br>
-            buyer.image = {{ buyer.image }}<br>
-            buyer.image.size = {{ buyer.image.size }}<br>
-            buyer.image[0] = {{ buyer.image[0] }}<br>
+            <strong>MediaImage直接アクセステスト:</strong><br>
             
-            {%- comment -%} 文字列処理でGIDを抽出 {%- endcomment -%}
             {%- assign image_string = buyer.image | join: '' -%}
-            As joined string: {{ image_string }}<br>
+            {%- assign gid_parts = image_string | split: 'gid://shopify/MediaImage/' -%}
+            {%- assign media_id = gid_parts[1] | split: '"' | first -%}
             
-            {%- assign gid_match = image_string | split: 'gid://shopify/MediaImage/' -%}
-            After split: {{ gid_match }}<br>
+            Media ID: {{ media_id }}<br>
             
-            {%- if gid_match.size > 1 -%}
-                {%- assign id_part = gid_match[1] | split: '"' | first -%}
-                Extracted ID: {{ id_part }}<br>
-                
-                {%- comment -%} 抽出したIDでshop.filesを検索 {%- endcomment -%}
-                {%- for file in shop.files -%}
-                    {%- assign file_id = file.id | append: '' -%}
-                    {%- if file_id == id_part -%}
-                        MATCH FOUND!<br>
-                        File URL: {{ file.url }}<br>
-                        File preview: {{ file.preview_image }}<br>
-                        {%- if file.preview_image -%}
-                            Preview URL: {{ file.preview_image | image_url: width: 80 }}<br>
-                        {%- endif -%}
-                        {%- break -%}
-                    {%- endif -%}
-                {%- endfor -%}
-            {%- endif -%}
+            {%- comment -%} shop.media でアクセスを試行 {%- endcomment -%}
+            {%- for media in shop.media -%}
+                {%- assign media_id_str = media.id | append: '' -%}
+                {%- if media_id_str == media_id -%}
+                    Media found in shop.media!<br>
+                    Media URL: {{ media.url }}<br>
+                    Media preview: {{ media.preview_image.url }}<br>
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} 別の方法：buyer全体からimage値を再取得 {%- endcomment -%}
+            Re-accessing buyer.image directly:<br>
+            {%- assign buyer_data = shop.metaobjects['buyer'].values -%}
+            {%- for meta_buyer in buyer_data -%}
+                {%- if meta_buyer.buyer_id == buyer.buyer_id -%}
+                    Meta buyer image: {{ meta_buyer.image }}<br>
+                    Meta buyer image metafield_tag: {{ meta_buyer.image | metafield_tag }}<br>
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} 手動URL構築の試行 {%- endcomment -%}
+            Manual URL: https://{{ shop.domain }}/cdn/shop/files/{{ media_id }}<br>
         </div>
         
         {%- assign image_url = '' -%}
         
         {%- if buyer.image != blank -%}
-            {%- comment -%} 文字列処理でMediaImage IDを抽出 {%- endcomment -%}
+            {%- comment -%} アプローチ1: shop.mediaから検索 {%- endcomment -%}
             {%- assign image_string = buyer.image | join: '' -%}
             {%- assign gid_parts = image_string | split: 'gid://shopify/MediaImage/' -%}
+            {%- assign media_id = gid_parts[1] | split: '"' | first -%}
             
-            {%- if gid_parts.size > 1 -%}
-                {%- assign media_id = gid_parts[1] | split: '"' | first -%}
-                
-                {%- comment -%} shop.filesから対応するファイルを検索 {%- endcomment -%}
-                {%- for file in shop.files -%}
-                    {%- assign file_id = file.id | append: '' -%}
-                    {%- if file_id == media_id -%}
-                        {%- if file.preview_image -%}
-                            {%- assign image_url = file.preview_image | image_url: width: 80 -%}
-                        {%- else -%}
-                            {%- assign image_url = file.url -%}
+            {%- for media in shop.media -%}
+                {%- assign media_id_str = media.id | append: '' -%}
+                {%- if media_id_str == media_id -%}
+                    {%- if media.preview_image -%}
+                        {%- assign image_url = media.preview_image | image_url: width: 80 -%}
+                    {%- else -%}
+                        {%- assign image_url = media.url -%}
+                    {%- endif -%}
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} アプローチ2: メタオブジェクトから再取得してmetafield_tag {%- endcomment -%}
+            {%- if image_url == blank -%}
+                {%- assign buyer_data = shop.metaobjects['buyer'].values -%}
+                {%- for meta_buyer in buyer_data -%}
+                    {%- if meta_buyer.buyer_id == buyer.buyer_id -%}
+                        {%- assign image_tag = meta_buyer.image | metafield_tag -%}
+                        {%- if image_tag != blank -%}
+                            {%- comment -%} metafield_tagが成功した場合はHTMLをそのまま出力 {%- endcomment -%}
+                            {%- assign use_html_tag = true -%}
                         {%- endif -%}
                         {%- break -%}
                     {%- endif -%}
                 {%- endfor -%}
             {%- endif -%}
+            
+            {%- comment -%} アプローチ3: 手動URLの試行 {%- endcomment -%}
+            {%- if image_url == blank and use_html_tag != true -%}
+                {%- assign manual_url = 'https://' | append: shop.domain | append: '/cdn/shop/files/' | append: media_id -%}
+                {%- assign image_url = manual_url -%}
+            {%- endif -%}
         {%- endif -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final image_url = {{ image_url }}
+            Final approach: {% if use_html_tag %}HTML tag{% else %}Image URL{% endif %}<br>
+            {% if use_html_tag %}HTML: {{ image_tag | escape }}{% else %}URL: {{ image_url }}{% endif %}
         </div>
 
-        {%- if image_url != blank -%}
+        {%- if use_html_tag -%}
+            <div style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+                {{ image_tag }}
+            </div>
+        {%- elsif image_url != blank -%}
             <img
                 src="{{ image_url }}"
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
