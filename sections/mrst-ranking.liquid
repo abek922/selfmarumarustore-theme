@@ -164,29 +164,46 @@ calc(100vw / {{ columns_desktop }})
 
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
-        {%- assign image_url = '' -%}
+        {%- comment -%}
+            metafield_tagを使用してメタオブジェクトの画像を表示
+            これが最も確実な方法です
+        {%- endcomment -%}
         
-        {%- case buyer.buyer_id -%}
-            {%- when 'saorimotojima' -%}
-                {%- assign image_url = 'buyer-saorimotojima.jpg' | file_url -%}
-        {%- endcase -%}
+        {%- assign image_html = buyer.image | metafield_tag -%}
         
-        {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
-        {%- if image_url contains '//' -%}
-            {%- unless image_url contains 'https:' -%}
-                {%- assign image_url = 'https:' | append: image_url -%}
-            {%- endunless -%}
-        {%- endif -%}
-
-        {%- if image_url != blank -%}
-            <img src="{{ image_url }}" alt="{{ buyer.name | escape }}" width="40" height="40" loading="lazy" class="mrst-buyer__img">
-        {%- else -%}
-            <div class="mrst-buyer__img mrst-buyer__img--placeholder">
-                {{ buyer.name | truncate: 1, '' | upcase }}
+        {%- if image_html != blank -%}
+            {%- comment -%} metafield_tagで画像HTMLが生成された場合 {%- endcomment -%}
+            <div class="mrst-buyer__img-wrapper" style="width: 40px; height: 40px; overflow: hidden; border-radius: 50%;">
+                {{ image_html }}
             </div>
+        {%- else -%}
+            {%- comment -%} metafield_tagで取得できない場合の代替処理 {%- endcomment -%}
+            {%- assign image_url = buyer.image | file_url -%}
+            
+            {%- if image_url != blank -%}
+                {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
+                {%- assign final_image_url = image_url -%}
+                {%- if image_url contains '//' and image_url contains 'marumarustore.jp' -%}
+                    {%- unless image_url contains 'https:' -%}
+                        {%- assign final_image_url = 'https:' | append: image_url -%}
+                    {%- endunless -%}
+                {%- endif -%}
+                
+                <img
+                    src="{{ final_image_url }}"
+                    alt="{{ buyer.name | default: 'Buyer' | escape }}"
+                    width="40" height="40" loading="lazy"
+                    class="mrst-buyer__img"
+                >
+            {%- else -%}
+                {%- comment -%} 画像が取得できない場合のプレースホルダー {%- endcomment -%}
+                <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
+                    {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
+                </div>
+            {%- endif -%}
         {%- endif -%}
     </div>
-    
+
     <div class="mrst-buyer__meta">
         <span class="mrst-buyer__label">BUYER</span>
         <span class="mrst-buyer__name">{{ buyer.name }}</span>
