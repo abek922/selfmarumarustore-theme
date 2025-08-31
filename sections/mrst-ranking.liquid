@@ -165,36 +165,39 @@ calc(100vw / {{ columns_desktop }})
 <div class="mrst-buyer">
     <div class="mrst-buyer__avatar">
         {%- comment -%}
-            MediaListDropの正しい処理方法
+            MediaListDropから正しいファイル名を抽出してURLを構築
         {%- endcomment -%}
         
-        <!-- デバッグ情報 -->
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-            <strong>MediaListDrop処理テスト:</strong><br>
+            <strong>ファイル名抽出テスト:</strong><br>
             
             {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
                 {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                    meta_buyer.image.value type: {{ meta_buyer.image.value | type }}<br>
-                    meta_buyer.image.value size: {{ meta_buyer.image.value.size }}<br>
-                    meta_buyer.image.value.first: {{ meta_buyer.image.value.first }}<br>
-                    meta_buyer.image.value.first type: {{ meta_buyer.image.value.first | type }}<br>
-                    
-                    {%- comment -%} MediaListDropの要素をループで確認 {%- endcomment -%}
-                    MediaListDrop loop:<br>
                     {%- for media_item in meta_buyer.image.value -%}
-                        Item {{ forloop.index }}: {{ media_item }}<br>
-                        Item type: {{ media_item | type }}<br>
-                        Item url: {{ media_item.url }}<br>
-                        Item preview_image: {{ media_item.preview_image }}<br>
-                        Item preview_image.url: {{ media_buyer.preview_image.url }}<br>
+                        Raw item: {{ media_item }}<br>
+                        Item as string: "{{ media_item }}"<br>
+                        
+                        {%- comment -%} ファイル名を抽出 {%- endcomment -%}
+                        {%- assign item_str = media_item | append: '' -%}
+                        {%- assign filename = item_str | split: 'files/' | last -%}
+                        Extracted filename: {{ filename }}<br>
+                        
+                        {%- comment -%} 正しいURLを構築 {%- endcomment -%}
+                        {%- assign constructed_url = filename | file_url -%}
+                        Constructed URL: {{ constructed_url }}<br>
+                        
+                        {%- comment -%} HTTPSを明示的に追加 {%- endcomment -%}
+                        {%- if constructed_url contains '//' and constructed_url contains 'marumarustore.jp' -%}
+                            {%- unless constructed_url contains 'https:' -%}
+                                {%- assign final_url = 'https:' | append: constructed_url -%}
+                            {%- else -%}
+                                {%- assign final_url = constructed_url -%}
+                            {%- endunless -%}
+                            Final URL with HTTPS: {{ final_url }}<br>
+                        {%- endif -%}
+                        
+                        {%- break -%}
                     {%- endfor -%}
-                    
-                    {%- comment -%} 直接的なフィルター試行 {%- endcomment -%}
-                    Direct image_url filter: {{ meta_buyer.image.value | image_url: width: 80 }}<br>
-                    Direct file_url filter: {{ meta_buyer.image.value | file_url }}<br>
-                    Direct first image_url: {{ meta_buyer.image.value.first | image_url: width: 80 }}<br>
-                    Direct first file_url: {{ meta_buyer.image.value.first | file_url }}<br>
-                    
                     {%- break -%}
                 {%- endif -%}
             {%- endfor -%}
@@ -202,56 +205,37 @@ calc(100vw / {{ columns_desktop }})
         
         {%- assign image_url = '' -%}
         
-        {%- comment -%} MediaListDropから画像URLを取得 {%- endcomment -%}
+        {%- comment -%} MediaListDropからファイル名を抽出してURLを構築 {%- endcomment -%}
         {%- for meta_buyer in shop.metaobjects['buyer'].values -%}
             {%- if meta_buyer.buyer_id.value == buyer.buyer_id -%}
-                
-                {%- comment -%} アプローチ1: 直接image_urlフィルター {%- endcomment -%}
-                {%- assign temp_url = meta_buyer.image.value | image_url: width: 80 -%}
-                {%- if temp_url != blank and temp_url != 'no-image' -%}
-                    {%- assign image_url = temp_url -%}
-                {%- endif -%}
-                
-                {%- comment -%} アプローチ2: firstでimage_urlフィルター {%- endcomment -%}
-                {%- if image_url == blank -%}
-                    {%- assign temp_url = meta_buyer.image.value.first | image_url: width: 80 -%}
-                    {%- if temp_url != blank and temp_url != 'no-image' -%}
-                        {%- assign image_url = temp_url -%}
-                    {%- endif -%}
-                {%- endif -%}
-                
-                {%- comment -%} アプローチ3: file_urlフィルター {%- endcomment -%}
-                {%- if image_url == blank -%}
-                    {%- assign temp_url = meta_buyer.image.value | file_url -%}
-                    {%- if temp_url != blank -%}
-                        {%- assign image_url = temp_url -%}
-                    {%- endif -%}
-                {%- endif -%}
-                
-                {%- comment -%} アプローチ4: firstでfile_urlフィルター {%- endcomment -%}
-                {%- if image_url == blank -%}
-                    {%- assign temp_url = meta_buyer.image.value.first | file_url -%}
-                    {%- if temp_url != blank -%}
-                        {%- assign image_url = temp_url -%}
-                    {%- endif -%}
-                {%- endif -%}
-                
-                {%- comment -%} アプローチ5: ループでmedia_itemのurlを取得 {%- endcomment -%}
-                {%- if image_url == blank -%}
-                    {%- for media_item in meta_buyer.image.value -%}
-                        {%- if media_item.url != blank -%}
-                            {%- assign image_url = media_item.url -%}
-                            {%- break -%}
+                {%- for media_item in meta_buyer.image.value -%}
+                    {%- comment -%} ファイル名を抽出 {%- endcomment -%}
+                    {%- assign item_str = media_item | append: '' -%}
+                    {%- assign filename = item_str | split: 'files/' | last -%}
+                    
+                    {%- if filename != blank and filename != item_str -%}
+                        {%- comment -%} 正しいURLを構築 {%- endcomment -%}
+                        {%- assign image_url = filename | file_url -%}
+                        
+                        {%- comment -%} HTTPSプロトコルを確実に追加 {%- endcomment -%}
+                        {%- if image_url contains '//' and image_url contains 'marumarustore.jp' -%}
+                            {%- unless image_url contains 'https:' -%}
+                                {%- assign image_url = 'https:' | append: image_url -%}
+                            {%- endunless -%}
                         {%- endif -%}
-                    {%- endfor -%}
-                {%- endif -%}
-                
+                        
+                        {%- comment -%} 画像変換フィルターを適用 {%- endcomment -%}
+                        {%- assign image_url = image_url | image_url: width: 80 -%}
+                        
+                        {%- break -%}
+                    {%- endif -%}
+                {%- endfor -%}
                 {%- break -%}
             {%- endif -%}
         {%- endfor -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final image_url = {{ image_url }}
+            Final processed image_url = {{ image_url }}
         </div>
 
         {%- if image_url != blank -%}
