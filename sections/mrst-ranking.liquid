@@ -162,25 +162,32 @@ calc(100vw / {{ columns_desktop }})
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
 
-<!-- さらに詳細なデバッグ情報 -->
+<!-- より詳細なデバッグ -->
 <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 11px;">
-    <strong>デバッグ情報:</strong><br>
+    <strong>配列の内容を詳しく調査:</strong><br>
     buyer.image = {{ buyer.image }}<br>
-    buyer.image.first = {{ buyer.image.first }}<br>
+    buyer.image[0] = {{ buyer.image[0] }}<br>
+    buyer.image.first = "{{ buyer.image.first }}"<br>
     buyer.image.size = {{ buyer.image.size }}<br>
     
-    {%- assign media_id = buyer.image.first | split: '/' | last -%}
-    Media ID extracted = {{ media_id }}<br>
-    
-    {%- comment -%} shop.filesをチェック {%- endcomment -%}
-    Files check:<br>
-    {%- for file in shop.files limit: 3 -%}
-        File {{ forloop.index }}: ID={{ file.id }}, URL={{ file.url }}<br>
+    {%- comment -%} 配列の要素をループで取得 {%- endcomment -%}
+    Array loop:<br>
+    {%- for item in buyer.image -%}
+        Item {{ forloop.index }}: {{ item }}<br>
     {%- endfor -%}
     
-    {%- comment -%} 直接的なアプローチ：URLを構築 {%- endcomment -%}
-    {%- assign cdn_url = 'https://' | append: shop.domain | append: '/cdn/shop/files/' -%}
-    Manual URL attempt = {{ cdn_url }}{{ media_id }}<br>
+    {%- comment -%} 文字列として処理して分割 {%- endcomment -%}
+    {%- assign image_string = buyer.image | join: ',' -%}
+    As string: {{ image_string }}<br>
+    
+    {%- assign parts = image_string | split: '/' -%}
+    Split parts:<br>
+    {%- for part in parts -%}
+        Part {{ forloop.index }}: {{ part }}<br>
+    {%- endfor -%}
+    
+    {%- assign media_id = parts.last | remove: '"' | remove: ']' -%}
+    Extracted ID: {{ media_id }}<br>
 </div>
 
 <div class="mrst-buyer">
@@ -188,38 +195,52 @@ calc(100vw / {{ columns_desktop }})
         {%- assign image_url = '' -%}
         
         {%- if buyer.image != blank -%}
-            {%- comment -%} アプローチ1: 単純なfile_url {%- endcomment -%}
-            {%- assign image_url = buyer.image.first | file_url -%}
+            {%- comment -%} 配列を文字列として処理してIDを抽出 {%- endcomment -%}
+            {%- assign image_string = buyer.image | join: ',' -%}
+            {%- assign parts = image_string | split: '/' -%}
+            {%- assign media_id = parts.last | remove: '"' | remove: ']' -%}
             
-            {%- comment -%} アプローチ2: shop.filesから検索 {%- endcomment -%}
+            {%- comment -%} アプローチ1: shop.filesからIDで検索 {%- endcomment -%}
+            {%- for file in shop.files -%}
+                {%- assign file_id = file.id | append: '' -%}
+                {%- if file_id == media_id -%}
+                    {%- if file.content_type contains 'image' -%}
+                        {%- assign image_url = file.url | image_url: width: 80 -%}
+                    {%- else -%}
+                        {%- assign image_url = file.url -%}
+                    {%- endif -%}
+                    {%- break -%}
+                {%- endif -%}
+            {%- endfor -%}
+            
+            {%- comment -%} アプローチ2: MediaImageの場合のpreview_image {%- endcomment -%}
             {%- if image_url == blank -%}
-                {%- assign media_id_str = buyer.image.first | split: '/' | last -%}
                 {%- for file in shop.files -%}
                     {%- assign file_id = file.id | append: '' -%}
-                    {%- if file_id == media_id_str -%}
-                        {%- assign image_url = file.url -%}
+                    {%- if file_id == media_id and file.preview_image -%}
+                        {%- assign image_url = file.preview_image | image_url: width: 80 -%}
                         {%- break -%}
                     {%- endif -%}
                 {%- endfor -%}
             {%- endif -%}
             
-            {%- comment -%} アプローチ3: CDN URLを手動構築 {%- endcomment -%}
+            {%- comment -%} アプローチ3: 直接URLアクセス（ファイル名が必要） {%- endcomment -%}
             {%- if image_url == blank -%}
-                {%- assign media_id_num = buyer.image.first | split: '/' | last -%}
-                {%- assign image_url = shop.url | append: '/cdn/shop/files/' | append: media_id_num -%}
-            {%- endif -%}
-            
-            {%- comment -%} アプローチ4: 画像変換フィルターを試行 {%- endcomment -%}
-            {%- if image_url == blank -%}
-                {%- assign temp_url = buyer.image.first | img_url: '80x80' -%}
-                {%- unless temp_url contains 'no-image' -%}
-                    {%- assign image_url = temp_url -%}
-                {%- endunless -%}
+                {%- comment -%} 
+                注意：実際のファイル名が必要です。
+                管理画面でファイル名を確認し、手動で設定する必要があります
+                {%- endcomment -%}
+                {%- case media_id -%}
+                    {%- when '43429370462526' -%}
+                        {%- comment -%} ここに実際のファイル名を入れる {%- endcomment -%}
+                        {%- assign image_url = 'buyer-saorimotojima.jpg' | file_url -%}
+                {%- endcase -%}
             {%- endif -%}
         {%- endif -%}
 
         <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 10px;">
-            Final image_url = {{ image_url }}
+            Final image_url = {{ image_url }}<br>
+            Media ID used = {{ media_id }}
         </div>
 
         {%- if image_url != blank and image_url != 'no-image' -%}
@@ -228,7 +249,6 @@ calc(100vw / {{ columns_desktop }})
                 alt="{{ buyer.name | default: 'Buyer' | escape }}"
                 width="40" height="40" loading="lazy"
                 class="mrst-buyer__img"
-                onerror="console.log('Image failed to load:', this.src)"
             >
         {%- else -%}
             <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%; color: white; font-weight: bold;">
