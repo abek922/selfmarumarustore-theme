@@ -162,69 +162,84 @@ calc(100vw / {{ columns_desktop }})
                             {%- if product.metafields.custom.buyer != blank -%}
                             {%- assign buyer = product.metafields.custom.buyer.value -%}
 
-                            <div class="mrst-buyer">
-                                <div class="mrst-buyer__avatar">
-                                    {%- comment -%}
-                                        メタオブジェクトの画像フィールドを適切に処理
-                                        - file_reference型の場合の処理を改善
-                                        - 画像の存在チェックを強化
-                                    {%- endcomment -%}
-                                    
-                                    {%- assign buyer_image = buyer.image -%}
-                                    {%- assign image_url = '' -%}
-                                    
-                                    {%- comment -%} デバッグ：buyer.imageの内容を確認 {%- endcomment -%}
-                                    <!-- DEBUG: buyer.image = {{ buyer_image | json }} -->
-                                    
-                                    {%- if buyer_image != blank -%}
-                                        {%- comment -%} 配列の場合は最初の要素を取得 {%- endcomment -%}
-                                        {%- if buyer_image.first -%}
-                                            {%- assign target_image = buyer_image.first -%}
-                                        {%- else -%}
-                                            {%- assign target_image = buyer_image -%}
-                                        {%- endif -%}
-                                        
-                                        {%- comment -%} メタオブジェクトのfile_reference型の処理 {%- endcomment -%}
-                                        {%- if target_image.image -%}
-                                            {%- comment -%} file_reference内のimageオブジェクト {%- endcomment -%}
-                                            {%- assign image_url = target_image.image | image_url: width: 80 -%}
-                                        {%- elsif target_image.url -%}
-                                            {%- comment -%} 直接的なfile_reference {%- endcomment -%}
-                                            {%- assign image_url = target_image.url -%}
-                                        {%- elsif target_image.preview_image -%}
-                                            {%- comment -%} preview_imageがある場合 {%- endcomment -%}
-                                            {%- assign image_url = target_image.preview_image | image_url: width: 80 -%}
-                                        {%- else -%}
-                                            {%- comment -%} 通常のimage型として処理 {%- endcomment -%}
-                                            {%- assign temp_url = target_image | image_url: width: 80 -%}
-                                            {%- unless temp_url contains 'no-image' or temp_url == blank -%}
-                                                {%- assign image_url = temp_url -%}
-                                            {%- endunless -%}
-                                        {%- endif -%}
-                                    {%- endif -%}
+                            <!-- デバッグ情報を表示 -->
+<div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-family: monospace; font-size: 12px;">
+    <strong>デバッグ情報:</strong><br>
+    buyer.image = {{ buyer.image | json }}<br>
+    buyer.image type = {{ buyer.image | type }}<br>
+    buyer全体 = {{ buyer | json }}
+</div>
 
-                                    <!-- DEBUG: Final image_url = {{ image_url }} -->
-                                    
-                                    {%- if image_url != blank -%}
-                                        <img
-                                            src="{{ image_url }}"
-                                            alt="{{ buyer.name | default: 'Buyer' | escape }}"
-                                            width="40" height="40" loading="lazy"
-                                            class="mrst-buyer__img"
-                                        >
-                                    {%- else -%}
-                                        {%- comment -%} 画像が取得できない場合のフォールバック {%- endcomment -%}
-                                        <div class="mrst-buyer__img mrst-buyer__img--placeholder">
-                                            {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
-                                        </div>
-                                    {%- endif -%}
-                                </div>
+<div class="mrst-buyer">
+    <div class="mrst-buyer__avatar">
+        {%- assign image_url = '' -%}
+        
+        {%- comment -%} 最も一般的なパターンから順番に試行 {%- endcomment -%}
+        
+        {%- comment -%} パターン1: file_url フィルター {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- assign image_url = buyer.image | file_url -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン2: 配列の場合の最初の要素 {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- if buyer.image.first -%}
+                {%- assign image_url = buyer.image.first | file_url -%}
+            {%- endif -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン3: .value プロパティ経由 {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- assign image_url = buyer.image.value | file_url -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン4: image_url フィルター {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- assign image_url = buyer.image | image_url: width: 80 -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン5: 配列 + image_url フィルター {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- if buyer.image.first -%}
+                {%- assign image_url = buyer.image.first | image_url: width: 80 -%}
+            {%- endif -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン6: .url プロパティ直接アクセス {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- assign image_url = buyer.image.url -%}
+        {%- endunless -%}
+        
+        {%- comment -%} パターン7: 配列の .url {%- endcomment -%}
+        {%- unless image_url != blank -%}
+            {%- if buyer.image.first.url -%}
+                {%- assign image_url = buyer.image.first.url -%}
+            {%- endif -%}
+        {%- endunless -%}
 
-                                <div class="mrst-buyer__meta">
-                                    <span class="mrst-buyer__label">BUYER</span>
-                                    <span class="mrst-buyer__name">{{ buyer.name }}</span>
-                                </div>
-                            </div>
+        <div style="background: #e0e0e0; padding: 5px; margin: 5px 0; font-size: 11px;">
+            最終的な image_url = {{ image_url }}
+        </div>
+
+        {%- if image_url != blank and image_url != 'no-image' -%}
+            <img
+                src="{{ image_url }}"
+                alt="{{ buyer.name | default: 'Buyer' | escape }}"
+                width="40" height="40" loading="lazy"
+                class="mrst-buyer__img"
+            >
+        {%- else -%}
+            <div class="mrst-buyer__img mrst-buyer__img--placeholder" style="width: 40px; height: 40px; background: #ccc; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                {{ buyer.name | default: 'B' | truncate: 1, '' | upcase }}
+            </div>
+        {%- endif -%}
+    </div>
+
+    <div class="mrst-buyer__meta">
+        <span class="mrst-buyer__label">BUYER</span>
+        <span class="mrst-buyer__name">{{ buyer.name }}</span>
+    </div>
+</div>
 
                             {%- endif -%}
                         </div>
